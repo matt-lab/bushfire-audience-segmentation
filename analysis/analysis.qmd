@@ -1,0 +1,2562 @@
+---
+title: "Manuscript methods and results"
+author:
+    -   name: "Matthew Andreotta"
+        orcid: "0000-0001-7511-2910"
+        affiliation: "csiro-env"
+    -   name: "Fabio Boschetti"
+        orcid: "0000-0001-8999-6913"
+        affiliation: "csiro-env"
+    -   name: "Simon Farrell"
+        orcid: "0000-0001-7452-8789"
+        affiliation: "uwa"
+    -   name: "Cécile Paris"
+        orcid: "0000-0003-3816-0176"
+        affiliation: "csiro-data61"
+    -   name: "Iain Walker"
+        orcid: "0000-0002-1020-5873"
+        affiliation: "unimelb"
+    -   name: "Mark Hurlstone"
+        orcid: "0000-0001-9920-6284"
+        affiliation: "lancaster"
+affiliation:
+    -   id: "csiro-env"
+        institution: "Environment, CSIRO"
+        state: "Western Australia"
+        country: "Australia"
+    -   id: "csiro-data61"
+        institution: "Data61, CSIRO"
+        state: "Australian Capital Territory"
+        country: "Australia"
+    -   id: "uwa"
+        institution: "School of Psychological Science, University of Western Australia"
+        state: "Western Australia"
+        country: "Australia"
+    -   id: "unimelb"
+        institution: "School of Psychological Sciences, University of Melbourne"
+        state: "Victoria"
+        country: "Australia"
+    -   id: "lancaster"
+        institution: "Department of Psychology, Lancaster University"
+        state: "Lancashire"
+        country: "United Kingdom"
+date: today
+bibliography: references.bib
+format:
+  pdf:
+    number-sections: true
+    keep-tex: true
+    cite-method: natbib
+    natbiboptions: authoryear,longnamesfirst
+    include-in-header: 
+      text: |
+        \setlength{\tabcolsep}{1pt}
+        \usepackage{fontspec}
+        \usepackage{fontawesome}
+        \usepackage{endfloat}
+        \usepackage{pdflscape}
+        \setlength{\tabcolsep}{2pt}
+        \DeclareDelayedFloatFlavour*{longtable}{table}
+        \DeclareDelayedFloatFlavor{landscape}{table}
+execute:
+  cache: true
+  echo: false
+---
+
+```{r}
+#| label: load-utilities
+#| cache: false
+#| warning: false
+#| include: false
+#| echo: false
+#| message: false
+#| error: false
+
+# Load libraries
+library(tidyverse) # for data wrangling
+library(lubridate) # for dates
+library(arrow) # for cross-language data structures
+library(janitor) # for cleaning names
+library(psych) # for factor analysis
+library(qmethod) # for qmethodology
+library(corrr) # tidyverse correlations
+library(ggridges) # for ridge plots
+library(knitr) # for creating this document
+library(kableExtra) # for better tables
+library(psych) # for calculating Cronbach's alpha
+library(easystats) # for testing glm performance
+library(nnet) # multinomial logistic regressions
+library(car) # likelihood tests for regression models
+library(broom) # tidying results
+library(ggridges) # for ridge plots
+library(tidytext) # for cleaning text
+library(rcartocolor) # for colour palettes
+library(ggthemes)   # for ggplot themes
+library(glue)    # for string interpolation
+library(glmnet) # regression analysis
+library(parallel) # for parallel processing
+library(doParallel) # for parallel processing
+library(doRNG) # for parallel processing seeds
+library(marginaleffects) # for marginal effects
+
+#### Helper functions ####
+
+# Presentation
+get_p_value_markers <- function(p) {
+    case_when(
+        p < .001 ~ "\\textsuperscript{***}",
+        p < .01 ~ "\\textsuperscript{**}",
+        p < .05 ~ "\\textsuperscript{*}",
+        TRUE ~ ""
+    )
+}
+specify_decimal <- function(x, k = 2) trimws(format(round(x, k), nsmall=k))
+specify_p_value <- function(p, ...) str_replace_all(specify_decimal(p, ...), "^0+", "")
+add_p_value_markers <- function(data, statistics_name, p_value_name, ...) {
+    # Takes statistic and associated p values and outputs asterisks correspond
+    # to p level
+    data |>
+        rowwise() |>
+        mutate({{statistics_name}} := ifelse(
+            is.double({{statistics_name}}),
+            specify_decimal({{statistics_name}}, ...),
+            {{statistics_name}})) |>
+        mutate({{statistics_name}} := str_c(
+            {{statistics_name}},
+            get_p_value_markers({{p_value_name}})
+            )
+        ) |>
+        ungroup()
+}
+specify_p_value_text <- function(p, with_stars = TRUE, with_equals = FALSE, ...) {
+    stars_str <- c("***", "**", "*")
+    equals_str <- "= "
+    if(!with_stars) stars_str <- rep("", length(stars_str))
+    if(!with_equals) equals_str <- rep("", length(equals_str))
+    case_when(
+        p < .001 ~ str_c("< ", specify_p_value(.001, ...), stars_str[1]),
+        p < .01 ~ str_c(equals_str, specify_p_value(p, ...), stars_str[2]),
+        p < .05 ~ str_c(equals_str, specify_p_value(p, ...), stars_str[3]),
+        TRUE ~ str_c(equals_str, specify_p_value(p, ...))
+    )
+}
+get_chisq_text <- function(chisq, df, p_value, p_value_adjusted = NULL) {
+    # Takes chisquare test results and returns a string with the test statistics
+    str_c(
+        "$\\chi^{2}$ (",
+        df,
+        ") = ",
+        specify_decimal(chisq),
+        ", $p$ ",
+        specify_p_value_text(p_value, with_stars = F, with_equals = T, 3),
+        ifelse(
+            is.null(p_value_adjusted),
+            "",
+            str_c(", $p_{adjusted}$ ", specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = T, 3)))
+    )
+}
+# For pairwise comparisons
+get_contrasts <- function(p_adjust_method = "none", ...) {
+    # `p_adjust_method` argument for p.adjust to control for multiple comparisons
+    # within terms
+    # Get contrasts
+    avg_comparisons(...) |>
+    broom::tidy() |>
+    janitor::clean_names() |>
+    group_by(term) |>
+    mutate(
+        p_value_adjusted = p.adjust(p_value, method = p_adjust_method)
+    ) |>
+    ungroup() #|>
+    # mutate(
+    #     text = str_c(
+    #             glue("difference = {specify_decimal(estimate)},"),
+    #             glue(" *SE* = {specify_decimal(std_error)},"),
+    #             glue(" *z* = {specify_decimal(statistic)},"),
+    #             " $p$ ", specify_p_value_text(p_value, 3, with_stars = F, with_equals = T), ",",
+    #             " $p_{adjusted}$ ", specify_p_value_text(p_value_adjusted, 3, with_stars = F, with_equals = T)
+    #     )
+    # ) |>
+    # mutate(
+    #     text_rev = str_c(
+    #             glue("difference = {specify_decimal(-estimate)},"),
+    #             glue(" *SE* = {specify_decimal(std_error)},"),
+    #             glue(" *z* = {specify_decimal(-statistic)},"),
+    #             " $p$ ", specify_p_value_text(p_value, 3, with_stars = F, with_equals = T), ",",
+    #             " $p_{adjusted}$ ", specify_p_value_text(p_value_adjusted, 3, with_stars = F, with_equals = T)
+    #     )
+    # )
+}
+
+cor_critical <- function(p, n) {
+    # Two-tailed critical value for Pearson correlation
+    # p: alpha level (can be a vector)
+    # n: sample size
+    df <- n - 2
+    t <- qt(p / 2, df)
+    abs(t / sqrt(t^2 + df))
+}
+
+# Helper functions and variables (graphs)
+colour_error_bar <- "#000000"
+colour_background <- "#FFFFFF"
+colour_text <- "#000000"
+colour_grid <- "#A0A0A0"
+colour_axis <- "#000000"
+
+theme_manuscript <- function() {
+    # Colour
+    # Text size conversion
+    text_conversion <- 
+    
+    # Begin construction of chart
+    theme_bw(base_size = 15) +
+        
+    # Format the grid
+    theme(panel.background      = element_rect(fill = colour_background, color = colour_background)) +
+    theme(plot.background       = element_rect(fill = colour_background, color = colour_background)) +
+    theme(panel.border          = element_blank()) +
+    theme(panel.grid.major.x    = element_blank()) +
+    theme(panel.grid.minor.x    = element_blank()) +
+    theme(panel.grid.major.y    = element_blank()) +
+#    theme(panel.grid.major.y    = element_line(colour = colour_grid)) +
+    theme(panel.grid.minor.y    = element_blank()) +
+#    theme(axis.ticks            = element_blank()) +
+    theme(axis.ticks            = element_line(colour = colour_axis)) +
+    theme(axis.line             = element_line(colour = colour_axis, linewidth = 1, lineend = "square")) +
+    
+    # Format the legend
+    theme(legend.position       = "right") +
+    theme(legend.title          = element_text(size = 12, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "bold")) +
+    theme(legend.text           = element_text(size = 10, colour = colour_text, hjust = 0, vjust = 0.5, face = "plain")) +
+    theme(legend.background = element_blank()) +
+                                    
+    # Format title and axis labels
+    theme(plot.title    = element_blank()) +
+    theme(plot.subtitle = element_blank()) +
+    theme(plot.caption  = element_blank()) +
+    theme(axis.title.x  = element_text(size = 12, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "bold")) +
+    theme(axis.title.y  = element_text(size = 12, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "bold")) +
+    theme(axis.text.x   = element_text(size = 10, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "plain")) +
+    theme(axis.text.y   = element_text(size = 10, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "plain")) +
+
+    # Format strip
+    theme(strip.background  = element_blank()) +
+    theme(strip.placement   = "outside") +
+    theme(strip.text        = element_text(size = 12, colour = colour_text, hjust = 0.5, vjust = 0.5, face = "bold"))
+}
+# Helper functions (scoring)
+rev_score <- function(score, max, min) {
+    # Reverse scores data, given score and a maximum and minimum of total scale
+    if (missing(min)) {
+        min <- 1
+    }
+    return(max - score + min)
+}
+# Helper functions (kable)
+pack_groups <- function(kable_input, data_in_kable_input, group_var) {
+    rows <- pull(data_in_kable_input, {{group_var}})
+    start_rows <- which(replace_na(rows != lag(rows, 1), TRUE))
+    end_rows <- which(replace_na(rows != lead(rows, 1), TRUE))
+    group_labels <- as.character(rows[start_rows])
+    for (i in seq_along(start_rows)) {
+        kable_input <- kableExtra::pack_rows(
+            kable_input,
+            group_label = group_labels[i],
+            start_row = start_rows[i],
+            end_row = end_rows[i]
+        )
+    }
+    return(kable_input)
+}
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+```
+
+```{r}
+#| label: load-analysis
+#| include: false
+#| warning: false
+#| echo: false
+
+# Load data
+path_to_data <- str_replace(getwd(), "/analysis", "")
+data <- read_parquet(file.path(path_to_data, "data/collated/data.parquet"))
+
+# Identify segments
+run_qmethod <- function(data) {
+    q_sort <- data
+    q_fa <- principal(q_sort, 1, rotate = "varimax") # all studies have one bipolar factor
+    q_loa <- q_fa$loadings |>
+        unclass()
+    # Flag Q-sorts for factor with highest loading
+    # Calculate loads for bipolar factors
+    q_flagged <- matrix(F, ncol(q_sort), 1*2)
+    n <- 1 #iterate this over the loop
+    tol <- 1e-8 #tolerance value for comparing doubles
+    set.seed(1746985) #set seed
+    q_loa <- cbind(q_loa, -q_loa[ , 1])
+    q_flagged <- apply(q_loa, 1:2, function(x){x >= 1.96 / sqrt(30) - tol})
+    colnames(q_loa) <- paste0("f", 1:(1*2)) #to match q_flagged
+    colnames(q_flagged) <- paste0("flag_f", 1:(1*2)) #to match q_loa
+
+    #Run analysis
+    q_results <- qzscores(q_sort, 1*2, q_loa, q_flagged) #runs full Q analysis
+
+    return(q_results)
+}
+
+#### Identify audience segments ####
+q_sorts <- data |>
+    select(study, id, starts_with("sort_sta_")) |>
+    pivot_longer(
+        starts_with("sort_sta_"),
+        names_to = "text",
+        values_to = "distribution") |>
+    mutate(distribution = as.integer(str_sub(distribution, 2, 2)) - 5) |>
+    pivot_wider(
+        names_from = "id",
+        values_from = "distribution",
+        names_prefix = "id_")
+
+# Clunky data wrangling for qmethod analysis
+q_sort_data <- unique(q_sorts$study) |>
+    map(~ filter(q_sorts, study == .x)) |>
+    map(~ select(.x, -study)) |>
+    map(~ Filter(function(y) !all(is.na(y)), .x)) |>
+    map(~ data.frame(select(.x, -text), row.names = .x$text))
+
+q_sort_results <- q_sort_data |>
+    map(run_qmethod)
+
+# Add variables to data
+data <- q_sort_results |>
+    map(~ as_tibble(.x$loa, rownames = "id")) |>
+    map2(1:3, ~ mutate(.x, study = .y)) |>
+    bind_rows() |>
+    rename(loading_acceptor = f1) |>
+    rename(loading_sceptic = f2) |>
+    mutate(id = as.integer(str_replace(id, "^id_", ""))) |>
+    ungroup() |>
+    right_join(data, by = c('id', 'study'))
+
+data <- q_sort_results |>
+    map(~ as_tibble(.x$flagged, rownames = "id")) |>
+    map2(1:3, ~ mutate(.x, study = .y)) |>
+    bind_rows() |>
+    rename(flag_acceptor = flag_f1) |>
+    rename(flag_sceptic = flag_f2) |>
+    mutate(flag_fencesitter = !flag_acceptor & !flag_sceptic) |>
+    mutate(id = as.integer(str_replace(id, "^id_", ""))) |>
+    select(study, id, flag_acceptor, flag_fencesitter, flag_sceptic) |>
+    group_by(id, study) |>
+    mutate(
+        segment = 
+            c("acceptor", "fencesitter", "sceptic")[
+            c(flag_acceptor, flag_fencesitter, flag_sceptic)]) |>
+    ungroup() |>
+    right_join(data, by = c('id', 'study'))
+
+#### Time analysis: Q-sorts ####
+
+# Have ranks changed?
+q_sort_results_statements <- q_sort_results |>
+    map(~ cbind(.x$zsc, .x$zsc_n)) |>
+    map(~ as_tibble(.x, rownames = "sta_id")) |>
+    map2(1:3, ~ mutate(.x, study = .y)) |>
+    bind_rows()
+# Very few!
+q_sort_results_statements_compar <- q_sort_results_statements |>
+    pivot_longer(
+        zsc_f1:fsc_f2,
+        names_to = "var",
+        values_to = "score"
+    ) |>
+    pivot_wider(
+        names_from = study,
+        values_from = score,
+        names_prefix = "study_"
+    ) |>
+    filter(str_detect(var, "^fsc_f[0-9]+$")) |>
+    group_by(var, sta_id) |>
+    mutate(diff = max(c(abs(study_3 - study_1), abs(study_3 - study_2))))
+# Correlations of factor scores
+get_correlations <- function(df) {
+    lapply(
+        seq_len(ncol(df)),
+        function(x) {
+            lapply(
+                seq_len(ncol(df)),
+                function(y) {
+                    if (x < y) {
+                        cor.test(df[[x]], df[[y]], method = "spearman", exact = FALSE) |>
+                        tidy() |>
+                        mutate(
+                            var1 = colnames(df)[x],
+                            var2 = colnames(df)[y]
+                        )
+                    }
+                }
+            )
+        }
+    ) |>
+    bind_rows()
+}
+q_sort_results_corr <-
+q_sort_results_statements |>
+    select(sta_id, starts_with("fsc_f"), study) |>
+    pivot_longer(
+        starts_with("fsc_f"),
+        names_to = "factor",
+        values_to = "score"
+    ) |>
+    arrange(sta_id) |>
+    mutate(segment = case_when(
+        str_detect(factor, "_f1") ~ "acceptor",
+        str_detect(factor, "_f2") ~ "sceptic"
+    )) |>
+    select(sta_id, segment, score, study) |>
+    pivot_wider(
+        names_from = segment,
+        values_from = score
+    ) |>
+    pivot_wider(
+        names_from = study,
+        values_from = c(acceptor, sceptic),
+        names_prefix = "study_"
+    ) |>
+    select(-sta_id) |>
+    get_correlations()
+
+q_sort_results_corr_summary <-
+q_sort_results_corr |>
+    # Split vars
+    separate_wider_delim(
+        c(var1, var2),
+        names = c("segment", "study"),
+        names_sep = "_",
+        delim = "_study_"
+    ) |>
+    mutate(same_segment = var1_segment == var2_segment) |>
+    group_by(
+        var1_segment,
+        var2_segment,
+        same_segment
+    ) |>
+    summarise(
+        min_cor = min(estimate),
+        max_cor = max(estimate),
+        min_cor_abs = min(abs(estimate)),
+        min_p_value = min(p.value),
+        max_p_value = max(p.value),
+        .groups = 'drop'
+    ) |>
+    # Extract value for text
+    mutate(
+        p_highest_threshold = case_when(
+            min_p_value < 0.001 ~ "< .001",
+            min_p_value < 0.01 ~ "< .01",
+            min_p_value < 0.05 ~ "< .05",
+            TRUE ~ "> .05"
+        ),
+        cor_inequality = case_when(
+            sign(min_cor) == -1 ~ "<",
+            sign(min_cor) == 1 ~ ">",
+            TRUE ~ "="
+        ),
+        cor_lowest_threshold = specify_decimal(floor(min_cor_abs*100)/100*sign(max_cor)),
+        text =
+            glue(
+                "(",
+                "all Spearman's $\\rho$ correlations ${cor_inequality} {cor_lowest_threshold}$, ",
+                "all $p$'s ${p_highest_threshold}$",
+                ")"
+            )
+    )
+
+#### Add factor scores ####
+statements_full <- read_csv(
+    file.path(path_to_data, "study_1/study/q-statements-ordered.csv"),
+    col_types = cols(
+        order = col_integer(),
+        id = col_integer(),
+        statement = col_character()
+    ))
+factor_scores <- 
+q_sort_results_statements_compar |>
+    ungroup() |>
+    mutate(order = as.integer(str_replace_all(sta_id, "^sort_sta_", ""))) |>
+    mutate(segment = ifelse(var == "fsc_f1", "acceptor", "sceptic")) |>
+    left_join(statements_full, by = "order")
+
+
+#### Add study-metadata ####
+# Recode data
+
+data <- data |>
+    mutate(
+        time =
+            ifelse(
+                study == 1,
+                "Before peak bushfire severity",
+                "After peak bushfire severity"
+            )
+    ) |>
+    mutate(time = as.factor(time)) |>
+    mutate(time = fct_relevel(time, "Before peak bushfire severity"))
+data <- data |>
+    mutate(
+        study_name =
+            factor(
+                study,
+                levels = sort(unique(study)),
+                labels = str_c("Study ", sort(unique(study)))
+            )    
+    )
+data <- 
+    data |>
+        group_by(study, study_name, time) |>
+        summarise(
+            min_date = as.Date(min(time_start)),
+            min_date_text = format(min_date, "%b, %Y"),
+            .groups = 'drop'
+        ) |>
+        mutate(
+            study_name_full =
+                fct_relabel(
+                    study_name,
+                    ~ glue(
+                        "{.x} ({min_date_text})"
+                    )
+                )
+        ) |>    
+        select(study, study_name_full) |>
+        right_join(data, by = 'study')
+    
+
+data <- data |>
+    mutate(
+        segment_name =
+            factor(
+                segment,
+                levels = c("acceptor", "fencesitter", "sceptic"),
+                labels = c("Acceptors", "Fencesitters", "Sceptics")
+            )
+    )
+
+data <- data |>
+    mutate(
+        fp_mitigation =
+            factor(
+                fp_mitigation,
+                labels = c(
+                    "More action",
+                    "No change",
+                    "Less action",
+                    "No action"
+                ) 
+            )
+    )
+
+# Load scales info
+scales_info <- read_csv(
+    file.path(path_to_data, "analysis/scales.csv"),
+    col_types = cols(
+        abbrev = col_character(),
+        measure = col_character(),
+        example = col_character(),
+        reference = col_character(),
+        range = col_character(),
+        num = col_integer()))
+# Add climate change related measures
+scales_info <- scales_info |>
+    mutate(
+        is_climate_change_measure = case_when(
+            grepl("^mms_", abbrev) ~ TRUE,
+            abbrev == "kv" ~ TRUE,
+            grepl("^ss_", abbrev) ~ TRUE,
+            abbrev == "w" ~ TRUE,
+
+            TRUE ~ FALSE
+        )
+    ) |>
+    mutate(
+        is_cognitive_style = case_when(
+            grepl("^cfc_", abbrev) ~ TRUE,
+            grepl("^ci", abbrev) ~ TRUE,
+            grepl("^ncs", abbrev) ~ TRUE,
+            TRUE ~ FALSE
+        )
+    ) |>
+    mutate(
+        is_personality = case_when(
+            grepl("^bfi_", abbrev) ~ TRUE,
+            TRUE ~ FALSE
+        )
+    ) |>
+    mutate(
+        is_ideology_worldviews_values = case_when(
+            grepl("^ews_", abbrev) ~ TRUE,
+            abbrev == "sj" ~ TRUE,
+            abbrev == "pi" ~ TRUE,
+            grepl("^svss_", abbrev) ~ TRUE,
+            TRUE ~ FALSE
+        )
+    ) |>
+    mutate(
+        category =
+            factor(
+                case_when(
+                    is_climate_change_measure ~ "Climate change cognition and affect",
+                    is_cognitive_style ~ "Cognitive style",
+                    is_ideology_worldviews_values ~ "Ideology, worldviews, and values",
+                    is_personality ~ "Personality",
+                    TRUE ~ NA_character_
+                ),
+                levels = c(
+                    "Climate change cognition and affect",
+                    "Cognitive style",
+                    "Ideology, worldviews, and values",
+                    "Personality"
+                )
+            )
+    )
+
+
+# Prepare colours for ggplot
+# From colourblind friendly palettes
+
+# From the 'safe' carto colour palette
+study_colours <- c("#6699CC", "#661100", "#882255")
+names(study_colours) <- sort(unique(data$study_name_full))
+segment_colours <- c("#117733", "#DDCC77", "#88CCEE")
+names(segment_colours) <- sort(unique(data$segment_name))
+
+# Other palettes
+magnitude_palette <- "ArmyRose"
+policy_direction_palette <- "Peach"
+```
+
+# Summary
+
+This document contains the methods and results for the manuscript.
+
+# Methods
+
+Data and analysis scripts for the study are available online at \url{https://github.com/matt-lab/bushfire-audience-segmentation}.
+This study was approved by the Human Research Ethics Committees of the University of Western Australia (reference: 2019/RA/4/20/5104) and the Commonwealth Scientific and Industrial Research Organisation (reference: 026/19).
+
+## Participants and design
+
+```{r}
+#| label: descriptives-waves
+
+descriptives_waves <-
+    data |>
+    count(
+        study,
+        year = year(time_end),
+        month = month(time_end)
+    ) |>
+    group_by(study) |>
+    mutate(prop = n / sum(n)) |>
+    mutate(
+        text =
+            case_when(
+                n() > 1
+                ~
+                str_c(
+                    "(",
+                    "\\textit{n} = ",
+                    n,
+                    ", ",
+                    specify_decimal(prop * 100),
+                    "\\%",
+                    " of participants",
+                    ")"
+                ),
+                n() == 1
+                ~ str_c(
+                    "(",
+                    "\\textit{n} = ",
+                    n,
+                    ")"
+                )
+            )
+    ) |>
+    ungroup()
+
+```
+
+The study was a longitudinal design, where data was collected at three time periods, as presented in @tbl-waves.
+Study 1 was conducted before in September `r filter(descriptives_waves, study == 1 & month == 9)$text`, October `r filter(descriptives_waves, study == 1 & month == 10)$text`, and November `r filter(descriptives_waves, study == 1 & month == 11)$text` of 2019 prior to the peak severity of the Black Summer bushfires.
+Study 2, conducted in February `r filter(descriptives_waves, study == 2 & month == 2)$text` and March `r filter(descriptives_waves, study == 2 & month == 3)$text` of 2020, and Study 3, conducted in March of 2020 `r filter(descriptives_waves, study == 3 & month == 3)$text`, were both completed after the peak severity of the Black Summer bushfires.
+In total, 1061 Australian adults participated in the study.
+Participants were recruited complete an online survey via Qualtrics---an Internet panel services platform.
+We used a targeted and stratified sampling process was used to match the age and gender of each studies' sample to the general population (as per the national 2016 census).
+We discarded the data of extremely fast responders, who were categorised using a preregistered threshold (see Supplementary Materials).
+
+```{r}
+#| label: tbl-waves
+#| tbl-cap: "Sample characteristics and materials of study."
+#| echo: false
+
+# Add materials
+tab_waves_materials <- tibble(
+    study = 1:3,
+    mat_qsort = c('y', 'y', 'y'),
+    mat_aux = c('y', 'n', 'y'),
+    mat_fps = c('n', 'n', 'y'),
+    mat_change = c('n', 'n', 'y'))
+tab_waves_materials <- tab_waves_materials |>
+    mutate(across(starts_with('mat'), ~ ifelse(.x == "y", "\\faCheck", "\\faClose")))
+
+# Organise table
+tab_waves <- data |>
+    group_by(time, study) |>
+    summarise(
+        n = n(),
+        start_date = date(min(time_end)),
+        end_date = date(max(time_end)),
+        m_age = mean(age),
+        sd_age = sd(age),
+        n_women = length(which(gender == 1)),
+        prop_women = n_women / n * 100,
+        .groups = 'drop'
+    ) |>
+    mutate(across(c(m_age, sd_age, prop_women), specify_decimal)) |>
+    mutate(sample_age = str_c(m_age, ' (', sd_age, ')')) |>
+    mutate(sample_women = str_c(n_women, ' (', prop_women, '\\%)')) |>
+    mutate(prop_women = str_c(prop_women, "\\%")) |>
+    select(-m_age, -sd_age, -n_women, -prop_women) |>
+    mutate(across(
+        ends_with('_date'),
+        ~ str_c(
+            ifelse(day(.x) < 10, str_c("0", day(.x)), as.character(day(.x))),
+            '-',
+            str_to_upper(month(.x, label = TRUE)),
+            '-',
+            year(.x)))) |>
+    arrange(study) |>
+    left_join(tab_waves_materials, by = 'study') |>
+    relocate(n, .before = sample_age) |>
+    mutate(across(everything(), as.character)) |>
+    mutate(study = as.factor(study)) |>
+    pivot_longer(-study, names_to = 'name', values_to = 'col') |>
+    pivot_wider(names_from = study, values_from = col)
+# Add row titles
+tab_waves <- tab_waves |>
+    mutate(name = case_when(
+        name == 'n'                 ~ "\\textit{n}",
+        name == 'start_date'        ~ "Start",
+        name == 'end_date'          ~ "End",
+        name == 'sample_age'        ~ "Mean age in years (\\textit{SD})",
+        name == 'sample_women'      ~ "Number of women in sample (\\%)",
+        name == 'mat_qsort'         ~ "Q-sort",
+        name == 'mat_aux'           ~ "Auxiliary psychological scales",
+        name == 'mat_fps'           ~ "Fire Perception Scale",
+        name == 'mat_change'        ~ "Change in policy items",
+        TRUE                        ~ str_to_title(name)
+    ))
+# Make table
+tab_waves |>
+    rename(`Characteristics` = name) |>
+    kbl(
+        align = c('l', 'c', 'c', 'c'),
+        escape = FALSE,
+        booktabs = TRUE) |>
+    add_header_above(c(" " = 1, "Study" = 3)) |>
+    pack_rows("Data collection dates", 2, 3) |>
+    pack_rows("Sample characteristics", 4, 6) |>
+    pack_rows("Materials", 7, 10) |>
+    column_spec(1, width = "16em") |>
+    column_spec(2:4, width = "7em")
+```
+
+## Materials
+
+Psychological inventories and tasks were used to gauge climate change and bushfire perceptions, in addition to auxiliary psychological characteristics.
+
+### Q-sort
+
+To measure climate change views, we used the Q-sort. The Q-sort is a card-sorting task, where participants ranked thirty cards with climate change statements, such as "it is important to vote for leaders who will combat climate change" and "scientists should stop falsely claiming that climate change is a settled science". The statements were selected to reflect the breadth of the Australian climate change discourse on social media [@andreotta_2022]. To encourage reflection, participants began the Q-sort by reading each card and determining if the statement was: (1) like their point of view; (2) unlike their point of view; or neutral or unsure. Next, participants ranked their relative agreement for each statement by assigning ranks to each statement, from -4 (most unlike their point of view) through to +4 (most like their point of view). The distribution of possible ranks is forced and non-uniform, such that participants must consider the few statements to place at the extremes (see @fig-qsort). This encourages participants to carefully reflect on their views whilst completing the task [@stephenson1986; @brown1980]. Following completion of the survey, participants were asked to justify their placement of statements ranked most extreme.
+
+![Schematic of the Q-sort task. Participants read through a stack of statements (A) by dragging the top-most statement into the grey box that best corresponded to their point of view (B). As the majority of statements had to be placed around the midpoint, participants could only highlight a few statements that strongly reflect their point of view. Participants could re-arrange statements at any time during the task. To facilitate this process, participants could temporarily place statements in the yellow holding area (C). Figure reproduced without changes from [@andreotta_2022], under the Creative Commons license (CC BY 4.0).](qsort.pdf){#fig-qsort width=100%}
+
+### Auxiliary psychological scales
+
+
+In Study 1 and Study 3, we quantified twenty-eight auxiliary psychological characteristics (@tbl-scales).
+
+Most relevant to the current research were climate change cognition and affect inventories.
+We measured general belief in anthropogenic climate change, with scales concerning epistemic scepticism (doubt concerning anthropogenic climate change), response scepticism (doubt concerning the effectiveness of climate change mitigation), perceived human contribution (belief that humans have changed global climate), knowledge volume (self-perceived confidence in climate change knowledge), and worry about climate change.
+In addition, we included higher-resolution inventories to quantify participants mental models of specific climate change causes, consequences, and effectiveness of climate change mitigation policies.
+
+Other psychological scales pertained to trait-based concepts found to be associated with climate change belief.
+This includes inventories concerning: cognitive styles; ideology, worldviews, and values; and personality.
+
+```{r}
+#| label: tbl-scales
+#| tbl-cap: "Summary of auxiliary psychological measures."
+#| echo: false
+#| warning: false
+
+
+# Calculate alpha for each scale
+data_scales <- data |>
+    select(
+        study,
+        id,
+        mms_hum,
+        pi,
+        w,
+        kv,
+        matches(
+            '^(bfi_10|cfc_s|ci|ews|ncs_6|sj|ss|svss|mms_[a-z]+)_[0-9]+$')) |>
+    filter(study != 2) |>
+    pivot_longer(-c(study, id), names_to = 'items', values_to = 'score_raw')
+
+# How to code survey scales
+# Scales can be a composite of specific items, indicated by vector
+# Usually components have equal weighting, if not, weights will be used
+# Add vector to indicate reverse scaling for certain items
+# Constants not included for alpha calculation
+svss_c_weights <- c(.05, .06, -.04, -.09, -.18, -.16, .03, .16, .18, .11)
+svss_st_weights <- c(-.19, -.14, -.09, -.11, .01, .10, .13, .07, .06, .02)
+scales_coding <- scales_info |>
+    separate(
+        range,
+        into = c('range_min', 'range_max'),
+        sep = '-',
+        convert = TRUE) |>
+    select(abbrev, range_min, range_max) |>
+    mutate(scale = case_when(
+        str_detect(abbrev, '^bfi_')     ~ "bfi_10",
+        str_detect(abbrev, '^cfc_')     ~ "cfc_s",
+        str_detect(abbrev, '^ews_')     ~ "ews",
+        str_detect(abbrev, '^ncs$')     ~ "ncs_6",
+        str_detect(abbrev, '^ss_')      ~ "ss",
+        str_detect(abbrev, '^svss_')    ~ "svss",
+        str_detect(abbrev, '^mms_con')  ~ "mms_consequence",
+        str_detect(abbrev, '^mms_cau')  ~ "mms_cause",
+        str_detect(abbrev, '^mms_mit')  ~ "mms_mitigation",
+        TRUE                            ~ abbrev)) |>
+    mutate(item_keys = case_when(
+        abbrev == "bfi_e"     ~ list(c(1, 6)),
+        abbrev == "bfi_a"     ~ list(c(7, 2)),
+        abbrev == "bfi_c"     ~ list(c(3, 8)),
+        abbrev == "bfi_n"     ~ list(c(4, 9)),
+        abbrev == "bfi_o"     ~ list(c(5, 10)),
+        abbrev == "cfc_f"     ~ list(c(1, 2, 5, 6)),
+        abbrev == "cfc_i"     ~ list(c(3, 4, 7, 8, 9)),
+        abbrev == "ci"        ~ list(1:6),
+        abbrev == "ews_e"     ~ list(c(1, 3, 5, 6, 7, 10)),
+        abbrev == "ews_d"     ~ list(c(2, 4, 8, 9, 11, 12)),
+        abbrev == "ncs"       ~ list(1:6),
+        abbrev == "sj"        ~ list(1:8),
+        abbrev == "ss_e"      ~ list(c(1, 2, 4, 5, 8, 9, 13, 15)),
+        abbrev == "ss_r"      ~ list(c(3, 6, 7, 10, 11, 12, 14)),
+        abbrev == "svss_c"    ~ list(1:10),
+        abbrev == "svss_st"   ~ list(1:10),
+        abbrev == "mms_con_p" ~ list(c(2, 6, 11)),
+        abbrev == "mms_con_s" ~ list(c(1, 3, 4, 5, 7, 8, 9, 10)),
+        abbrev == "mms_mit_c" ~ list(c(1, 7, 8)),
+        abbrev == "mms_mit_e" ~ list(c(2, 5, 10)),
+        abbrev == "mms_mit_g" ~ list(c(3, 4, 6, 9, 11)),
+        abbrev == "mms_cau_c" ~ list(c(1, 2, 3, 4, 7, 8, 11)),
+        abbrev == "mms_cau_e" ~ list(c(5, 6, 9, 10)),
+        abbrev == "mms_cau_n" ~ list(c(12, 13)))) |>
+    mutate(item_reversed = case_when(
+        abbrev == "bfi_e"     ~ list(c(T, F)),
+        abbrev == "bfi_a"     ~ list(c(T, F)),
+        abbrev == "bfi_c"     ~ list(c(T, F)),
+        abbrev == "bfi_n"     ~ list(c(T, F)),
+        abbrev == "bfi_o"     ~ list(c(T, F)),
+        abbrev == "ncs"       ~ list(c(F, F, T, T, F, F)),
+        abbrev == "sj"        ~ list(c(F, F, T, F, F, F, T, F)),
+        TRUE                  ~ list(FALSE))) |>
+    mutate(item_weights = case_when(
+        abbrev == "svss_c"    ~ list(svss_c_weights),
+        abbrev == "svss_st"   ~ list(svss_st_weights),
+        TRUE                  ~ list(1)))
+
+# Unpack items
+scales_coding <- scales_coding |>
+    unnest(c('item_keys', 'item_reversed', 'item_weights')) |>
+    mutate(items = ifelse(
+        !is.na(item_keys),
+        str_c(scale, '_', item_keys),
+        scale))
+
+# Add raw data
+scales_coding <- scales_coding |>
+    left_join(
+        data_scales,
+        by = 'items',
+        relationship = "many-to-many"    
+    )
+
+# Correction!
+scales_coding <- scales_coding |>
+    mutate(score_raw = ifelse(scale == 'svss', score_raw - 1, score_raw))
+
+# Calculate scores for calculating alpha
+scales_coding <- scales_coding |>
+    mutate(scores = ifelse(
+        item_reversed,
+        range_max - score_raw + range_min,
+        score_raw)) |>
+    mutate(scores = item_weights * scores)
+
+# Calculate alphas
+alpha_from_long_data <- function(long_data, id_variable, item_variable, score_variable) {
+    # Takes long data of id, items and scores
+    # Calculates raw alpha
+    wide_data <- long_data |>
+        select({{id_variable}}, {{item_variable}}, {{score_variable}}) |>
+        pivot_wider(names_from = {{item_variable}}, values_from = {{score_variable}})
+
+    if (ncol(wide_data) < 3) {return(NA)} # one or fewer items in scale
+
+    results <- wide_data |>
+        select(-{{id_variable}}) |>
+        alpha(warnings = FALSE)
+    return(results$total$raw_alpha)
+}
+scales_alpha <- scales_coding |>
+    filter(!is.na(item_keys)) |>
+    select(abbrev, study, id, items, scores) |>
+    mutate(id = str_c('study-', study, '_id-', id)) |>
+    group_by(abbrev) |>
+    nest_by() |>
+    mutate(alpha = alpha_from_long_data(data, id, items, scores)) |>
+    ungroup() |>
+    select(-data)
+
+# Hypothetical maximum/minimum for scales
+scales_ranges_hypothetical <-  scales_info |>
+    filter(is.na(range)) |>
+    select(abbrev) |>
+    mutate(weights = case_when(
+        abbrev == "svss_c"  ~ list(svss_c_weights),
+        abbrev == "svss_st" ~ list(svss_st_weights)
+    )) |>
+    mutate(constant = case_when(
+        abbrev == "svss_c"  ~ 0.82,
+        abbrev == "svss_st" ~ -0.6
+    )) |>
+    rowwise() |>
+    mutate(range_min = sum(weights[weights < 0] * 8) + constant) |>
+    mutate(range_max = sum(weights[weights > 0] * 8) + constant) |>
+    ungroup() |>
+    mutate(across(starts_with('range_'), specify_decimal)) |>
+    mutate(range = str_c(range_min, "-", range_max)) |>
+    select(abbrev, range)
+
+# Update scales information
+tab_scales <- scales_info |>
+    left_join(scales_alpha, by = 'abbrev') |>
+    rows_update(scales_ranges_hypothetical, by = 'abbrev')
+
+
+# Make a table
+tab_scales_names <- c('Psychological characteristic', 'Items', "Cronbach's $\\alpha$", 'Range', 'Example item', 'Reference')
+tab_scales_caption_footnote <- "\\\\parbox{70em}{Conservation and Self-Transcendence Value scores were a weighted average of ten items (rated along a nine-point scale). Table reproduced with updated Cronbach's $\\\\alpha$ from \\\\citet{andreotta_2022}, under the Creative Commons license (CC BY 4.0).}" 
+tab_scale_caption <- "Summary of auxiliary psychological measures"
+
+tab_scales <- tab_scales |>
+    mutate(range = str_replace_all(range, "(?<=\\S)-(?=\\S)", " to ")) |>
+    # Fix references
+    mutate(reference = str_replace_all(reference, "\\\\parencite", "\\\\citep")) |>
+    mutate(reference = str_replace_all(reference, "\\\\textcite", "\\\\citet")) |>
+    mutate(
+        citation =
+            map_chr(
+                reference,
+                str_extract,
+                pattern = "(?<=\\{)(.*)(?=\\})"
+            ),
+        citation = case_when(
+            str_detect(abbrev, "^mms_cau_")
+                ~ "andreotta_2022",
+            !is.na(citation)
+                ~ map_chr(
+                    reference,
+                    str_extract,
+                    pattern = "(?<=\\{)(.*)(?=\\})"
+                ),
+            TRUE ~ NA_character_
+        )
+    ) |>
+    mutate(
+        citation =
+            str_c("\\citet{", citation, "}")
+    ) |>
+    mutate(
+        across(
+            where(is.double),
+            ~ case_when(
+                is.na(.x) ~ "-",
+                TRUE ~ specify_decimal(.x)
+            )
+        )
+    ) |>
+    mutate(across(where(is.character), replace_na, "-")) |>    
+    arrange(category, abbrev, measure) |>
+    select(category, measure, num, alpha, range, example, citation)
+      
+
+tab_scales |>
+    select(-category) |>
+    kbl(
+        align = "l",
+        escape = FALSE,
+        booktabs = TRUE,
+        longtable = TRUE,
+        linesep = "",
+        col.names = tab_scales_names
+    ) |>
+    kable_styling(
+        latex_options = c("repeat_header"),
+        font_size = 7
+    ) |>
+    footnote(general = tab_scales_caption_footnote, escape = FALSE) |>
+    pack_rows(index = table(fct_inorder(tab_scales$category))) |>
+    column_spec(1, width = "20em") |>
+    column_spec(c(2, 4), width = "3.5em") |>
+    column_spec(3, width = "6em") |>
+    column_spec(5, width = "30em") |>
+    column_spec(6, width = "13em") |>
+    landscape()
+
+```
+
+### Fire Perception Scale
+
+To measure perceptions of the Black Summer bushfires, we created a Fire Perception Scale.
+The scale's seven items were constructed from prominent media and politicians' statements on the role of climate change in Black Summer.
+Items included "climate change made the 2019-20 Australian bushfires more severe"
+and "over one hundred arsonists have contributed to the 2019-20 Australian bushfires".
+Participants respond on a five-point Likert scale: (1) disagree,
+(2) slightly disagree, (3) neither agree nor disagree, (4) slightly agree, and (5) agree.
+
+### Policy direction preferences
+
+To measure participants views on the policy consequences of the Black Summer bushfires, we asked participants to respond to two items.
+First, participants were asked: "Do the 2019-20 Australian bushfires justify a change in Australia's climate change policy?".
+Participants could respond with one of four options: (1) "yes, the Australian government should be taking further action to mitigate climate change"; (2) "no, the Australian government should not modify the current climate change policy"; (3) "yes, the Australian government should be taking less action to mitigate climate change"; and (4) "yes, the Australian government should be taking no action at all to mitigate climate change".
+Next, participants were asked to justify their response ("Why?") through writing an open-ended response.
+
+## Procedure
+
+All studies began with the same procedure. To begin, participants read an information sheet, provided informed consent, and provided demographic information.
+Next, procedure varied across studies (summarised in @tbl-waves).
+In Study 1, participants completed the Q-sort followed by the auxiliary psychological scales.
+In Study 2, participants completed the Q-sort followed by a task unrelated to our current research inquiry.
+In Study 3, participants completed all materials: the Q-sort, auxiliary psychological scales, the Fire Perception Scale, and policy direction preferences.
+The presentation sequence of materials were counterbalanced across participants to control for order effects (see Supplementary Materials).
+
+# Results
+
+All analyses were completed with the *R* programming language [@rcoreteam_2023].
+
+## Replication of the three-segment solution
+
+```{r}
+#| label: descriptives-segment-replication
+
+descriptives_segment_replication <-
+    data |>
+    count(segment) |>
+    mutate(
+        prop = n / sum(n)
+    ) |>
+    mutate(percentage = prop * 100) |>
+    mutate(
+        across(
+            where(is.double),
+            specify_decimal
+        )
+    ) |>
+    mutate(
+        text = glue("$n = {n}$, {percentage}\\%")
+    )
+
+```
+
+As per our previous research, we used the Q-methodology to identify distinct views on climate change [@brown1980].
+The Q-methodology transposes traditional dimension reduction techniques, to reduce the dimensions of *people* rather than *items*.
+For each study, we used principal components analysis with varimax rotation to group individuals with similar Q-sort ranks.
+We extracted a single factor, as the first component accounted for a large portion of variance than subsequent components for each study.
+This single factor represented a dimension of anthropogenic climate change acceptance.
+Based on factor loadings, we divided individuals into one of three segments: (1) *Acceptors* (`r descriptives_segment_replication$text[descriptives_segment_replication$segment == 'acceptor']`), whose positive factor loading was statistically significant from zero ($p < .05$); (2) *Sceptics* (`r descriptives_segment_replication$text[descriptives_segment_replication$segment == 'sceptic']`), whose negative factor loading was statistically significant from zero ($p < .05$); and (3) *Fencesitters* (`r descriptives_segment_replication$text[descriptives_segment_replication$segment == 'fencesitter']`), whose factor loading was not statistically significant from zero ($p \ge .05$).
+
+Although the number of segments was consistent across studies, the nature of segments may vary.
+To explore this possibility, we constructed an average Q-sort for Acceptors and Sceptics in each study [@brown1980].
+The ranks assigned to each statement were averaged (weighted by participants' factor loading).
+These averages are then ranked to be consistent with Q-sort structure, to produce a set of numbers known as factor scores.
+For example, the statement with the lowest average was assigned a factor score of -4 and the statement with the highest average was assigned a factor score of +4 (see Supplementary Material for all factor scores).
+We did not build a representative Q-sort for Fencesitters, as point estimates cannot represent the necessarily homogeneous segment (otherwise Fencesitters would have emerged as a separate factor).
+In all three studies, the greatest factor score for Acceptors was assigned to the statement "`r str_remove(factor_scores$statement[factor_scores$study_1 == 4 & factor_scores$segment == 'acceptor'], "\\.$")`" whereas the greatest factor score for Sceptics was assigned to the statement "`r str_remove(factor_scores$statement[factor_scores$study_1 == 4 & factor_scores$segment == 'sceptic'], "\\/$")`"
+
+We found minimal differences in each segment's factor scores across studies
+Acceptor factor ranks from the three studies were strongly correlated `r pull(filter(q_sort_results_corr_summary, same_segment, var1_segment == 'acceptor'), text)`.
+Likewise, Sceptic factor ranks across studies were strongly correlated `r pull(filter(q_sort_results_corr_summary, same_segment, var1_segment == 'sceptic'), text)`.
+Consistently across studies, Acceptors and Sceptics views held divergent views `r pull(filter(q_sort_results_corr_summary, !same_segment, var1_segment == 'acceptor'), text)`.
+In sum, the number and nature of segments were consistent across time.
+
+## Change in segment membership over time
+
+```{r}
+#| label: descriptives-segment-change
+
+# Get descriptives
+descriptives_segment_change <-
+    data |>
+    group_by(study, study_name, time, study_name_full) |>
+    count(segment, segment_name) |>
+    mutate(proportion = n / sum(n)) |>
+    mutate(percentage = proportion * 100) |>
+    ungroup() |>
+    arrange(study, segment) |>
+    group_by(segment) |>
+    mutate(
+        percentage_diff = percentage - lag(percentage)
+    ) |>
+    ungroup() |>
+    group_by(segment) |>
+    summarise(
+        text =
+            str_c(
+                "(",
+                "from ",
+                specify_decimal(percentage[study == 1]),
+                "% of Study 1 sample to ",
+                specify_decimal(percentage[study == 3]),
+                "% of Study 3 sample",
+                ")"
+            )
+    )
+
+
+# Regression model
+conf_level <- .95
+ref_segment <- "fencesitter"
+ref_study <- 2
+#### Segment membership: changed across time? ####
+# Set Fencesitter as reference level
+data_segment_change <- data |>
+    mutate(segment = as.factor(segment)) |>
+    mutate(segment = fct_relevel(segment, as.character(ref_segment))) |>
+    mutate(study = as.factor(study)) |>
+    mutate(study = fct_relevel(study, as.character(ref_study)))
+model_segment_change <- multinom(segment ~ study, data_segment_change, trace = FALSE)
+# First, an omnibus test of the model
+lr_test_segment_change <-
+anova(
+    multinom(segment ~ 1, data_segment_change, trace = FALSE),
+    multinom(segment ~ study, data_segment_change, trace = FALSE)
+) |>
+    janitor::clean_names() |>
+    filter(
+        model == 'study'
+        & test == '1 vs 2'
+    )
+
+# Regression model descriptives
+#tab_segment_change |> filter(y_level == 'acceptor' & term == '(Intercept)') |> pull(estimate)
+model_segment_change_descriptives <-
+    model_segment_change |>
+    tidy(
+        model_segment_change,
+        conf.int = TRUE,
+        conf.level = conf_level,
+        exponentiate = TRUE
+    ) |>
+    janitor::clean_names() |>
+    filter(term != 'study1') |>
+    group_by(y_level) |>
+    summarise(
+        estimate_1 = estimate[term == '(Intercept)'],
+        estimate_2 = estimate_1 * estimate[term == 'study3'],
+        .groups = 'drop'
+    ) |>
+    mutate(
+        across(
+            where(is.numeric),
+            specify_decimal
+        )
+    )  |>
+    mutate(
+        text = glue("from {estimate_1} times more likely, to {estimate_2} times more likely")
+    )
+```
+
+To explore whether segment membership changed during Black Summer, we investigated the relative proportions of segments across studies (@fig-segment-change).
+Numerically, the proportion of Acceptors fell across time `r pull(filter(descriptives_segment_change, segment == 'acceptor'), text)`, whereas the proportion of Fencesitters increased across time `r pull(filter(descriptives_segment_change, segment == 'fencesitter'), text)`.
+To investigate whether these changes were statistically significant, we created a multinomial logistic regression model to predict segment membership as a function of study (coefficients reported in Supplementary Material), using the *multinom* function from the *nnet* package [@venables_2002].
+A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_segment_change$df`) = `r specify_decimal(lr_test_segment_change$lr_stat)`, $p$ = `r specify_decimal(lr_test_segment_change$pr_chi)`).
+Thus, segment membership did not reliably differ across study samples.
+
+```{r}
+#| label: fig-segment-change
+#| fig-cap: The segment membership of each study's sample, as a proportion (percentage). Error bars indicate one standard error of the proportion.
+#| warning: false
+#| echo: false
+
+data |>
+    group_by(study, study_name, time, study_name_full) |>
+    count(segment, segment_name) |>
+    mutate(proportion = n / sum(n)) |>
+    mutate(percentage = proportion * 100) |>
+    mutate(se = sqrt(proportion * (1 - proportion)/ n)) |>
+    mutate(percentage_se = se * 100) |>    
+    ggplot(aes(x = segment_name, y = percentage, fill = study_name_full)) +
+    geom_bar(position = "dodge", stat = "identity", col = colour_error_bar) +
+    geom_errorbar(
+        aes(ymin = percentage - percentage_se, ymax = percentage + percentage_se),
+        position = position_dodge(width = 0.9),
+        width = 0.25,
+        linewidth = 1.25,
+        colour = colour_error_bar
+    ) +
+    scale_y_continuous(
+        breaks = seq(0, 100, by = 10),
+        limits = c(0, 75),
+        expand = c(0, 0)
+    ) +
+    scale_x_discrete() +
+    scale_fill_manual(
+        "Study",
+        values = study_colours
+    ) +
+    labs(x = "Segment", y = "Percentage of sample (%)") +
+    theme_manuscript() +
+    theme(
+        legend.position = c(1, 1),
+        legend.justification = c(1, 1)
+    )
+```
+
+## Auxiliary psychological characteristics
+
+```{r}
+#| label: psychological-characteristics-mean-diff
+#| echo: false
+
+means_diff_results <- data |>
+    filter(study != 2) |>
+    pivot_longer(
+        cols = scales_info$abbrev,
+        names_to = 'scale',
+        values_to = 'score'
+    ) |>
+    group_by(study, scale) |>
+    summarise(data = list(score)) |>
+    ungroup() |>
+    pivot_wider(
+        names_from = study,
+        values_from = data,
+        names_prefix = "study_"
+    ) |>
+    mutate(
+        test = map2(study_1, study_3, t.test),
+        result = map(test, broom::tidy)) |>
+    unnest(result)
+
+means_diff_results <- means_diff_results |>
+    janitor::clean_names() |>
+    mutate(sd_1 = map_dbl(study_1, sd)) |>
+    mutate(sd_3 = map_dbl(study_3, sd)) |>
+    mutate(n_1 = map_int(study_1, length)) |>
+    mutate(n_3 = map_int(study_3, length)) |>
+    mutate(
+        cohens_d =
+            abs(estimate)
+            / sqrt(
+                ((n_1) * sd_1^2 + (n_3) * sd_3^2)
+                /(n_1 + n_3 + 2)
+            )
+    ) |>
+    # Adjust p-values
+    left_join(scales_info, by = c("scale" = "abbrev")) |>
+    group_by(category) |>
+    mutate(
+        p_adjusted = p.adjust(p_value, method = "holm"),
+    ) |>
+    ungroup() |>
+    mutate(sig = p_adjusted < .05) |>
+    # Rank mean differences
+    mutate(mean_diff_rank = -rank(abs(cohens_d))) 
+
+tab_mean_diff_results <- means_diff_results |>
+    mutate(statistic = -statistic) |>
+    arrange(category, mean_diff_rank) |>
+    mutate(p_adjusted = specify_p_value_text(p_adjusted, 3)) |>
+    mutate(p_value = specify_p_value(p_value, 3)) |>
+    mutate(
+        across(
+            where(is.double),
+            specify_decimal
+        )
+    ) |>    
+    mutate(
+        study_1 = str_c(estimate1, " (", sd_1, ")"),
+        study_3 = str_c(estimate2, " (", sd_3, ")"),
+    ) |>
+    select(
+        category,
+        measure,
+        study_1,
+        study_3,
+        statistic,
+        p_value,
+        p_adjusted
+    )
+```
+
+We tested for mean differences in auxiliary psychological characteristics between Study 1 (September, 2019) and Study 3 (March, 2020) using *t* tests.
+To guard against Type I errors, we applied a Holm [-@holm1979] *p* value adjustment to four families of tests for changes in psychological characteristics: climate change cognition and affect; cognitive styles; ideology, worldviews, and values; and personality.
+We found evidence of a statistically significant mean difference in climate change cognition and affect (@tbl-mean_diff). Specifically, participants in Study 3 had a greater mean endorsement (Cohen's *d* = `r specify_decimal(filter(means_diff_results, scale == 'mms_cau_n')$cohens_d, 2)`) of natural cycles causes for climate change (e.g., volcanic eruptions, fluctuations in the sun) than participants of Study 1.
+No other climate change cognition and affect characteristics reliably differed between Study 1 and Study 3.
+Regarding dispositional attributes, there were no statistically significant mean differences in: cognitive styles; ideology, worldviews and values; or personality (all $p$ > .05; see Supplementary Material for *t* tests).
+
+```{r}
+#| label: tbl-mean_diff
+#| tbl-cap: "Difference in means of climate change cognition and affect characteristics between Study 1 and Study 3."
+#| echo: false
+
+# Produce table
+tab_mean_diff_results_names <- c(
+    "Psychological characteristics",
+    r"{\textit{M} (\textit{SD})}",
+    r"{\textit{M} (\textit{SD})}",
+    r"{\textit{t}}",
+    r"{\textit{p}}",
+    r"{$p_{adjusted}$}")
+
+tab_mean_diff_results <- tab_mean_diff_results |>
+    filter(category == "Climate change cognition and affect") |>
+    select(-category) |>
+    kbl(
+        col.names = tab_mean_diff_results_names,
+        align = "l",
+        escape = FALSE,
+        booktabs = TRUE,
+        linesep = "") |>
+    add_header_above(
+        c(
+            " " = 1,
+            r"{\\parbox{4em}{Study 1}}" = 1,
+            r"{\\parbox{4em}{Study 3}}" = 1,
+            " " = 3),
+        escape = FALSE) |>
+    footnote(
+        general =
+            c(
+                str_c(
+                    "\\\\textsuperscript{*}",
+                    "$p_{adjusted} <$ .05; "
+                ),
+                "\\\\parbox{36em}{\\\\textit{p} values were adjusted using the \\\\citet{holm1979} method.}"
+            ),
+        escape = FALSE
+    ) |>
+    column_spec(c(2, 3), width = "5em") |>
+    column_spec(4, width = "2.5em") |>
+    column_spec(c(5), width = "3em") |>
+    column_spec(6, width = "4em")
+
+tab_mean_diff_results
+```
+
+
+```{r}
+#| label: ridge-regression-segments
+#| echo: false
+#| include: false
+#| warning: false
+#| error: false
+
+# Functions
+prepare_interaction_matrix <- function(data, f = as.formula(~ .^2), ...) {
+    model.matrix(f, data, ...)[, -1]
+}
+get_coef_of_glm <- function(glmnet_results, cv_results) {
+    coef(glmnet_results, cv_results$lambda.min)
+}
+dgcmatrix_to_tibble <- function(dgc_matrix, name) {
+    dgc_matrix |>
+    map(as.matrix) |>
+    map(t) |>
+    map(as.data.frame) |>
+    bind_rows(.id = name) |>
+    as_tibble(.id = name)
+}
+get_optimal_lambda_index <- function(cv_results) {
+    match(cv_results$lambda.min, cv_results$lambda)
+}
+get_multinomial_glmnet_accuarcy <- function(glmnet_results, newx, newy, lambda) {
+    predictions <- predict(
+        object = glmnet_results,
+        newx = newx,
+        type = "class"
+    )[, lambda]
+    length(which(predictions == newy))/length(newy)
+    # Could use confusion matrix:
+    # confusion.glmnet(glmnet_results, newy = newy, newx = newx)[[lambda]]
+}
+
+
+#### Study 1----------------------------------------------------------------
+
+# Regression parameters
+glm_family <- "multinomial"
+glm_alpha <- 0
+n_boots <- 10000 # Number of bootstrap samples
+ci_boots <- 0.95 # Confidence interval level
+file_name <- file.path(path_to_data, "analysis/output/ridge-regression-segments-study-1.csv")
+set.seed(85790)
+# Prepare predictors
+predictors <-
+    data |>
+        filter(study %in% c(1)) |>
+        select(all_of(scales_info$abbrev)) |>
+        mutate(
+            across(
+                all_of(scales_info$abbrev),
+                ~ scale(.x, center = TRUE, scale = TRUE)
+            )
+        ) |>
+        prepare_interaction_matrix(
+            f = as.formula(~ .),
+            na.action = "na.pass"
+        )
+# Prepare segments
+segment <-
+    data |>
+        filter(study %in% c(1)) |>
+        pull(segment)
+#### Run model
+# Run model
+res <- glmnet(predictors, segment, family = glm_family, alpha = glm_alpha)
+cv <- cv.glmnet(predictors, segment, family = glm_family, alpha = glm_alpha)
+res_study_1 <- res
+cv_study_1 <- cv
+lambda_study_1 <- get_optimal_lambda_index(cv)
+acc_study_1 <- get_multinomial_glmnet_accuarcy(res, predictors, segment, lambda_study_1)
+
+if (!file.exists(file_name)) {
+    # Get confidence intervals via bootstrapping
+    cl <- makeCluster(detectCores() - 1) # create a cluster with 2 cores
+    registerDoParallel(cl)
+    res_boots <- {}
+    res_boots <-
+        foreach(
+            rep_boot = seq_len(n_boots),
+            .packages = c("glmnet"),
+            .options.RNG = 534678
+        ) %dorng% {
+            # Select data with replacement
+            n_ids_boot <- sample(nrow(predictors), replace = TRUE)
+            # Run models
+            res_boot <- glmnet(
+                predictors[n_ids_boot, ],
+                segment[n_ids_boot],
+                family = glm_family,
+                alpha = glm_alpha
+            )
+            cv_boot <- cv.glmnet(
+                predictors[n_ids_boot, ],
+                segment[n_ids_boot],
+                family = glm_family,
+                alpha = glm_alpha
+            )
+            # Get coefficients
+            return(get_coef_of_glm(res_boot, cv_boot))
+        }
+    stopCluster(cl)
+    # Get summary of boostrap results
+    summary_boots <- 
+        res_boots |>
+            map(dgcmatrix_to_tibble, "segment") |>
+            bind_rows(.id = "boot_id") |>
+            pivot_longer(
+                -c("segment", "boot_id"),
+                names_to = "predictor",
+                values_to = "coef"
+            ) |>
+            group_by(segment, predictor) |>
+            summarise(
+                coef_bootstrap_n = n(),
+                coef_bootstrap_ci_lower = quantile(coef, (1 - ci_boots) / 2),
+                coef_bootstrap_ci_upper = quantile(coef, 1 - (1 - ci_boots) / 2)
+            )
+    glm_results <-
+        res |>
+        get_coef_of_glm(cv) |>
+        dgcmatrix_to_tibble("segment") |>
+        pivot_longer(
+            -c("segment"),
+            names_to = "predictor",
+            values_to = "coef"
+        ) |>
+        left_join(summary_boots, by = c("segment", "predictor"))
+    write_csv(glm_results, file = file_name)
+}
+glm_results <-
+    read_csv(
+    file_name,
+    col_types = cols(
+        segment = col_character(),
+        predictor = col_character(),
+        coef = col_double(),
+        coef_bootstrap_n = col_integer(),
+        coef_bootstrap_ci_lower = col_double(),
+        coef_bootstrap_ci_upper = col_double()
+    )
+    )
+glm_results_study_1 <- glm_results
+
+#### Study 3----------------------------------------------------------------
+
+file_name <- file.path(path_to_data, "analysis/output/ridge-regression-segments-study-3.csv")
+set.seed(85790)
+# Prepare predictors
+predictors <-
+    data |>
+        filter(study %in% c(3)) |>
+        select(all_of(scales_info$abbrev)) |>
+        mutate(
+            across(
+                all_of(scales_info$abbrev),
+                ~ scale(.x, center = TRUE, scale = TRUE)
+            )
+        ) |>
+        prepare_interaction_matrix(
+            f = as.formula(~ .),
+            na.action = "na.pass"
+        )
+# Prepare segments
+segment <-
+    data |>
+        filter(study %in% c(3)) |>
+        pull(segment)
+#### Run model
+# Functions
+# Run model
+res <- glmnet(predictors, segment, family = glm_family, alpha = glm_alpha)
+cv <- cv.glmnet(predictors, segment, family = glm_family, alpha = glm_alpha)
+res_study_3 <- res
+cv_study_3 <- cv
+lambda_study_3 <- get_optimal_lambda_index(cv)
+acc_study_3 <- get_multinomial_glmnet_accuarcy(res, predictors, segment, lambda_study_3)
+if (!file.exists(file_name)) {
+    # Get confidence intervals via bootstrapping
+    cl <- makeCluster(detectCores() - 1) # create a cluster with 2 cores
+    registerDoParallel(cl)
+    res_boots <- {}
+    res_boots <-
+        foreach(
+            rep_boot = seq_len(n_boots),
+            .packages = c("glmnet"),
+            .options.RNG = 534678
+        ) %dorng% {
+            # Select data with replacement
+            n_ids_boot <- sample(nrow(predictors), replace = TRUE)
+            # Run models
+            res_boot <- glmnet(
+                predictors[n_ids_boot, ],
+                segment[n_ids_boot],
+                family = glm_family,
+                alpha = glm_alpha
+            )
+            cv_boot <- cv.glmnet(
+                predictors[n_ids_boot, ],
+                segment[n_ids_boot],
+                family = glm_family,
+                alpha = glm_alpha
+            )
+            # Get coefficients
+            return(get_coef_of_glm(res_boot, cv_boot))
+        }
+    stopCluster(cl)
+    # Get summary of boostrap results
+    summary_boots <- 
+        res_boots |>
+            map(dgcmatrix_to_tibble, "segment") |>
+            bind_rows(.id = "boot_id") |>
+            pivot_longer(
+                -c("segment", "boot_id"),
+                names_to = "predictor",
+                values_to = "coef"
+            ) |>
+            group_by(segment, predictor) |>
+            summarise(
+                coef_bootstrap_n = n(),
+                coef_bootstrap_ci_lower = quantile(coef, (1 - ci_boots) / 2),
+                coef_bootstrap_ci_upper = quantile(coef, 1 - (1 - ci_boots) / 2)
+            )
+    glm_results <-
+        res |>
+        get_coef_of_glm(cv) |>
+        dgcmatrix_to_tibble("segment") |>
+        pivot_longer(
+            -c("segment"),
+            names_to = "predictor",
+            values_to = "coef"
+        ) |>
+        left_join(summary_boots, by = c("segment", "predictor"))
+    write_csv(glm_results, file = file_name)
+}
+glm_results <-
+    read_csv(
+    file_name,
+    col_types = cols(
+        segment = col_character(),
+        predictor = col_character(),
+        coef = col_double(),
+        coef_bootstrap_n = col_integer(),
+        coef_bootstrap_ci_lower = col_double(),
+        coef_bootstrap_ci_upper = col_double()
+    )
+    )
+glm_results_study_3 <- glm_results
+```
+
+We explored the psychological characteristics associated with segment membership, by replicating the regression analysis of Andreotta et al. [-@andreotta_2022].
+This analysis is complicated by multicollinearity, which can lead to unstable estimates of coefficients.
+We sought to produce stable estimates with a ridge regression model.
+A ridge regression reduces the variance of estimates, caused by multicollinearity, by shrinking the coefficients towards zero [a bias-variance trade-off; @james_2021].
+With the *glmnet* package [@friedman_2010], we fitted a multinomial logistic ridge regression model to predict segment membership as a function of psychological characteristics for Study 1 and Study 3.
+The degree of shrinkage, controlled by a hyperparameter $\lambda$, was chosen by cross-validation process (*k*-fold) that minimised the model's multinomial deviance.
+Prior to analysis, we converted responses to *z* scores for each predictor in each study.
+Confidence intervals were estimated by repeating the modelling procedure via bootstrapping with 10,000 samples [sampled with replacement; @efron1994].
+
+The ridge regression model predicted segment membership with `r specify_decimal(acc_study_1*100)`% accuracy in Study 1 (`r specify_decimal(res_study_1$dev.ratio[lambda_study_1]*100)`% of null deviance) and `r specify_decimal(acc_study_3*100)`% accuracy in Study 3 (`r specify_decimal(res_study_3$dev.ratio[lambda_study_3]*100)` % of null deviance).
+As seen in @tbl-ridge-regression-segments-within-studies, the models' coefficients were generally consistent (same sign) across studies, indicating a robust association between psychological characteristics and segment membership.
+Regarding climate change cognition and affect, Acceptors and Sceptics were distinguished by opposing patterns of climate change scepticism and belief in anthropogenic climate change.
+In contrast, the Fencesitters of Study 3 were characterised by response scepticism and perceptions that carbon-emitting activities cause climate change.
+Turning to cognitive styles, conspiracist ideation was positively associated with Fencesitter membership, and negatively associated with Acceptor membership (both studies), whereas Sceptics were characterised by a reduced orientation towards future consequences (Study 3).
+Generally, Acceptors and Sceptics were distinguished by opposing patterns of ideologies, worldviews, and values.
+Lastly, personality tended not to be a robust predictor of segment membership, although evidence from Study 3 indicated that Fencesitters were characterised by greater extraversion and conscientiousness, whereas Sceptics were characterised by greater introversion.
+
+```{r}
+#| label: tbl-ridge-regression-segments-within-studies
+#| tbl-cap: Effect of psychological characteristics on segment membership, as estimated by a multinomial logistic ridge regression for Study 1 and Study 3.
+#| warning: false
+
+cell_parbox_size <- "7em"
+cell_width_size <- "8em"
+
+tab_aux <-
+    glm_results_study_1 |>
+    mutate(study = 1) |>
+    add_case(
+        glm_results_study_3 |>
+        mutate(study = 3)
+    ) |>
+    mutate(
+        coef_ci_same_sign = sign(coef) == sign(coef_bootstrap_ci_lower) & sign(coef) == sign(coef_bootstrap_ci_upper),
+        coef_ci_marker = case_when(
+            coef_ci_same_sign ~ "\\textasciicircum",
+            TRUE ~ ""
+        ),
+        coef_text_sign = case_when(
+            sign(coef) > 0 ~ "+",
+            sign(coef) < 0 ~ "",
+            TRUE ~ ""
+        ),
+        coef_text =
+            str_c(
+            #    "\\parbox{", cell_parbox_size, "}{",
+                coef_text_sign,
+                specify_decimal(coef, 2),
+                coef_ci_marker,
+                "\\\\",
+                "{[",
+                specify_decimal(coef_bootstrap_ci_lower, 2),
+                ", ",
+                specify_decimal(coef_bootstrap_ci_upper, 2),
+                "]}"
+            #    "}"
+            )
+    ) |>
+    mutate(
+        coef_text =
+            case_when(
+                coef_ci_same_sign ~ str_c("\\textbf{", coef_text, "}"),
+                TRUE ~ coef_text
+            )
+    ) |>
+    mutate(
+        coef_text =
+            str_c("\\parbox{", cell_parbox_size, "}{", coef_text, "}")
+    ) |>
+    left_join(scales_info, by = c("predictor" = "abbrev")) |>
+    mutate(coef_rank = rank(abs(coef))) |>
+    mutate(
+        predictor_category = case_when(
+            predictor == "(Intercept)" ~ "Intercept",
+            TRUE ~ category
+        )
+    ) |>
+    mutate(
+        predictor_category = factor(
+            predictor_category,
+            levels = c("Intercept", levels(category))
+        )
+    ) |>
+    mutate(category = predictor_category) |>
+    # Code measure
+    mutate(measure = replace_na(measure, " ")) |>
+    mutate(measure = fct_reorder2(measure, coef_ci_marker, coef_rank)) |>
+    mutate(measure = fct_relevel(measure, " ")) |>
+    # Code segment
+    mutate(segment = 
+                factor(
+                segment,
+                levels = c("acceptor", "fencesitter", "sceptic"),
+                labels = c("Acceptors", "Fencesitters", "Sceptics")
+            )
+    ) |>
+    select(category, measure, measure, coef_text, study, segment) |>
+    pivot_wider(
+        names_from = c(segment, study),
+        values_from = c(coef_text)
+    ) |>
+    arrange(category, measure)
+
+tab_aux |>
+    select(
+        measure,
+        starts_with("Acceptors"),
+        starts_with("Fencesitters"),
+        starts_with("Sceptics")
+    ) |>
+    kbl(
+        align = "l",
+        escape = FALSE,
+        booktabs = TRUE,
+        longtable = TRUE,
+        linesep = "",
+        col.names = c("Predictors", "Study 1", "Study 3", "Study 1", "Study 3", "Study 1", "Study 3")
+    ) |>
+    add_header_above(
+        c(
+            " " = 1,
+            "Acceptors" = 2,
+            "Fencesitters" = 2,
+            "Sceptics" = 2
+        ),
+        escape = TRUE
+    ) |>
+    kable_styling(
+        latex_options = c("repeat_header"),
+        font_size = 7
+    ) |>
+    # Add footnote
+    footnote(
+        general = "\\\\parbox{70em}{Square brackets indicate 95\\\\% confidence intervals, estimated using bootstrapping with 10,000 samples. Coefficients with confidence intervals that do not include zero are marked with a caret (\\textasciicircum) and are bolded.}",
+        escape = FALSE
+    ) |>
+    pack_rows(index = table(fct_inorder(tab_aux$category))) |>
+    column_spec(1, width = "20em") |>
+    column_spec(c(2, 3, 4, 5, 6), width = cell_width_size) |>
+    landscape()
+
+
+```
+
+## Bushfire perceptions
+
+
+```{r}
+#| echo: false
+#| include: false
+#| label: fps-descriptives
+
+fps_pca <- data |>
+    filter(study == 3) |>
+    select(matches("fps_[0-9]+")) |>
+    as.matrix() |>
+    principal(3, rotate = "varimax")
+fps_pca_var <- specify_decimal(fps_pca$Vaccounted["Proportion Var", ] * 100)    
+fps_item_names <- c(
+  '1. Climate change made the 2019-20 Australian bushfires more severe',
+  '2. Climate change made the 2019-20 Australian bushfires less likely to occur',
+  '3. The 2019-20 Australian bushfires have accelerated climate change',
+  '4. The 2019-20 Australian bushfires are severe',
+  '5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires',
+  '6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires',
+  '7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires'
+)
+
+fps_descriptives <- data |>
+    filter(study == 3) |>
+    select(matches("fps_[0-9]+")) |>
+    pivot_longer(1:7, names_to = 'item', values_to = 'value') |>
+    group_by(item) |>
+    summarise(m = mean(value), se = sd(value)/sqrt(length(value))) |>
+    mutate(across(m:se, ~ specify_decimal(.x, 2))) |>
+    mutate(names = fps_item_names)
+
+data_fps_scales <- data |>
+    filter(study == 3) |>
+    select(matches("fps_[0-9]+"), segment, id) |>
+    pivot_longer(
+        matches("fps_[0-9]+"),
+        names_to = "item"
+    ) |>
+    mutate(num = as.integer(str_replace_all(item, "fps_", ""))) |>
+    mutate(value_scored = ifelse(num == 2, rev_score(value, 5, 1), value)) |>
+    mutate(factor = ifelse(num %in% c(2, 4), 2, ifelse(num == 7, 3, 1))) |>
+    mutate(factor_name = c("(A) Climate Processes", "(B) Fire Realities", "(C) Arson Causes")[factor]) |>
+    mutate(segment = str_to_title(segment)) |>
+    mutate(segment = as.factor(segment)) |>
+    mutate(segment = fct_relevel(segment, "Sceptic", "Fencesitter", "Acceptor"))
+
+fps_alphas <- data_fps_scales |>
+    group_by(factor_name) |>
+    select(id, item, value_scored, factor_name) |>
+    group_split() |>
+    map(pivot_wider, values_from = "value_scored", names_from = "item") |>
+    map(~ select(.x, starts_with("fps_"))) |>
+    map(~ ifelse(ncol(.x) > 1, alpha(.x)$total$raw_alpha, NA))
+fps_alphas_rounded <- fps_alphas |>
+    map(~ ifelse(!is.na(.x), specify_decimal(.x), "No alpha reported"))
+
+# Models
+get_lm_models <- function(data, equation, model_key = NULL) {
+    # Build linear models
+    # parameters:
+    # data: data frame of model_key, predictors, and response
+    # model_key: name of model_key variable (chr)
+    # equation: formula for lm
+
+    # Returns a tibble with linear models
+    # variables:
+    # response: name of response variable
+
+    if (is.null(model_key)) {
+        input <-
+            tibble(
+                data = !!data
+            )
+    } else {
+        input <-
+            data |>
+            rename(response = factor_name) |>
+            nest(data = -response)
+    }
+    mutate(input, model = map(data, ~ lm(equation, data = .x)))
+}
+
+get_lm_fit_text <- function(lm_object) {
+    # Takes an lm object and returns a string with fit statistics
+    lm_object |>
+        broom::glance() |>
+        janitor::clean_names() |>
+        mutate(
+            across(
+                c(r_squared, adj_r_squared),
+                specify_decimal
+            )
+        ) |>
+        mutate(
+            p_value_text = case_when(
+                is.na(p_value) ~ NA_character_,
+                p_value < 0.001 ~ "< .001",
+                TRUE ~ str_c("= ", specify_decimal(p_value, 3))
+            )
+        ) |>
+        mutate(
+            text = str_c(
+                glue("$F$ ({df}, {df_residual}) = {specify_decimal(statistic)},"),
+                glue(" $p$ {p_value_text},"),
+                glue(" $R^2$ = {r_squared},"),
+                " $R^2_{adjusted}$", glue(" = {adj_r_squared}")
+            )
+        ) |>
+        pull(text)
+}
+
+
+# Prepare models
+fps_models <-
+    data_fps_scales |>
+    group_by(factor_name, factor, segment, id) |>
+    summarise(score = mean(value_scored)) |>
+    ungroup() |>
+    mutate(segment = str_to_lower(as.factor(segment))) |>
+
+    left_join(
+        distinct(select(data, segment, segment_name)),
+        by = "segment"
+    ) |>
+    select(-segment) |>
+    rename(segment = segment_name) |>
+    mutate(segment = fct_relevel(segment, "Fencesitters", "Sceptics", "Acceptors")) |>
+    get_lm_models(score ~ segment, "factor_name")
+
+# Models fits
+fps_models_fits <- map_chr(fps_models$model, get_lm_fit_text)
+# Marginal_means
+fps_models_marginal_means <-
+    fps_models |>
+    mutate(
+        comparisons = 
+            map(
+                model,
+                ~ avg_comparisons(
+                    .x,
+                    variables = list(segment = 'pairwise'),
+                   # df = insight::get_df(.x),
+                    newdata = 'balanced'
+                )
+            )
+    ) |>
+    mutate(comparisons = map(comparisons, broom::tidy)) |>
+    unnest(comparisons) |>
+    janitor::clean_names() |>
+    # Adjust p values
+    group_by(response, term) |>
+    mutate(p_adjusted = p.adjust(p_value, method = "holm")) |>
+    ungroup() |>
+    # Write function that reports Z-score, p-value, and effect-size
+    # Check consistent with emmeans, which seems to have some tools for calculating effect size
+    mutate(
+        p_value_text = case_when(
+            p_value < 0.001 ~ "< .001",
+            TRUE ~ str_c("= ", specify_decimal(p_value, 3))
+        )
+    ) |>
+    mutate(
+        text = str_c(
+                glue("difference = {specify_decimal(estimate)},"),
+                glue(" *SE* = {specify_decimal(std_error)},"),
+                glue(" *z* = {specify_decimal(statistic)},"),
+                " $p$ ", specify_p_value_text(p_value, with_star = F, with_equals = T, 3), ",",
+                " $p_{adjusted}$ ", specify_p_value_text(p_adjusted, with_star = F, with_equals = T, 3)
+        )
+    ) |>
+    mutate(
+        text_rev = str_c(
+                glue("difference = {specify_decimal(-estimate)},"),
+                glue(" *SE* = {specify_decimal(std_error)},"),
+                glue(" *z* = {specify_decimal(-statistic)},"),
+                " $p$ ", specify_p_value_text(p_value, with_star = F, with_equals = T, 3), ",",
+                " $p_{adjusted}$ ", specify_p_value_text(p_adjusted, with_star = F, with_equals = T, 3)
+        )
+    )
+```
+
+
+To explore perceptions of the Black Summer bushfires, we performed a principal components analysis with varimax rotation on the Fire Perception Scale (see @tbl-fps-loadings).
+We extracted three factors, as these accounted for the majority of scale variance (`r specify_decimal(tail(fps_pca$Vaccounted["Cumulative Var", ], 1)*100)`%; see Supplementary Materials for scree plot).
+The first factor, labelled *Climate Processes*, was characterised by four items (items 1, 3, 5, 6) which linked climate change to the bushfires and accounted for `r fps_pca_var[1]`% of scale variance.
+The second factor, labelled *Fire Realities*, was characterised by two items (items 2 and 4) which participants generally responded with certainty and accounted for `r fps_pca_var[2]`% of scale variance.
+The third factor, labelled *Arson Causes*, was characterised by a single item (item 7) stating that Black Summer was caused by hundreds of arsonists and accounted for `r fps_pca_var[3]`% of scale variance.
+We created subscales corresponding to each factor by averaging item scores. Items that negatively loaded onto factors were reverse coded.
+The multi-item factors of Climate Processes and Fire Realities had an internal consistency of Cronbach's $\alpha$ = `r fps_alphas_rounded[[1]][1]` and `r fps_alphas_rounded[[2]][1]`, respectively.
+
+To test segment differences in bushfire perceptions, we built linear regression models predicting Climate Processes, Fire Realities, and Arson Causes as a function of segment membership (coefficients reported in Supplementary Materials).
+All linear regression models accounted for a significant amount of bushfire perception variance compared to intercept-only models, indicating that segment membership was a significant predictor of Climate Processes (`r fps_models_fits[1]`), Fire Realities (`r fps_models_fits[2]`), and Arson Causes (`r fps_models_fits[3]`).
+To quantify specific segment differences, we conducted pairwise comparisons of marginal means using the *marginaleffects* package [@R-marginaleffects], with a Holm [-@holm1979] *p* value adjustment for multiple comparisons.
+As seen in @fig-fps-segment, Acceptors had a higher mean endorsement of Climate Processes than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text`), who in turn, had a higher mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text_rev`).
+For Fire Realities, Acceptors had a greater mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Acceptors) - mean(Sceptics)")$text`) and Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text`).
+However, Fencesitters did not reliably differ from Sceptics in their mean endorsement of Fire Realities (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text_rev`).
+The pattern of Climate Processes endorsement was reversed for Arson Causes, with Sceptics having a higher mean endorsement than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text`), who in turn, had a higher mean endorsement than Acceptors (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text_rev`).
+
+```{r}
+#| label: tbl-fps-loadings
+#| tbl-cap: "Items of the Fire Perception Scale, their loadings onto each factor, the mean score of each item, and the standard error of the mean."
+#| echo: false
+
+tab_fps_loadings_footnote <- "Bolded loadings are greater than .40 in magnitude."
+tab_fps_loadings_names <- c(
+    "Item",
+    sprintf(r"{\parbox{5em}{\centering %s}}", "Climate Processes"),
+    sprintf(r"{\parbox{5em}{\centering %s}}", "Fire Realities"),
+    sprintf(r"{\parbox{5em}{\centering %s}}", "Arson Causes"),
+    r"{\textit{M}}",
+    r"{\textit{SE}}")
+
+
+tab_fps_loadings <- loadings(fps_pca)[ , ] |>
+    as_tibble(rownames = "item") |>
+    left_join(fps_descriptives, by = "item") |>
+    select(names, RC1, RC2, RC3, m, se) |>
+    rowwise() |>
+    mutate(across(
+        starts_with("RC"), 
+        ~ ifelse(abs(.x) > .40,
+            sprintf(r"{\textbf{%s}}", specify_decimal(.x)),
+            specify_decimal(.x)))) |>
+    ungroup()
+tab_fps_loadings |>
+    kbl(
+        col.names = tab_fps_loadings_names,
+        align = c("l", "c", "c", "c", "c", "c"),
+        escape = FALSE,
+        booktabs = TRUE,
+        linesep = "") |>
+    add_header_above(c(" " = 1, "Factors" = 3, "Descriptives" = 2)) |>
+    footnote(general = tab_fps_loadings_footnote, escape = FALSE) |>
+    column_spec(1, width = "18em")
+```
+
+```{r}
+#| echo: false
+#| label: fig-fps-segment
+#| fig-cap: "Mean Fire Perception subscale scores as a function of segment. Error bars indicate one standard error above and below the mean."
+
+data_fps_scales |>
+    mutate(factor_name = fct_relabel(factor_name, ~ str_remove(.x, "\\([A-Z]\\) "))) |>
+    mutate(segment = str_to_lower(segment)) |>
+    left_join(
+        distinct(select(data, segment, segment_name)),
+        by = "segment"
+    ) |>
+    group_by(segment, segment_name, factor, factor_name) |>
+    summarise(
+        m = mean(value_scored),
+        se = sd(value_scored) / sqrt(length(value_scored)),
+        ci_lower = m - se,
+        ci_upper = m + se) |>
+    ungroup() |>
+    ggplot(aes(x = factor_name, y = m, fill = segment_name)) +
+    geom_bar(
+        position = "dodge",
+        stat = "identity",
+        col = colour_error_bar) +
+    geom_errorbar(
+        aes(ymin = ci_lower, ymax = ci_upper),
+        position = position_dodge(0.9),
+        width = 0.25,
+        linewidth = 1.25,
+        colour = colour_error_bar
+    ) +
+    scale_y_continuous(
+        breaks = 1:5,
+        expand = expansion(mult = c(0, 0), add = c(0, .5)),
+        # labels = c(
+        #     "1\n(Strongly disagree)",
+        #     "2\n(Disagree)",
+        #     "3\n(Neither agree\nnor disagree)",
+        #     "4\n(Agree)",
+        #     "5\n(Strongly agree)"
+        # )
+    ) +
+    coord_cartesian(ylim = c(1, 5)) +
+    ylab('Mean subscale score') +
+    xlab('Fire Perception subscale') +
+    theme_manuscript() +
+    theme(axis.text.y           = element_text(hjust = 1, vjust = 0.5)) +
+    # Add legend details
+    scale_fill_manual(
+        "Segment",
+        values = segment_colours
+    ) +
+    theme(
+        legend.position = c(0, 1),
+        legend.justification = c(0, 1)
+    )
+```
+
+
+```{r}
+#| label: fps-causes
+#| echo: false
+
+report_proportion_fps_item <- function(n_group, n_total, percentage_in_brackets = FALSE, ...) {
+    # Report the proportion of participants in n_group
+    str_c(
+        "*n* = ", n_group,
+        ifelse(percentage_in_brackets, "", ";"),
+        " ",
+        ifelse(percentage_in_brackets, "(", ""),
+        specify_decimal(n_group / n_total * 100, ...), "%",
+        ifelse(percentage_in_brackets, ")", "")
+    )
+}
+
+fps_cause_agreements <-
+    data_fps_scales |>
+    filter(item == 'fps_7' | item == 'fps_1') |>
+    mutate(
+        value_category = case_when(
+            value < 3 ~ "disagree",
+            value > 3 ~ "agree",
+            value == 3 ~ "neutral"
+        )
+    ) |>
+    count(
+        item,
+        segment,
+        value_category
+    )
+
+
+text_n_reject_fps_7 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_7' & value_category == 'disagree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_7')$n)
+)
+text_n_acceptor_accept_fps_7 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Acceptor' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Acceptor')$n)
+)
+text_n_fencesitter_accept_fps_7 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Fencesitter' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Fencesitter')$n)
+)
+text_n_sceptic_accept_fps_7 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Sceptic' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_7' & segment == 'Sceptic')$n)
+)
+text_n_accept_fps_1 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_7' & value_category == 'disagree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_7')$n)
+)
+
+
+text_n_acceptor_accept_fps_1 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Acceptor' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Acceptor')$n)
+)
+text_n_fencesitter_accept_fps_1 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Fencesitter' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Fencesitter')$n)
+)
+text_n_sceptic_accept_fps_1 <- report_proportion_fps_item(
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Sceptic' & value_category == 'agree')$n),
+    sum(filter(fps_cause_agreements, item == 'fps_1' & segment == 'Sceptic')$n)
+)
+
+
+text_cor_fps_1_fps_7 <-
+    cor.test(
+        filter(data_fps_scales, item == 'fps_7')$value,
+        filter(data_fps_scales, item == 'fps_1')$value,
+        method = "pearson"
+    ) |>
+    tidy() |>
+    mutate(
+        p_value = specify_p_value(p.value, 3)
+    ) |>
+    mutate(
+        text = str_c(
+            glue("*r* = ", specify_decimal(estimate)),
+            glue(", *p* = ", specify_p_value(p.value, 3))
+        )
+    ) |>
+    pull(text)
+
+
+```
+
+We investigated causal perceptions by examining responses to claims that the mass arson (item seven of the Bushfire Perception scale) and climate change (item one of the Bushfire Perception Scale) contributed to the Black Summer bushfires.
+Despite segment differences, participants seldom rejected the claim that over one hundred arsonists contributed to the Black Summer bushfires (`r report_proportion_fps_item(sum(filter(fps_cause_agreements, item == 'fps_7' & value_category == 'disagree')$n), sum(filter(fps_cause_agreements, item == 'fps_7')$n))` responded with 'disagree' or 'strongly disagree' to item seven).
+Many Acceptors (`r text_n_acceptor_accept_fps_7`), and a majority of Fencesitters (`r text_n_fencesitter_accept_fps_7`) and Sceptics (`r text_n_sceptic_accept_fps_7`), agreed (responded with 'agree' or 'strongly agree') with mass arson causal claims.
+In contrast, a majority of Acceptors (`r text_n_acceptor_accept_fps_1`), some Fencesitters (`r text_n_fencesitter_accept_fps_1`), and no Sceptics agreed that climate change worsened the Black Summer bushfires.
+Endorsement of the mass arson causal account was negatively associated with endorsement of climate change causal account (`r text_cor_fps_1_fps_7`), which suggests that the two causal accounts for the Black Summer bushfires were somewhat incompatible.
+
+## Policy direction preferences
+
+```{r}
+#| label: policy-support
+
+fp_mitigation_descriptives <- 
+    data |>
+    filter(!is.na(fp_mitigation)) |>
+    mutate(
+        fp_mitigation = factor(
+            fp_mitigation,
+            labels = c(
+                "More action",
+                "No change",
+                "Less or no action",
+                "Less or no action"
+            )
+        )
+    ) |>
+    count(fp_mitigation) |>
+    mutate(per = n / sum(n) * 100) |>
+    mutate(
+        n_text = glue("$n = {n}$, {specify_decimal(per, 2)}%")
+    ) |>
+    arrange(fp_mitigation)
+
+# Regression model
+conf_level <- .95
+ref_segment <- "fencesitter"
+#### Segment membership: changed across time? ####
+# Set Fencesitter as reference level
+data_segment_mitigation <-
+    data |>
+    filter(!is.na(fp_mitigation)) |>
+    mutate(fp_mitigation_more_action = str_to_lower(fp_mitigation) == "more action") |>
+    mutate(segment = as.factor(segment)) |>
+    mutate(segment = fct_relevel(segment, as.character(ref_segment)))
+
+# As no sceptic indicates a preference for more action, we exclude them from the model
+data_segment_mitigation <-
+    data_segment_mitigation |>
+    filter(segment != "sceptic")
+
+model_segment_mitigation <-
+    glm(
+        fp_mitigation_more_action ~ segment,
+        family = binomial(link="logit"),
+        data = data_segment_mitigation
+    )
+lr_test_segment_mitigation <- 
+    model_segment_mitigation |>
+    Anova() |>
+    broom::tidy() |>
+    janitor::clean_names() |>
+    mutate(
+        text =
+            get_chisq_text(
+                statistic,
+                df,
+                p_value
+            )
+    )
+text_segment_mitigation <-
+    tidy(
+        model_segment_mitigation,
+        conf.int = TRUE,
+        conf.level = conf_level,
+        exponentiate = TRUE
+    ) |>
+    janitor::clean_names() |>
+    filter(term == 'segmentacceptor') |>
+    mutate(
+        text = str_c(
+            "odds ratio = ", specify_decimal(estimate, 2),
+            ", 95% *CI* = [", specify_decimal(conf_low, 2), ", ", specify_decimal(conf_high, 2), "]",
+            ", $p$ ", specify_p_value_text(p_value, with_stars = F, with_equals = T, 3)
+        )
+    ) |>
+    pull(text)
+
+fp_mitigation_segment_descriptives <-
+    data_segment_mitigation |>
+    count(segment, segment_name, fp_mitigation_more_action) |>
+    group_by(segment) |>
+    mutate(odds = n / (sum(n) - n)) |>
+    mutate(per = n / sum(n) * 100) |>
+    ungroup() |>
+    mutate(
+        text = str_c(
+            "$n$ = ", n,
+            ", ", specify_decimal(per, 2), "% of ", segment_name,
+            ", odds = ", specify_decimal(odds, 2)
+        )
+    ) |>
+    filter(fp_mitigation_more_action)
+
+```
+
+Participants differed in their policy direction preferences in response to the Black Summer bushfires.
+Most participants desired more governmental climate change mitigation policies (`r fp_mitigation_descriptives$n_text[1]`), or no changes to governmental climate change mitigation policies (`r fp_mitigation_descriptives$n_text[2]`).
+Few participants desired less or no governmental climate change mitigation policies (totalling `r fp_mitigation_descriptives$n_text[3]`).
+Policy direction preferences differed across segments, with the majority of Acceptors and Fencesitters desiring more governmental climate change mitigation policies, and the majority of Sceptics desiring no changes to governmental climate change mitigation policies (@fig-policy-support).
+We investigated the statistical significance of segment differences using a binomial logistic regression model, estimated the odds of desiring more governmental climate change mitigation policies as a function of segment membership (reported in full in Supplementary Materials).
+Sceptics were excluded from analysis, as none desired more governmental climate change mitigation policies.
+A likelihood-ratio test indicated that segment membership significantly predicted policy direction preferences (`r lr_test_segment_mitigation$text`).
+Specifically, we found that the odds of Acceptors (`r filter(fp_mitigation_segment_descriptives, segment == 'acceptor')$text`) indicating a preference for more governmental climate change mitigation policies were approximately eight times greater (`r text_segment_mitigation`) than Fencesitters (`r filter(fp_mitigation_segment_descriptives, segment == 'fencesitter')$text`).
+
+```{r}
+#| label: sentiment-counts
+#| echo: false
+
+conf_level <- .95
+# Text analysis
+# Extract text
+text_fp_mitigation <- data |>
+    filter(study == 3) |>
+    select(id, fp_mitigation_text) |>
+    rename(text = fp_mitigation_text)
+# Clean text
+stop_words <- tibble(word = "") |>
+    add_case(word = c("climate", "change", "global", "warming", "bushfires", "fires", "bushfire", "fire", "bark", "barrier")) |>
+    # Same preprocessing as below
+    mutate(word = str_replace_all(word, "\\n", " ")) |>
+    mutate(word = str_replace_all(word, "-", " ")) |>
+    mutate(word = str_replace_all(word, '[«»““”„‟≪≫《》〝〞〟＂″‶]', '"')) |>
+    mutate(word = str_replace_all(word, "[`ʻʼʽ٬‘’‚‛՚︐]", "'")) |>
+    mutate(word = str_replace_all(word, "[^\x01-\x7F]", " ")) |>
+    unnest_tokens("word", word, token = "words", to_lower = TRUE, drop = FALSE) |>
+    count(word, name = "n_lexicons")
+# Extract words
+words_fp_mitigation <- text_fp_mitigation |>
+    mutate(text_raw = text) |>
+    mutate(text = str_replace_all(text, "\\n", " ")) |>
+    mutate(text = str_replace_all(text, "-", " ")) |>
+    mutate(text = str_replace_all(text, '[«»““”„‟≪≫《》〝〞〟＂″‶]', '"')) |>
+    mutate(text = str_replace_all(text, "[`ʻʼʽ٬‘’‚‛՚︐]", "'")) |>
+    mutate(text = str_replace_all(text, "[^\x01-\x7F]", " ")) |>
+    unnest_tokens("word", text, token = "words", to_lower = TRUE, drop = FALSE)
+# Remove stop words
+words_fp_mitigation <- words_fp_mitigation |>
+    mutate(is_hyperlink = str_detect(word, "^https:")) |>
+    mutate(is_number = str_detect(word, "^[:digit:]+$")) |>
+    mutate(is_hashtag = str_detect(word, "^#")) |>
+    left_join(stop_words, by = "word") |>
+    mutate(n_lexicons = replace_na(n_lexicons, 0)) |>
+    mutate(word = ifelse(
+        is_number | is_hyperlink | is_hashtag | n_lexicons > 0,
+        NA,
+        word))
+# How many ids excluded by preprocessing?
+words_fp_mitigation_ids_excluded <- words_fp_mitigation |>
+    group_by(id) |>
+    filter(all(is.na(word))) |>
+    pull(id) |>
+    n_distinct()
+#### Sentiment analysis ####
+# Load sentiments
+sentiment_words <- get_sentiments("nrc") |>
+    mutate(word = str_replace_all(word, "\\n", " ")) |>
+    mutate(word = str_replace_all(word, "-", " ")) |>
+    mutate(word = str_replace_all(word, '[«»““”„‟≪≫《》〝〞〟＂″‶]', '"')) |>
+    mutate(word = str_replace_all(word, "[`ʻʼʽ٬‘’‚‛՚︐]", "'")) |>
+    mutate(word = str_replace_all(word, "[^\x01-\x7F]", " ")) |>
+    unnest_tokens("word", word, token = "words", to_lower = TRUE, drop = FALSE) |>
+    distinct()
+# Add sentiment information
+words_fp_mitigation <- words_fp_mitigation |>
+    left_join(
+        sentiment_words,
+        by = 'word',
+        relationship = "many-to-many"
+    )
+# Examples of sentiment use
+sentiment_fp_mitigation_examples <- tibble(sentiment = unique(sentiment_words$sentiment)) |>
+    mutate(id = case_when(
+        sentiment == "trust"        ~ 40,
+        sentiment == 'sadness'      ~ 5,
+        sentiment == 'anticipation' ~ 14,
+        sentiment == 'fear'         ~ 30,
+        sentiment == 'anger'        ~ 62,
+        sentiment == 'disgust'      ~ 70,
+        sentiment == 'joy'          ~ 67,
+        sentiment == 'surprise'     ~ 130,
+    )) |>
+    left_join(words_fp_mitigation, by = c('id', 'sentiment'))  |>
+    filter(!is.na(id))
+sentiment_fp_mitigation_examples <- sentiment_fp_mitigation_examples |>
+    select(sentiment, id, text, word) |>
+    distinct() |>
+    group_by(sentiment) |>
+    mutate(word = list(word)) |>
+    ungroup() |>
+    distinct() |>
+    mutate(text = str_split(text, ' ')) |>
+    unnest(text) |>
+    mutate(token = str_replace_all(text, '[:punct:]', '')) |>
+    mutate(token = str_to_lower(token)) |>
+    rowwise() |>
+    mutate(token_present = token %in% word) |>
+    group_by(sentiment) |>
+    mutate(text = ifelse(token_present, str_c("\\textbf{", text, "}"), text)) |> 
+    summarise(example = str_c(text, collapse = " ")) |>
+    mutate(example = sprintf(r"{``%s''}", example))
+    
+
+# Determine sentiment presence in each id
+sentiment_fp_mitigation <- words_fp_mitigation |>
+    group_by(id) |>
+    count(sentiment)  |>
+    mutate(sentiment = replace_na(sentiment, 'none')) |>
+    ungroup() |>
+    pivot_wider(
+        names_from = 'sentiment',
+        values_from = 'n',
+        names_prefix = 'sentiment_',
+        values_fill = 0) |>
+    mutate(across(starts_with("sentiment_"), ~ .x > 0))
+sentiment_fp_mitigation_counts <- sentiment_fp_mitigation |>
+    pivot_longer(
+        starts_with('sentiment_'),
+        names_to = 'sentiment',
+        values_to = 'present',
+        names_prefix = 'sentiment_'
+    ) |>
+    group_by(sentiment) |>
+    count(present) |>
+    mutate(percentage = n / sum(n) * 100) |>
+    filter(present) |>
+    filter(!(sentiment %in% c('none', 'positive', 'negative'))) |>
+    left_join(sentiment_fp_mitigation_examples, by = 'sentiment') |>
+    ungroup()
+
+sentiment_fp_mitigation_descriptives <-
+    sentiment_fp_mitigation_counts |>
+    mutate(
+        n_text = glue("$n = {n}$, {specify_decimal(percentage, 2)}%")
+    )
+
+
+model_sentiment <-
+    sentiment_fp_mitigation |>
+    mutate(study = 3) |>
+    left_join(data, by = c('id', 'study')) |>
+    pivot_longer(
+        c(starts_with('sentiment_')),
+        names_to = 'sentiment',
+        values_to = 'sentiment_present',
+        names_prefix = 'sentiment_'
+    ) |>
+    select(segment, sentiment, sentiment_present) |>
+    filter(
+        sentiment %in% c('fear', 'trust', 'anticipation', 'anger', 'disguist', 'surprise', 'joy')
+    ) |>
+    # Set Fencesitter as reference level
+    mutate(segment = factor(segment, levels = c("fencesitter", "acceptor", "sceptic"))) |>
+    nest(data = c(segment, sentiment_present)) |>
+    mutate(
+        model =
+            map(
+                data,
+                ~ glm(
+                    sentiment_present ~ segment,
+                    family = binomial(link="logit"),
+                    data = .x
+                )
+            )
+    ) |>
+    mutate(
+        model_summary =
+            map(
+                model,
+                broom::tidy,
+                conf.int = TRUE,
+                conf.level = conf_level,
+                exponentiate = TRUE
+            )
+    ) |>
+    mutate(
+        anova_summary = map(model, Anova)
+    ) |>
+    mutate(
+        across(ends_with('_summary'), ~ map(.x, janitor::clean_names))
+    ) |>
+    # Add pairwise comparisons
+    mutate(
+        comparison_summary = pmap(
+            list(
+                model = model,
+                variables = list(list(segment = 'pairwise')),
+                newdata = 'balanced',
+                p_adjust_method = 'holm',
+                comparison = 'lnor',
+                transform = list(exp)
+            ),
+            get_contrasts
+        )
+    )
+
+contrast_sentiment_text <-
+    model_sentiment |>
+    unnest(comparison_summary) |>
+    filter(sentiment == 'fear') |>
+    filter(contrast == 'ln(odds(acceptor) / odds(fencesitter))') |>
+    mutate(
+        text =
+            str_c(
+                "odds ratio = ", specify_decimal(estimate, 2),
+                ", 95% *CI* = [", specify_decimal(conf_low, 2), ", ", specify_decimal(conf_high, 2), "]",
+                ", $p$ ", specify_p_value_text(p_value, with_stars = F, with_equals = T, 3)
+            )
+    ) |>
+    pull(text)
+sentiment_fp_mitigation_segment_descriptives <-
+    sentiment_fp_mitigation |>
+    left_join(filter(data, study == 3), by = 'id') |>
+    count(segment, segment_name, sentiment_fear) |>
+    group_by(segment, segment_name) |>
+    mutate(
+        per = n / sum(n) * 100,
+        odds = n / (sum(n) - n)
+    ) |>
+    ungroup() |>
+    filter(sentiment_fear) |>
+    mutate(
+        text = str_c(
+            "$n$ = ", n,
+            ", ", specify_decimal(per, 2), "% of ", segment_name,
+            ", odds = ", specify_decimal(odds, 2)
+        )
+    )
+
+```
+
+We explored the text justification of policy direction preferences using an emotion analysis. 
+We detected the emotional association of each word using the NRC Word-Emotion Association Lexicon [@mohammad_2013].
+This lexicon is a list of words manually annotated (via crowdsourcing) for their association with eight emotions: anger, fear, anticipation, trust, surprise, sadness, joy, and disgust.
+For each response, we assigned a dichotomous code (present/not present) if the response contained at least one word associated with an emotion, for each emotion.
+The most common emotion evoked by participants was fear (`r sentiment_fp_mitigation_descriptives$n_text[sentiment_fp_mitigation_descriptives$sentiment == "fear"]`), found in both justification for more action ("the recent bushfire is a wakupe call. how much more *worse* do we want to experience?", fear words italicised) and for no changes or less action ("...100 arsonists were charged as a starter and the it was the fuel left on the ground for decades that made the fires so much *worse* and caused the *disaster*", fear words italicised).
+To test whether emotions varied across segments, we made a binomial logistic regression model for each emotion with segment membership as a predictor (reported in full in Supplementary Materials).
+Generally, we found no statistically significant differences in the use of emotions across segments, except for fear, where the odds of Acceptors using a fear word (`r filter(sentiment_fp_mitigation_segment_descriptives, segment == 'acceptor')$text`) were approximately three times higher (`r contrast_sentiment_text`) than Fencesitters (`r filter(sentiment_fp_mitigation_segment_descriptives, segment == 'fencesitter')$text`).
+
+
+```{r}
+#| label: fig-policy-support
+#| fig-cap: "Policy direction preferences as a function of segment."
+#| fig-width: 6.5
+
+data |>
+    filter(!is.na(fp_mitigation)) |>
+    group_by(segment_name) |>
+    count(fp_mitigation) |>
+    ungroup() |>
+    complete(
+        segment_name,
+        fp_mitigation,
+        fill = list(n = 0)
+    ) |>
+    group_by(segment_name) |>
+    mutate(proportion = n / sum(n)) |>
+    mutate(percentage = proportion * 100) |>
+    mutate(
+        se =
+            case_when(
+                n == 0 ~ 0,
+                TRUE ~ sqrt(proportion * (1 - proportion)/ n)
+            )
+    ) |>
+    mutate(percentage_se = se * 100) |>
+    ggplot(aes(x = fp_mitigation, y = percentage, fill = segment_name)) +
+    geom_bar(
+        position = "dodge",
+        stat = "identity",
+        col = colour_error_bar
+    ) +
+    scale_y_continuous(
+        breaks = seq(0, 100, by = 10),
+        limits = c(0, 100),
+        expand = c(0, 0)) +
+    scale_x_discrete(labels = scales::label_wrap(6)) +
+    labs(x = "Policy direction preferences", y = "Percentage of segment (%)") +
+    theme_manuscript() +
+    # Faceting
+    facet_wrap(~ segment_name) +
+    theme(
+        strip.text = element_blank()#,
+#        panel.margin.y = unit(-0.5, "lines")
+    ) +
+    # Add legend details
+    scale_fill_manual(
+        "Segment",
+        values = segment_colours
+    ) +
+    theme(
+        legend.position = c(0.5, 1),
+        legend.justification = c(0.5, 1)
+    )
+```
+

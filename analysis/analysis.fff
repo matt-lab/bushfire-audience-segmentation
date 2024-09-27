@@ -1,0 +1,56 @@
+\begin{figure}
+
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{qsort.pdf}
+
+}
+
+\caption{\label{fig-qsort}Schematic of the Q-sort task. Participants
+read through a stack of statements (A) by dragging the top-most
+statement into the grey box that best corresponded to their point of
+view (B). As the majority of statements had to be placed around the
+midpoint, participants could only highlight a few statements that
+strongly reflect their point of view. Participants could re-arrange
+statements at any time during the task. To facilitate this process,
+participants could temporarily place statements in the yellow holding
+area (C). Figure reproduced without changes from \citep{andreotta_2022},
+under the Creative Commons license (CC BY 4.0).}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+{\centering \includegraphics{analysis_files/figure-pdf/fig-segment-change-1.pdf}
+
+}
+
+\caption{\label{fig-segment-change}The segment membership of each
+study's sample, as a proportion (percentage). Error bars indicate one
+standard error of the proportion.}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+{\centering \includegraphics{analysis_files/figure-pdf/fig-fps-segment-1.pdf}
+
+}
+
+\caption{\label{fig-fps-segment}Mean Fire Perception subscale scores as
+a function of segment. Error bars indicate one standard error above and
+below the mean.}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+{\centering \includegraphics{analysis_files/figure-pdf/fig-policy-support-1.pdf}
+
+}
+
+\caption{\label{fig-policy-support}Policy direction preferences as a
+function of segment.}
+
+\end{figure}

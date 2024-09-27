@@ -1,0 +1,27 @@
+.vscode
+interim
+relevant-notes
+supplement/supplement_cache
+analysis/analysis_cache
+
+# Study 1
+study_1/study/infrastructure.pdf
+
+# Study 2
+study_2/ethics*
+study_2/notes*
+study_2/specs*
+study_2/temp*
+study_2/stimuli/ipcc*
+study_2/stimuli/source*
+study_2/stimuli/cause*
+study_2/stimuli/consequence*
+
+
+# Study 3
+study_*/study/Statements-V3-MA*
+study_3/half*
+study_3/study4*
+study_3/results-test*
+
+

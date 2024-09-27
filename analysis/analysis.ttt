@@ -1,0 +1,217 @@
+\begin{table}
+\caption{\label{tbl-waves}Sample characteristics and materials of study. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{16em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Study} \\
+\cmidrule(l{3pt}r{3pt}){2-4}
+Characteristics & 1 & 2 & 3\\
+\midrule
+Time & Before peak bushfire severity & After peak bushfire severity & After peak bushfire severity\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Data collection dates}}\\
+\hspace{1em}Start & 24-SEP-2019 & 25-FEB-2020 & 13-MAR-2020\\
+\hspace{1em}End & 09-NOV-2019 & 02-MAR-2020 & 26-MAR-2020\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Sample characteristics}}\\
+\hspace{1em}\textit{n} & 435 & 413 & 213\\
+\hspace{1em}Mean age in years (\textit{SD}) & 46.71 (17.77) & 46.82 (18.04) & 47.13 (17.29)\\
+\hspace{1em}Number of women in sample (\%) & 213 (48.97\%) & 206 (49.88\%) & 107 (50.23\%)\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Materials}}\\
+\hspace{1em}Q-sort & \faCheck & \faCheck & \faCheck\\
+\hspace{1em}Auxiliary psychological scales & \faCheck & \faClose & \faCheck\\
+\hspace{1em}Fire Perception Scale & \faClose & \faClose & \faCheck\\
+\hspace{1em}Change in policy items & \faClose & \faClose & \faCheck\\
+\bottomrule
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{landscape}\begingroup\fontsize{7}{9}\selectfont
+
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{30em}>{\raggedright\arraybackslash}p{13em}}
+\caption{\label{tbl-scales}Summary of auxiliary psychological measures. }\tabularnewline
+
+\toprule
+Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example item & Reference\\
+\midrule
+\endfirsthead
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\toprule
+Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example item & Reference\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{70em}{Conservation and Self-Transcendence Value scores were a weighted average of ten items (rated along a nine-point scale). Table reproduced with updated Cronbach's $\alpha$ from \citet{andreotta_2022}, under the Creative Commons license (CC BY 4.0).}}\\
+\endlastfoot
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Climate change cognition and affect}}\\
+\hspace{1em}Knowledge Volume & 1 & - & 1 to 4 & How much do you feel you know about climate change? & \citet{malka2009}\\
+\hspace{1em}Perceptions of Carbon Emission Causes & 7 & 0.92 & 1 to 7 & Please indicate to what extent each of the following is a cause of climate change, to the best of your knowledge: people driving their cars & \citet{andreotta_2022}\\
+\hspace{1em}Perceptions of Environmental Harm Causes & 4 & 0.87 & 1 to 7 & Please indicate to what extent each of the following is a cause of climate change, to the best of your knowledge: air pollution from toxic chemicals & \citet{andreotta_2022}\\
+\hspace{1em}Perceptions of Natural Causes & 2 & 0.79 & 1 to 7 & Please indicate to what extent each of the following is a cause of climate change, to the best of your knowledge: volcanic eruptions & \citet{andreotta_2022}\\
+\hspace{1em}Perceived Personal Consequences & 3 & 0.87 & 1 to 7 & Please rate for each of the following how likely it is as a consequence of climate change by the year 2050: food shortages where you live & \citet{bostrom2012}\\
+\hspace{1em}Perceived Societal Consequences & 8 & 0.96 & 1 to 7 & Please rate for each of the following how likely it is as a consequence of climate change by the year 2050: food shortages in many parts of the world & \citet{bostrom2012}\\
+\hspace{1em}Perceived Human Contribution & 1 & - & 1 to 7 & How likely do you think it is that human actions have changed global climate? & \citet{bostrom2012}\\
+\hspace{1em}Perceived Effectiveness of Carbon Policies & 3 & 0.75 & 1 to 7 & Please rate for each step what effect you think it would have on climate change: requiring cars and trucks to have higher fuel efficiency (1 = Reduce or Stop Climate Change, 4 = Neither Reduce nor Increase, 7 = Increase Climate Change) & \citet{bostrom2012}\\
+\hspace{1em}Perceived Effectiveness of Engineering Policies & 3 & 0.42 & 1 to 7 & Please rate for each step what effect you think it would have on climate change: putting more dust in the atmosphere (1 = Reduce or Stop Climate Change, 4 = Neither Reduce nor Increase, 7 = Increase Climate Change) & \citet{bostrom2012}\\
+\hspace{1em}Perceived Effectiveness of Green Policies & 5 & 0.91 & 1 to 7 & Please rate for each step what effect you think it would have on climate change: planting trees (1 = Reduce or Stop Climate Change, 4 = Neither Reduce nor Increase, 7 = Increase Climate Change) & \citet{bostrom2012}\\
+\hspace{1em}Epistemic Scepticism & 8 & 0.91 & 1 to 5 & Climate change is just a natural fluctuation in Earth's temperatures & \citet{capstick2014}\\
+\hspace{1em}Response Scepticism & 7 & 0.89 & 1 to 5 & There is no point in me doing anything about climate change because no-one else is & \citet{capstick2014}\\
+\hspace{1em}Worry about Climate Change & 1 & - & 1 to 4 & How strongly do you feel worry when you think about the issue of climate change? & \citet{smith2014}\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Cognitive style}}\\
+\hspace{1em}Orientation to Future Goals & 4 & 0.72 & 1 to 5 & I consider how things might be in the future & \citet{enzler2015}\\
+\hspace{1em}Orientation to Immediate Goals & 5 & 0.86 & 1 to 5 & I mainly act to satisfy my immediate concerns, figuring the future will take care of itself & \citet{enzler2015}\\
+\hspace{1em}Conspiracist Ideation & 6 & 0.90 & 1 to 5 & The Apollo moon landings never happened and were staged in a Hollywood film studio & \citet{lewandowsky2013}\\
+\hspace{1em}Need for Cognition & 6 & 0.79 & 1 to 5 & I would prefer complex to simple problems & \citet{linsdeholandacoelho2018}\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Ideology, worldviews, or values}}\\
+\hspace{1em}Environment-as-Ductile Worldview & 6 & 0.81 & 1 to 5 & If the balance of the natural environment is upset the whole system will collapse & \citet{price2014}\\
+\hspace{1em}Environment-as-Elastic Worldview & 6 & 0.85 & 1 to 5 & The natural environment is capable of recovering from any damage humans may cause & \citet{price2014}\\
+\hspace{1em}Political Ideology & 1 & - & 1 to 7 & Please indicate the extent to which you identify yourself as politically left-wing or right-wing (1 = Very Left-Wing, 7 = Very Right-Wing) & -\\
+\hspace{1em}System Justification & 8 & 0.85 & 1 to 9 & Everyone has a fair shot at wealth and happiness & \citet{kay2003}\\
+\hspace{1em}Conservation Values & 10 & 0.32 & -2.94 to 5.54 & Please, rate the importance of the following values as a life-guiding principle for you: CONFORMITY (obedience, honouring parents and elders, self-discipline, politeness) & \citet{lindeman2005}\\
+\hspace{1em}Self-Transcendence Values & 10 & 0.55 & -4.84 to 2.52 & Please, rate the importance of the following values as a life-guiding principle for you: BENEVOLENCE (helpfulness, honesty, forgiveness, loyalty, responsibility) & \citet{lindeman2005}\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Personality}}\\
+\hspace{1em}Agreeableness & 2 & 0.27 & 1 to 5 & I see myself as someone who is generally trusting & \citet{rammstedt2007}\\
+\hspace{1em}Conscientiousness & 2 & 0.53 & 1 to 5 & I see myself as someone who does a thorough job & \citet{rammstedt2007}\\
+\hspace{1em}Extraversion & 2 & 0.53 & 1 to 5 & I see myself as someone who is outgoing, sociable & \citet{rammstedt2007}\\
+\hspace{1em}Neuroticism & 2 & 0.62 & 1 to 5 & I see myself as someone who gets nervous easily & \citet{rammstedt2007}\\
+\hspace{1em}Openness & 2 & 0.14 & 1 to 5 & I see myself as someone who has an active imagination & \citet{rammstedt2007}\\*
+\end{longtable}
+\endgroup{}
+\end{landscape}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-mean_diff}Difference in means of climate change cognition and affect
+characteristics between Study 1 and Study 3. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{\parbox{4em}{Study 1}} & \multicolumn{1}{c}{\parbox{4em}{Study 3}} & \multicolumn{3}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3}
+Psychological characteristics & \textit{M} (\textit{SD}) & \textit{M} (\textit{SD}) & \textit{t} & \textit{p} & $p_{adjusted}$\\
+\midrule
+Perceptions of Natural Causes & 4.23 (1.51) & 4.62 (1.62) & 2.95 & .003 & .044*\\
+Response Scepticism & 2.37 (1.01) & 2.56 (0.99) & 2.29 & .022 & .269\\
+Perceived Effectiveness of Green Policies & 4.69 (1.52) & 4.49 (1.50) & -1.60 & .110 & 1.000\\
+Worry about Climate Change & 2.72 (1.01) & 2.61 (1.01) & -1.35 & .178 & 1.000\\
+Perceptions of Carbon Emission Causes & 5.06 (1.33) & 4.91 (1.40) & -1.29 & .197 & 1.000\\
+Perceived Human Contribution & 5.59 (1.72) & 5.41 (1.71) & -1.22 & .222 & 1.000\\
+Epistemic Scepticism & 2.97 (1.00) & 3.05 (0.99) & 1.04 & .300 & 1.000\\
+Knowledge Volume & 2.69 (0.76) & 2.76 (0.78) & 0.99 & .325 & 1.000\\
+Perceived Personal Consequences & 4.59 (1.58) & 4.71 (1.40) & 0.97 & .331 & 1.000\\
+Perceptions of Environmental Harm Causes & 4.61 (1.49) & 4.51 (1.57) & -0.75 & .457 & 1.000\\
+Perceived Effectiveness of Engineering Policies & 4.04 (1.06) & 4.00 (1.08) & -0.43 & .670 & 1.000\\
+Perceived Effectiveness of Carbon Policies & 4.19 (1.26) & 4.15 (1.32) & -0.33 & .742 & 1.000\\
+Perceived Societal Consequences & 5.12 (1.51) & 5.10 (1.41) & -0.11 & .914 & 1.000\\
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}$p_{adjusted} <$ .05; }\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{landscape}\begingroup\fontsize{7}{9}\selectfont
+
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}l}
+\caption{\label{tbl-ridge-regression-segments-within-studies}Effect of psychological characteristics on segment membership, as
+estimated by a multinomial logistic ridge regression for Study 1 and
+Study 3. }\tabularnewline
+
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Acceptors} & \multicolumn{2}{c}{Fencesitters} & \multicolumn{2}{c}{Sceptics} \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7}
+Predictors & Study 1 & Study 3 & Study 1 & Study 3 & Study 1 & Study 3\\
+\midrule
+\endfirsthead
+\multicolumn{7}{@{}l}{\textit{(continued)}}\\
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Acceptors} & \multicolumn{2}{c}{Fencesitters} & \multicolumn{2}{c}{Sceptics} \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7}
+Predictors & Study 1 & Study 3 & Study 1 & Study 3 & Study 1 & Study 3\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\multicolumn{7}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{7}{l}{\rule{0pt}{1em}\parbox{70em}{Square brackets indicate 95\% confidence intervals, estimated using bootstrapping with 10,000 samples. Coefficients with confidence intervals that do not include zero are marked with a caret (textasciicircum) and are bolded.}}\\
+\endlastfoot
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Intercept}}\\
+\hspace{1em} & \parbox{7em}{\textbf{+1.64\textasciicircum\\{[1.64, 2.18]}}} & \parbox{7em}{\textbf{+1.66\textasciicircum\\{[1.44, 2.09]}}} & \parbox{7em}{\textbf{+0.56\textasciicircum\\{[0.44, 0.99]}}} & \parbox{7em}{\textbf{+1.03\textasciicircum\\{[0.71, 1.32]}}} & \parbox{7em}{\textbf{-2.20\textasciicircum\\{[-3.06, -2.19]}}} & \parbox{7em}{\textbf{-2.69\textasciicircum\\{[-3.22, -2.36]}}}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Climate change cognition and affect}}\\
+\hspace{1em}Epistemic Scepticism & \parbox{7em}{\textbf{-0.33\textasciicircum\\{[-0.59, -0.26]}}} & \parbox{7em}{\textbf{-0.46\textasciicircum\\{[-0.72, -0.25]}}} & \parbox{7em}{+0.11\\{[-0.05, 0.30]}} & \parbox{7em}{+0.13\\{[-0.08, 0.39]}} & \parbox{7em}{\textbf{+0.23\textasciicircum\\{[0.16, 0.43]}}} & \parbox{7em}{\textbf{+0.33\textasciicircum\\{[0.19, 0.46]}}}\\
+\hspace{1em}Worry about Climate Change & \parbox{7em}{\textbf{+0.31\textasciicircum\\{[0.23, 0.60]}}} & \parbox{7em}{+0.13\\{[-0.09, 0.38]}} & \parbox{7em}{-0.06\\{[-0.25, 0.11]}} & \parbox{7em}{+0.10\\{[-0.12, 0.36]}} & \parbox{7em}{\textbf{-0.25\textasciicircum\\{[-0.50, -0.19]}}} & \parbox{7em}{\textbf{-0.23\textasciicircum\\{[-0.44, -0.07]}}}\\
+\hspace{1em}Response Scepticism & \parbox{7em}{\textbf{-0.29\textasciicircum\\{[-0.55, -0.19]}}} & \parbox{7em}{\textbf{-0.55\textasciicircum\\{[-0.75, -0.37]}}} & \parbox{7em}{+0.08\\{[-0.09, 0.28]}} & \parbox{7em}{\textbf{+0.34\textasciicircum\\{[0.14, 0.56]}}} & \parbox{7em}{\textbf{+0.21\textasciicircum\\{[0.15, 0.40]}}} & \parbox{7em}{\textbf{+0.21\textasciicircum\\{[0.09, 0.35]}}}\\
+\hspace{1em}Perceived Human Contribution & \parbox{7em}{\textbf{+0.20\textasciicircum\\{[0.08, 0.41]}}} & \parbox{7em}{\textbf{+0.27\textasciicircum\\{[0.12, 0.51]}}} & \parbox{7em}{+0.12\\{[-0.02, 0.35]}} & \parbox{7em}{-0.06\\{[-0.29, 0.16]}} & \parbox{7em}{\textbf{-0.32\textasciicircum\\{[-0.59, -0.23]}}} & \parbox{7em}{\textbf{-0.22\textasciicircum\\{[-0.42, -0.07]}}}\\
+\hspace{1em}Perceived Societal Consequences & \parbox{7em}{\textbf{+0.19\textasciicircum\\{[0.06, 0.39]}}} & \parbox{7em}{+0.11\\{[-0.08, 0.38]}} & \parbox{7em}{-0.09\\{[-0.30, 0.05]}} & \parbox{7em}{+0.06\\{[-0.21, 0.25]}} & \parbox{7em}{-0.10\\{[-0.23, 0.04]}} & \parbox{7em}{\textbf{-0.16\textasciicircum\\{[-0.33, -0.02]}}}\\
+\hspace{1em}Perceptions of Environmental Harm Causes & \parbox{7em}{+0.08\\{[-0.09, 0.26]}} & \parbox{7em}{+0.04\\{[-0.18, 0.24]}} & \parbox{7em}{+0.08\\{[-0.08, 0.28]}} & \parbox{7em}{+0.19\\{[0.00, 0.43]}} & \parbox{7em}{\textbf{-0.16\textasciicircum\\{[-0.32, -0.05]}}} & \parbox{7em}{\textbf{-0.22\textasciicircum\\{[-0.37, -0.10]}}}\\
+\hspace{1em}Knowledge Volume & \parbox{7em}{-0.10\\{[-0.34, 0.01]}} & \parbox{7em}{-0.05\\{[-0.25, 0.13]}} & \parbox{7em}{-0.06\\{[-0.24, 0.10]}} & \parbox{7em}{-0.01\\{[-0.22, 0.19]}} & \parbox{7em}{\textbf{+0.15\textasciicircum\\{[0.04, 0.43]}}} & \parbox{7em}{+0.06\\{[-0.11, 0.26]}}\\
+\hspace{1em}Perceptions of Carbon Emission Causes & \parbox{7em}{\textbf{+0.15\textasciicircum\\{[0.00, 0.35]}}} & \parbox{7em}{+0.15\\{[-0.02, 0.32]}} & \parbox{7em}{+0.04\\{[-0.11, 0.23]}} & \parbox{7em}{\textbf{+0.29\textasciicircum\\{[0.09, 0.49]}}} & \parbox{7em}{\textbf{-0.19\textasciicircum\\{[-0.36, -0.11]}}} & \parbox{7em}{\textbf{-0.44\textasciicircum\\{[-0.59, -0.29]}}}\\
+\hspace{1em}Perceived Effectiveness of Engineering Policies & \parbox{7em}{\textbf{-0.13\textasciicircum\\{[-0.36, -0.01]}}} & \parbox{7em}{+0.09\\{[-0.11, 0.31]}} & \parbox{7em}{\textbf{+0.14\textasciicircum\\{[0.01, 0.36]}}} & \parbox{7em}{-0.10\\{[-0.31, 0.11]}} & \parbox{7em}{-0.01\\{[-0.14, 0.15]}} & \parbox{7em}{+0.01\\{[-0.15, 0.16]}}\\
+\hspace{1em}Perceived Personal Consequences & \parbox{7em}{+0.12\\{[-0.03, 0.30]}} & \parbox{7em}{+0.12\\{[-0.09, 0.36]}} & \parbox{7em}{-0.02\\{[-0.19, 0.14]}} & \parbox{7em}{-0.09\\{[-0.31, 0.15]}} & \parbox{7em}{-0.10\\{[-0.23, 0.02]}} & \parbox{7em}{-0.03\\{[-0.21, 0.11]}}\\
+\hspace{1em}Perceived Effectiveness of Carbon Policies & \parbox{7em}{+0.11\\{[-0.03, 0.35]}} & \parbox{7em}{-0.13\\{[-0.34, 0.09]}} & \parbox{7em}{-0.03\\{[-0.23, 0.15]}} & \parbox{7em}{+0.17\\{[-0.07, 0.36]}} & \parbox{7em}{-0.08\\{[-0.27, 0.02]}} & \parbox{7em}{-0.03\\{[-0.16, 0.13]}}\\
+\hspace{1em}Perceived Effectiveness of Green Policies & \parbox{7em}{+0.10\\{[-0.02, 0.30]}} & \parbox{7em}{-0.04\\{[-0.24, 0.17]}} & \parbox{7em}{-0.04\\{[-0.20, 0.14]}} & \parbox{7em}{+0.10\\{[-0.12, 0.31]}} & \parbox{7em}{-0.06\\{[-0.27, 0.05]}} & \parbox{7em}{-0.06\\{[-0.20, 0.08]}}\\
+\hspace{1em}Perceptions of Natural Causes & \parbox{7em}{-0.08\\{[-0.26, 0.08]}} & \parbox{7em}{-0.15\\{[-0.40, 0.05]}} & \parbox{7em}{+0.05\\{[-0.10, 0.24]}} & \parbox{7em}{+0.10\\{[-0.12, 0.36]}} & \parbox{7em}{+0.02\\{[-0.15, 0.20]}} & \parbox{7em}{+0.05\\{[-0.16, 0.25]}}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Cognitive style}}\\
+\hspace{1em}Orientation to Future Goals & \parbox{7em}{+0.05\\{[-0.11, 0.25]}} & \parbox{7em}{+0.21\\{[0.00, 0.38]}} & \parbox{7em}{+0.06\\{[-0.10, 0.26]}} & \parbox{7em}{+0.10\\{[-0.09, 0.30]}} & \parbox{7em}{-0.11\\{[-0.33, 0.04]}} & \parbox{7em}{\textbf{-0.31\textasciicircum\\{[-0.47, -0.11]}}}\\
+\hspace{1em}Conspiracist Ideation & \parbox{7em}{\textbf{-0.15\textasciicircum\\{[-0.36, -0.02]}}} & \parbox{7em}{\textbf{-0.49\textasciicircum\\{[-0.70, -0.32]}}} & \parbox{7em}{\textbf{+0.15\textasciicircum\\{[0.02, 0.36]}}} & \parbox{7em}{\textbf{+0.33\textasciicircum\\{[0.15, 0.55]}}} & \parbox{7em}{+0.00\\{[-0.18, 0.17]}} & \parbox{7em}{+0.16\\{[-0.02, 0.34]}}\\
+\hspace{1em}Need for Cognition & \parbox{7em}{-0.12\\{[-0.32, 0.01]}} & \parbox{7em}{-0.07\\{[-0.25, 0.15]}} & \parbox{7em}{+0.01\\{[-0.15, 0.18]}} & \parbox{7em}{-0.02\\{[-0.23, 0.19]}} & \parbox{7em}{+0.10\\{[-0.03, 0.31]}} & \parbox{7em}{+0.09\\{[-0.12, 0.27]}}\\
+\hspace{1em}Orientation to Immediate Goals & \parbox{7em}{+0.02\\{[-0.12, 0.25]}} & \parbox{7em}{-0.16\\{[-0.42, 0.00]}} & \parbox{7em}{0.00\\{[-0.20, 0.17]}} & \parbox{7em}{+0.15\\{[-0.04, 0.41]}} & \parbox{7em}{-0.02\\{[-0.21, 0.10]}} & \parbox{7em}{+0.02\\{[-0.18, 0.21]}}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Ideology, worldviews, and values}}\\
+\hspace{1em}Environment-as-Ductile Worldview & \parbox{7em}{+0.18\\{[-0.01, 0.44]}} & \parbox{7em}{\textbf{+0.40\textasciicircum\\{[0.23, 0.62]}}} & \parbox{7em}{-0.11\\{[-0.36, 0.05]}} & \parbox{7em}{\textbf{-0.21\textasciicircum\\{[-0.43, -0.01]}}} & \parbox{7em}{-0.07\\{[-0.21, 0.10]}} & \parbox{7em}{\textbf{-0.19\textasciicircum\\{[-0.36, -0.04]}}}\\
+\hspace{1em}Conservation Values & \parbox{7em}{-0.11\\{[-0.32, 0.02]}} & \parbox{7em}{\textbf{-0.26\textasciicircum\\{[-0.46, -0.06]}}} & \parbox{7em}{+0.01\\{[-0.17, 0.18]}} & \parbox{7em}{-0.02\\{[-0.22, 0.22]}} & \parbox{7em}{+0.11\\{[-0.05, 0.32]}} & \parbox{7em}{\textbf{+0.27\textasciicircum\\{[0.06, 0.45]}}}\\
+\hspace{1em}Environment-as-Elastic Worldview & \parbox{7em}{\textbf{-0.20\textasciicircum\\{[-0.43, -0.05]}}} & \parbox{7em}{\textbf{-0.37\textasciicircum\\{[-0.58, -0.20]}}} & \parbox{7em}{+0.05\\{[-0.15, 0.23]}} & \parbox{7em}{+0.07\\{[-0.12, 0.33]}} & \parbox{7em}{\textbf{+0.15\textasciicircum\\{[0.03, 0.38]}}} & \parbox{7em}{\textbf{+0.30\textasciicircum\\{[0.12, 0.46]}}}\\
+\hspace{1em}System Justification & \parbox{7em}{+0.04\\{[-0.12, 0.25]}} & \parbox{7em}{\textbf{+0.20\textasciicircum\\{[0.04, 0.39]}}} & \parbox{7em}{+0.06\\{[-0.12, 0.23]}} & \parbox{7em}{\textbf{-0.23\textasciicircum\\{[-0.44, -0.04]}}} & \parbox{7em}{-0.09\\{[-0.30, 0.07]}} & \parbox{7em}{+0.03\\{[-0.16, 0.22]}}\\
+\hspace{1em}Self-Transcendence Values & \parbox{7em}{+0.04\\{[-0.10, 0.21]}} & \parbox{7em}{+0.17\\{[-0.04, 0.36]}} & \parbox{7em}{-0.10\\{[-0.28, 0.05]}} & \parbox{7em}{+0.02\\{[-0.20, 0.21]}} & \parbox{7em}{+0.06\\{[-0.12, 0.24]}} & \parbox{7em}{\textbf{-0.19\textasciicircum\\{[-0.33, 0.00]}}}\\
+\hspace{1em}Political Ideology & \parbox{7em}{\textbf{-0.18\textasciicircum\\{[-0.41, -0.04]}}} & \parbox{7em}{-0.10\\{[-0.35, 0.12]}} & \parbox{7em}{+0.03\\{[-0.17, 0.19]}} & \parbox{7em}{-0.16\\{[-0.38, 0.06]}} & \parbox{7em}{\textbf{+0.16\textasciicircum\\{[0.02, 0.40]}}} & \parbox{7em}{\textbf{+0.26\textasciicircum\\{[0.09, 0.47]}}}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Personality}}\\
+\hspace{1em}Extraversion & \parbox{7em}{-0.01\\{[-0.15, 0.14]}} & \parbox{7em}{+0.03\\{[-0.21, 0.22]}} & \parbox{7em}{+0.03\\{[-0.11, 0.19]}} & \parbox{7em}{\textbf{+0.23\textasciicircum\\{[0.04, 0.45]}}} & \parbox{7em}{-0.02\\{[-0.18, 0.11]}} & \parbox{7em}{\textbf{-0.26\textasciicircum\\{[-0.43, -0.07]}}}\\
+\hspace{1em}Conscientiousness & \parbox{7em}{+0.03\\{[-0.09, 0.20]}} & \parbox{7em}{-0.14\\{[-0.33, 0.01]}} & \parbox{7em}{-0.06\\{[-0.21, 0.09]}} & \parbox{7em}{\textbf{+0.19\textasciicircum\\{[0.01, 0.39]}}} & \parbox{7em}{+0.03\\{[-0.15, 0.16]}} & \parbox{7em}{-0.05\\{[-0.19, 0.11]}}\\
+\hspace{1em}Neuroticism & \parbox{7em}{+0.11\\{[-0.01, 0.30]}} & \parbox{7em}{+0.03\\{[-0.15, 0.22]}} & \parbox{7em}{-0.02\\{[-0.17, 0.14]}} & \parbox{7em}{-0.08\\{[-0.30, 0.10]}} & \parbox{7em}{-0.09\\{[-0.29, 0.01]}} & \parbox{7em}{+0.05\\{[-0.09, 0.23]}}\\
+\hspace{1em}Agreeableness & \parbox{7em}{+0.04\\{[-0.11, 0.20]}} & \parbox{7em}{+0.01\\{[-0.18, 0.24]}} & \parbox{7em}{+0.02\\{[-0.13, 0.17]}} & \parbox{7em}{-0.03\\{[-0.27, 0.16]}} & \parbox{7em}{-0.06\\{[-0.21, 0.10]}} & \parbox{7em}{+0.03\\{[-0.18, 0.23]}}\\
+\hspace{1em}Openness & \parbox{7em}{0.00\\{[-0.16, 0.14]}} & \parbox{7em}{+0.01\\{[-0.18, 0.23]}} & \parbox{7em}{-0.07\\{[-0.24, 0.06]}} & \parbox{7em}{0.00\\{[-0.22, 0.19]}} & \parbox{7em}{+0.07\\{[-0.05, 0.25]}} & \parbox{7em}{-0.01\\{[-0.22, 0.17]}}\\*
+\end{longtable}
+\endgroup{}
+\end{landscape}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor, the
+mean score of each item, and the standard error of the mean. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{18em}ccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
+\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-6}
+Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SE}\\
+\midrule
+1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 0.10\\
+2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 0.09\\
+3. The 2019-20 Australian bushfires have accelerated climate change & \textbf{0.84} & 0.05 & -0.14 & 3.16 & 0.09\\
+4. The 2019-20 Australian bushfires are severe & 0.17 & \textbf{0.86} & 0.23 & 4.50 & 0.05\\
+5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires & \textbf{0.84} & -0.19 & 0.13 & 2.55 & 0.09\\
+6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires & \textbf{0.86} & -0.06 & 0.08 & 3.05 & 0.09\\
+7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires & -0.10 & 0.04 & \textbf{0.94} & 3.47 & 0.08\\
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}Bolded loadings are greater than .40 in magnitude.}\\
+\end{tabular}
+\end{table}

@@ -1,0 +1,334 @@
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{12em}cccccccc}
+\caption{\label{tbl-statements}Segment membership factor scores for each study and Q-sort statement }\tabularnewline
+
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{4}{c}{Acceptor} & \multicolumn{4}{c}{Sceptic} \\
+\cmidrule(l{3pt}r{3pt}){2-5} \cmidrule(l{3pt}r{3pt}){6-9}
+Statement & \parbox{2.5em}{\centering Study 1} & \parbox{2.5em}{\centering Study 2} & \parbox{2.5em}{\centering Study 3} & \parbox{5em}{\centering Maximum difference} & \parbox{2.5em}{\centering Study 1} & \parbox{2.5em}{\centering Study 2} & \parbox{2.5em}{\centering Study 3} & \parbox{5em}{\centering Maximum difference}\\
+\midrule
+\endfirsthead
+\multicolumn{9}{@{}l}{\textit{(continued)}}\\
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{4}{c}{Acceptor} & \multicolumn{4}{c}{Sceptic} \\
+\cmidrule(l{3pt}r{3pt}){2-5} \cmidrule(l{3pt}r{3pt}){6-9}
+Statement & \parbox{2.5em}{\centering Study 1} & \parbox{2.5em}{\centering Study 2} & \parbox{2.5em}{\centering Study 3} & \parbox{5em}{\centering Maximum difference} & \parbox{2.5em}{\centering Study 1} & \parbox{2.5em}{\centering Study 2} & \parbox{2.5em}{\centering Study 3} & \parbox{5em}{\centering Maximum difference}\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+1. It is important to vote for leaders who will combat climate change. & 4 & 4 & 4 & 0 & -4 & -3 & -4 & 1\\
+2. Scientists should stop falsely claiming that climate change is a settled science. & -2 & -2 & -2 & 0 & 4 & 4 & 4 & 0\\
+3. Climate change is a hoax perpetrated by the United Nations. & -4 & -4 & -4 & 0 & 3 & 3 & 3 & 0\\
+4. Poor people will be impacted the worst by climate change. & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 1\\
+5. They changed the name from "global warming" to "climate change" because the planet isn't warming. & -2 & -2 & -2 & 0 & 3 & 3 & 3 & 0\\
+6. The concept of global warming was created by and for the Chinese in order to make U.S. manufacturing non-competitive. & -3 & -3 & -3 & 0 & 2 & 1 & 2 & 1\\
+7. Cow farts cause more 'climate change' than human activity. & -2 & -2 & -2 & 0 & 1 & 2 & 1 & 1\\
+8. Climate change is a threat to the health and safety of our children. & 3 & 3 & 3 & 0 & -3 & -4 & -3 & 1\\
+9. Politicians and the mass media are ignorant about the risks of climate change. & 0 & 0 & 0 & 0 & -1 & -1 & -1 & 0\\
+10. Climate change sceptics ignore basic climate science facts. & 1 & 1 & 1 & 0 & -1 & -2 & -2 & 1\\
+11. Through cutting science funding, we damage Australia's ability to respond to climate change. & 1 & 2 & 2 & 1 & -2 & -1 & -1 & 1\\
+12. The Great Barrier Reef is at risk from climate change. & 3 & 3 & 3 & 0 & -2 & -2 & -2 & 0\\
+13. The threat of climate change is much worse than climate scientists originally thought. & 2 & 1 & 1 & 1 & -3 & -3 & -3 & 0\\
+14. Politicians who refuse to tackle climate change are just as bad as those who deny climate science. & 1 & 1 & 1 & 0 & -1 & -2 & -2 & 1\\
+15. The increased occurrence of extreme weather events is a clear sign that climate change is real. & 2 & 2 & 2 & 0 & -2 & -2 & -2 & 0\\
+16. Australian agriculture is thriving so climate change can't be real. & -3 & -3 & -3 & 0 & 2 & 2 & 2 & 0\\
+17. Australia is experiencing more extreme weather and hotter days due to climate change. & 2 & 2 & 2 & 0 & -2 & -1 & -1 & 1\\
+18. Those who demand climate action are the usual "torch-and-pitchfork" crowd. & -2 & -2 & -2 & 0 & 2 & 2 & 2 & 0\\
+19. Climate change policy and renewable energy (e.g., solar power) should be a major focus of Australian political elections. & 2 & 2 & 2 & 0 & -1 & 0 & -1 & 1\\
+20. Climate sceptics, with no genuine expertise, cannot know better than climate scientists. & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1\\
+21. Climate change and human burning of fossil fuels are strongly linked. & 0 & 1 & 0 & 1 & 0 & -1 & -1 & 1\\
+22. People who deny the science of climate change should not hold public office. & 0 & 0 & -1 & 1 & -1 & -1 & 0 & 1\\
+23. We need to keep coal, oil, and gas in the ground and adopt more renewable energy sources, like solar and wind power. & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+24. No political party can say they have a climate change action plan when they favour coal, oil, and gas companies. & -1 & 0 & -1 & 1 & 1 & 1 & 1 & 0\\
+25. We must start working together for real solutions on climate change. & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1\\
+26. It is shameful that climate change, the greatest problem of our time, is barely discussed in the media. & -1 & -1 & -1 & 0 & 0 & 0 & 0 & 0\\
+27. Countries must fulfil their Paris Climate Agreement goals. & -1 & -1 & 0 & 1 & 1 & 1 & 0 & 1\\
+28. Regardless of who is elected, the reality is that climate change is going to destroy everything. & -1 & -1 & -1 & 0 & 0 & 0 & 0 & 0\\
+29. Oil and gas companies could not care less about climate change. & -1 & -1 & -1 & 0 & 2 & 2 & 2 & 0\\
+30. Australian politicians need to wake up to the emergency of tackling climate change. & 0 & -1 & 0 & 1 & 1 & 1 & 1 & 0\\*
+\end{longtable}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-segment-change}Estimated effects of study on segment membership using a multinomial
+logistic regression model. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}}
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Acceptor odds and Fencesitter odds}} & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Sceptics odds and Fencesitter odds}} \\
+\cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-6}
+Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval & Estimate ($p$ value) & 95\% Confidence interval\\
+\midrule
+Intercept & - & 2.25 (.000)\textsuperscript{***} & {}[1.80, 2.80] & 0.38 (.000)\textsuperscript{***} & {}[0.27, 0.54]\\
+Study & Study 1 & 1.06 (.709) & {}[0.78, 1.44] & 0.81 (.417) & {}[0.48, 1.35]\\
+ & Study 2 & - & - & - & -\\
+ & Study 3 & 0.65 (.021)\textsuperscript{*} & {}[0.46, 0.94] & 0.60 (.111) & {}[0.32, 1.12]\\
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-mean_diff}Difference in means of auxiliary psychological characteristics over
+time. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{\parbox{4em}{Study 1}} & \multicolumn{1}{c}{\parbox{4em}{Study 3}} & \multicolumn{3}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3}
+Psychological characteristics & \textit{M} (\textit{SD}) & \textit{M} (\textit{SD}) & \textit{t} & \textit{p} & $p_{adjusted}$\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Cognitive style}}\\
+\hspace{1em}Orientation to Immediate Goals & 2.57 (0.91) & 2.74 (0.87) & 2.36 & .019 & .08\\
+\hspace{1em}Conspiracist Ideation & 2.32 (1.02) & 2.45 (1.11) & 1.41 & .158 & .47\\
+\hspace{1em}Need for Cognition & 3.36 (0.78) & 3.37 (0.76) & 0.12 & .901 & 1.00\\
+\hspace{1em}Orientation to Future Goals & 3.74 (0.68) & 3.74 (0.73) & -0.07 & .943 & 1.00\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Ideology, worldviews, and values}}\\
+\hspace{1em}Environment-as-Elastic Worldview & 2.44 (0.92) & 2.62 (0.92) & 2.37 & .018 & .11\\
+\hspace{1em}Political Ideology & 3.62 (1.59) & 3.89 (1.39) & 2.21 & .028 & .14\\
+\hspace{1em}System Justification & 5.00 (1.58) & 5.20 (1.44) & 1.59 & .113 & .45\\
+\hspace{1em}Self-Transcendence Values & -0.34 (0.97) & -0.44 (0.95) & -1.27 & .204 & .61\\
+\hspace{1em}Conservation Values & 1.31 (0.91) & 1.36 (0.91) & 0.61 & .539 & 1.00\\
+\hspace{1em}Environment-as-Ductile Worldview & 3.76 (0.75) & 3.76 (0.71) & -0.01 & .994 & 1.00\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Personality}}\\
+\hspace{1em}Conscientiousness & 3.76 (0.89) & 3.71 (0.84) & -0.72 & .469 & 1.00\\
+\hspace{1em}Agreeableness & 3.62 (0.84) & 3.58 (0.87) & -0.57 & .571 & 1.00\\
+\hspace{1em}Extraversion & 2.85 (0.96) & 2.83 (0.97) & -0.28 & .776 & 1.00\\
+\hspace{1em}Openness & 3.32 (0.84) & 3.33 (0.80) & 0.13 & .893 & 1.00\\
+\hspace{1em}Neuroticism & 2.77 (1.06) & 2.77 (1.00) & -0.02 & .987 & 1.00\\
+\bottomrule
+\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-fps-models}Linear regression models predicting Fire Perception Scale subscale
+scores (bolded) as a function of segment. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{13em}l>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{6em}}
+\toprule
+Models and predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{(A) Climate Processes}}\\
+\hspace{1em}Intercept & - & 2.95 (.000)\textsuperscript{***} & {}[2.74, 3.16]\\
+\hspace{1em}Segment & Acceptors & 0.53 (.000)\textsuperscript{***} & {}[0.26, 0.80]\\
+\hspace{1em} & Fencesitters & - & \vphantom{2} -\\
+\hspace{1em} & Sceptics & -1.76 (.000)\textsuperscript{***} & {}[-2.24, -1.27]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{(B) Fire Realities}}\\
+\hspace{1em}Intercept & - & 3.66 (.000)\textsuperscript{***} & {}[3.50, 3.83]\\
+\hspace{1em}Segment & Acceptors & 0.84 (.000)\textsuperscript{***} & {}[0.63, 1.06]\\
+\hspace{1em} & Fencesitters & - & \vphantom{1} -\\
+\hspace{1em} & Sceptics & 0.36 (.064) & {}[-0.02, 0.75]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{(C) Arson Causes}}\\
+\hspace{1em}Intercept & - & 3.71 (.000)\textsuperscript{***} & {}[3.46, 3.96]\\
+\hspace{1em}Segment & Acceptors & -0.55 (.001)\textsuperscript{**} & {}[-0.88, -0.23]\\
+\hspace{1em} & Fencesitters & - & -\\
+\hspace{1em} & Sceptics & 0.74 (.014)\textsuperscript{*} & {}[0.15, 1.32]\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{30em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-fps-correlations}Pearson correlations between the Fire Perception Scale subscale scores
+and auxiliary psychological characteristics. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Fire Perception Scale} \\
+\cmidrule(l{3pt}r{3pt}){2-4}
+Psychological characteristics & (A) Climate Processes & (B) Fire Realities & (C) Arson Causes\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Climate change cognition and affect}}\\
+\hspace{1em}Epistemic Scepticism & \textcolor[HTML]{BAC183}{-0.48\textsuperscript{***}} & \textcolor[HTML]{D1D4A4}{-0.31\textsuperscript{***}} & \textcolor[HTML]{ECB9BB}{0.41\textsuperscript{***}}\\
+\hspace{1em}Response Scepticism & \textcolor[HTML]{C4C991}{-0.41\textsuperscript{***}} & \textcolor[HTML]{C2C78F}{-0.43\textsuperscript{***}} & \textcolor[HTML]{F1CBC6}{0.30\textsuperscript{***}}\\
+\hspace{1em}Perceptions of Natural Causes & \textcolor[HTML]{FAEFDD}{0.07} & \textcolor[HTML]{D7D9AC}{-0.28\textsuperscript{***}} & \textcolor[HTML]{F3D3CB}{0.25\textsuperscript{***}}\\
+\hspace{1em}Perceived Societal Consequences & \textcolor[HTML]{D46780}{0.62\textsuperscript{***}} & \textcolor[HTML]{F6E1D4}{0.16\textsuperscript{*}} & \textcolor[HTML]{DFE0B8}{-0.22\textsuperscript{**}}\\
+\hspace{1em}Perceived Human Contribution & \textcolor[HTML]{D46780}{0.64\textsuperscript{***}} & \textcolor[HTML]{F4D9CF}{0.22\textsuperscript{**}} & \textcolor[HTML]{E3E4BE}{-0.18\textsuperscript{**}}\\
+\hspace{1em}Perceived Effectiveness of Engineering Policies & \textcolor[HTML]{E0E1BA}{-0.21\textsuperscript{**}} & \textcolor[HTML]{F1CCC7}{0.30\textsuperscript{***}} & \textcolor[HTML]{EEEDCE}{-0.11}\\
+\hspace{1em}Perceived Personal Consequences & \textcolor[HTML]{D46780}{0.64\textsuperscript{***}} & \textcolor[HTML]{FDFBE4}{0.01} & \textcolor[HTML]{E7E7C4}{-0.16\textsuperscript{*}}\\
+\hspace{1em}Perceptions of Carbon Emission Causes & \textcolor[HTML]{D46780}{0.66\textsuperscript{***}} & \textcolor[HTML]{FBF4E0}{0.04} & \textcolor[HTML]{E8E9C6}{-0.15\textsuperscript{*}}\\
+\hspace{1em}Perceived Effectiveness of Green Policies & \textcolor[HTML]{F3F2D6}{-0.07} & \textcolor[HTML]{EFC4C2}{0.35\textsuperscript{***}} & \textcolor[HTML]{EBEBCA}{-0.13}\\
+\hspace{1em}Perceived Effectiveness of Carbon Policies & \textcolor[HTML]{EBEBCA}{-0.12} & \textcolor[HTML]{F0C6C3}{0.33\textsuperscript{***}} & \textcolor[HTML]{EFEFD0}{-0.09}\\
+\hspace{1em}Worry about Climate Change & \textcolor[HTML]{D46780}{0.64\textsuperscript{***}} & \textcolor[HTML]{FBF9E2}{0.00} & \textcolor[HTML]{EEEDCE}{-0.11}\\
+\hspace{1em}Knowledge Volume & \textcolor[HTML]{F7E4D6}{0.14\textsuperscript{*}} & \textcolor[HTML]{F9EBDA}{0.10} & \textcolor[HTML]{FAEFDD}{0.07}\\
+\hspace{1em}Perceptions of Environmental Harm Causes & \textcolor[HTML]{E5A5AF}{0.54\textsuperscript{***}} & \textcolor[HTML]{EFEFD0}{-0.10} & \textcolor[HTML]{F2F1D4}{-0.07}\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Cognitive style}}\\
+\hspace{1em}Conspiracist Ideation & \textcolor[HTML]{FAF1DE}{0.07} & \textcolor[HTML]{D7D9AC}{-0.28\textsuperscript{***}} & \textcolor[HTML]{F2D1CA}{0.26\textsuperscript{***}}\\
+\hspace{1em}Orientation to Future Goals & \textcolor[HTML]{EFC4C2}{0.35\textsuperscript{***}} & \textcolor[HTML]{F7E3D5}{0.16\textsuperscript{*}} & \textcolor[HTML]{F4F3D8}{-0.05}\\
+\hspace{1em}Orientation to Immediate Goals & \textcolor[HTML]{FBF6E1}{0.04} & \textcolor[HTML]{CBCE9A}{-0.36\textsuperscript{***}} & \textcolor[HTML]{F7E3D5}{0.15\textsuperscript{*}}\\
+\hspace{1em}Need for Cognition & \textcolor[HTML]{F9ECDB}{0.10} & \textcolor[HTML]{F7E3D5}{0.16\textsuperscript{*}} & \textcolor[HTML]{F6F4DA}{-0.04}\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Ideology, worldviews, or values}}\\
+\hspace{1em}Environment-as-Elastic Worldview & \textcolor[HTML]{D1D4A4}{-0.32\textsuperscript{***}} & \textcolor[HTML]{C0C58B}{-0.45\textsuperscript{***}} & \textcolor[HTML]{F4D8CE}{0.22\textsuperscript{**}}\\
+\hspace{1em}Self-Transcendence Values & \textcolor[HTML]{D3D5A6}{-0.30\textsuperscript{***}} & \textcolor[HTML]{F2CEC8}{0.29\textsuperscript{***}} & \textcolor[HTML]{F3F2D6}{-0.06}\\
+\hspace{1em}Conservation Values & \textcolor[HTML]{DFE0B8}{-0.22\textsuperscript{**}} & \textcolor[HTML]{D5D8AA}{-0.28\textsuperscript{***}} & \textcolor[HTML]{F2D1CA}{0.27\textsuperscript{***}}\\
+\hspace{1em}Environment-as-Ductile Worldview & \textcolor[HTML]{E8AEB4}{0.49\textsuperscript{***}} & \textcolor[HTML]{F3D4CC}{0.24\textsuperscript{***}} & \textcolor[HTML]{EBEBCA}{-0.13}\\
+\hspace{1em}Political Ideology & \textcolor[HTML]{DCDEB4}{-0.24\textsuperscript{***}} & \textcolor[HTML]{DCDEB4}{-0.23\textsuperscript{***}} & \textcolor[HTML]{F2D0C9}{0.28\textsuperscript{***}}\\
+\hspace{1em}System Justification & \textcolor[HTML]{FBF3DF}{0.05} & \textcolor[HTML]{E6E6C2}{-0.16\textsuperscript{*}} & \textcolor[HTML]{F3D4CC}{0.24\textsuperscript{***}}\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Personality}}\\
+\hspace{1em}Conscientiousness & \textcolor[HTML]{ECECCC}{-0.11} & \textcolor[HTML]{F9EBDA}{0.10} & \textcolor[HTML]{FBF6E1}{0.04}\\
+\hspace{1em}Neuroticism & \textcolor[HTML]{F8E7D8}{0.12} & \textcolor[HTML]{EFEFD0}{-0.10} & \textcolor[HTML]{FBF3DF}{0.05}\\
+\hspace{1em}Openness & \textcolor[HTML]{FCF9E3}{0.01} & \textcolor[HTML]{F9EBDA}{0.10} & \textcolor[HTML]{F3F2D6}{-0.06}\\
+\hspace{1em}Extraversion & \textcolor[HTML]{F8F7DE}{-0.02} & \textcolor[HTML]{F3F2D6}{-0.06} & \textcolor[HTML]{FCF7E2}{0.03}\\
+\hspace{1em}Agreeableness & \textcolor[HTML]{FAF8E0}{-0.01} & \textcolor[HTML]{F9ECDB}{0.10} & \textcolor[HTML]{F8F7DE}{-0.02}\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{30em}{Colour indicates the magnitude and direction of the correlation.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-policy-preferences}Estimated effects of segment membership on policy direction preferences
+using a binomial logistic regression model. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{10em}}
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{19em}{\centering Ratio of the odds of a preference for more action and the odds of an alternative preference}} \\
+\cmidrule(l{3pt}r{3pt}){3-4}
+Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
+\midrule
+Intercept & - & 1.08 (.736) & {}[0.69, 1.68]\\
+Segment & Acceptors & 8.03 (.000)\textsuperscript{***} & {}[3.92, 17.49]\\
+ & Fencesitters & - & -\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{34em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category. Sceptics were excluded from the model, as none indicated a preference for more action. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-sentiment-counts}Frequency and proportion of participants' emotions in justification of
+policy direction preferences. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{lcc>{\raggedright\arraybackslash}p{23em}}
+\toprule
+Emotion & \textit{n} & \parbox{7em}{\centering Proportion of sample (\%)} & Example response\\
+\midrule
+Fear & 67 & 31.46 & ``the recent bushfire is a wakeup call. how much more \textbf{worse} do we want to experience?''\\
+Trust & 54 & 25.35 & ``they keep stating that they in front Paris \textbf{agreement,} but this \textbf{agreement} isn't enough, the way the world is going these environment issue will get worse''\\
+Anticipation & 42 & 19.72 & ``It is \textbf{expected} of them, and facing re election they need to show they are doing something''\\
+Sadness & 41 & 19.25 & ``because forest fires has causing \textbf{negative} consequences''\\
+Anger & 31 & 14.55 & ``We are \textbf{destroying} our home and recent weather patterns confirm we are going to \textbf{lose} our home''\\
+Disgust & 23 & 10.80 & ``i dont think the climate change has much to do with the fires thats all up to the \textbf{nasty} people thats started them''\\
+Surprise & 21 & 9.86 & ``No such thing as climate change. Ever since God created the Earth it has heated and cooled. And Jesus shall return soon.What is coming those who do not believe are in for a \textbf{shock}''\\
+Joy & 17 & 7.98 & ``few steps are taken, but there is a big \textbf{journey} ahead of us''\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}Bolded words reflect the exemplified emotion.}\\
+\end{tabular}
+\end{table}
+\efloatseparator
+ 
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{10em}}
+\caption{\label{tbl-sentiment-models}Effects of segment membership on emotion content in justification of
+policy direction preferences, estimated using a binomial logistic
+regression model. }\tabularnewline
+
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{19em}{\centering Ratio of the odds of an emotion word present and the odds of an emotion word absent}} \\
+\cmidrule(l{3pt}r{3pt}){3-4}
+Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
+\midrule
+\endfirsthead
+\multicolumn{4}{@{}l}{\textit{(continued)}}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{19em}{\centering Ratio of the odds of an emotion word present and the odds of an emotion word absent}} \\
+\cmidrule(l{3pt}r{3pt}){3-4}
+Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{32em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category. The $\chi^{2}$ statistic is the likelihood-ratio test comparing the model with segment as a predictor to the null model without the predictor. The likelihood-ratio test \textit{p} values were adjusted using the \citet{holm1979} method. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\endlastfoot
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Anger ($\chi^{2}$ (2) = 8.73, $p$ = .013, $p_{adjusted}$ = .056)}}\\
+\hspace{1em}Intercept & - & 0.10 (.000)\textsuperscript{***} & {}[0.04, 0.20]\\
+\hspace{1em}Segment & Acceptors & 1.77 (.231) & {}[0.72, 4.77]\\
+\hspace{1em}Segment & Fencesitters & - & \vphantom{5} -\\
+\hspace{1em}Segment & Sceptics & 6.55 (.003)\textsuperscript{**} & {}[1.91, 22.94]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Fear ($\chi^{2}$ (2) = 11.93, $p$ = .003, $p_{adjusted}$ = .015*)}}\\
+\hspace{1em}Intercept & - & 0.22 (.000)\textsuperscript{***} & {}[0.12, 0.37]\\
+\hspace{1em}Segment & Acceptors & 3.16 (.001)\textsuperscript{**} & {}[1.63, 6.46]\\
+\hspace{1em}Segment & Fencesitters & - & \vphantom{4} -\\
+\hspace{1em}Segment & Sceptics & 2.32 (.147) & {}[0.71, 7.13]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Anticipation ($\chi^{2}$ (2) = 1.18, $p$ = .554, $p_{adjusted}$ = 1.000)}}\\
+\hspace{1em}Intercept & - & 0.20 (.000)\textsuperscript{***} & {}[0.10, 0.34]\\
+\hspace{1em}Segment & Acceptors & 1.47 (.309) & {}[0.71, 3.14]\\
+\hspace{1em}Segment & Fencesitters & - & \vphantom{3} -\\
+\hspace{1em}Segment & Sceptics & 1.02 (.983) & {}[0.21, 3.65]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Joy ($\chi^{2}$ (2) = 1.65, $p$ = .437, $p_{adjusted}$ = 1.000)}}\\
+\hspace{1em}Intercept & - & 0.08 (.000)\textsuperscript{***} & {}[0.03, 0.17]\\
+\hspace{1em}Segment & Acceptors & 0.90 (.853) & {}[0.30, 2.84]\\
+\hspace{1em}Segment & Fencesitters & - & \vphantom{2} -\\
+\hspace{1em}Segment & Sceptics & 2.43 (.243) & {}[0.47, 10.37]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Surprise ($\chi^{2}$ (2) = 8.99, $p$ = .011, $p_{adjusted}$ = .056)}}\\
+\hspace{1em}Intercept & - & 0.04 (.000)\textsuperscript{***} & {}[0.01, 0.11]\\
+\hspace{1em}Segment & Acceptors & 3.20 (.077) & {}[0.99, 14.30]\\
+\hspace{1em}Segment & Fencesitters & - & \vphantom{1} -\\
+\hspace{1em}Segment & Sceptics & 9.74 (.004)\textsuperscript{**} & {}[2.14, 52.42]\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{\textbf{Trust ($\chi^{2}$ (2) = 2.01, $p$ = .366, $p_{adjusted}$ = 1.000)}}\\
+\hspace{1em}Intercept & - & 0.25 (.000)\textsuperscript{***} & {}[0.14, 0.43]\\
+\hspace{1em}Segment & Acceptors & 1.50 (.245) & {}[0.77, 3.03]\\
+\hspace{1em}Segment & Fencesitters & - & -\\
+\hspace{1em}Segment & Sceptics & 1.97 (.237) & {}[0.61, 5.94]\\*
+\end{longtable}
+\efloatseparator
+ 
+\begin{table}
+\caption{\label{tbl-sentiment-models-contrasts}Pairwise comparisons of segment membership on fear content in
+justification of policy direction preferences, estimated using a
+binomial logistic regression model. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}}
+\toprule
+Contrasts & Estimate & 95\% Confidence interval & $p$ value & $p_{adjusted}$ value\\
+\midrule
+ln(odds(Acceptors) / odds(Fencesitters)) & 3.16 & {}[1.59, 6.28] & .001 & .003**\\
+ln(odds(Sceptics) / odds(Acceptors)) & 0.73 & {}[0.26, 2.09] & .563 & .563\\
+ln(odds(Sceptics) / odds(Fencesitters)) & 2.32 & {}[0.74, 7.24] & .147 & .293\\
+\bottomrule
+\multicolumn{5}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{5}{l}{\rule{0pt}{1em}\textsuperscript{**}\textit{p} $<$ .01; }\\
+\multicolumn{5}{l}{\rule{0pt}{1em}\parbox{32em}{\textit{p} values for the likelihood-ratio test were adjusted using the \citet{holm1979} method. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\end{tabular}
+\end{table}
