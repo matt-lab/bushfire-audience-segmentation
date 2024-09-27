@@ -35,7 +35,7 @@ Scripts run in `R`.
 
 ### TeX Installation
 
-All LaTeX documents are generated using R sweave with a local TeX installation. All documents were compiled using Quarto and XeLaTex.
+All documents were compiled using Quarto and XeLaTex.
 
 ### SVG
 
