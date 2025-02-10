@@ -691,15 +691,13 @@ descriptives_segment_change <-
 
 # Regression model
 conf_level <- .95
-ref_segment <- "fencesitter"
-ref_study <- 2
+ref_segment <- "Fencesitters"
+ref_study <- "Study 2"
 #### Segment membership: changed across time? ####
 # Set Fencesitter as reference level
 data_segment_change <- data |>
-    mutate(segment = as.factor(segment)) |>
-    mutate(segment = fct_relevel(segment, as.character(ref_segment))) |>
-    mutate(study = as.factor(study)) |>
-    mutate(study = fct_relevel(study, as.character(ref_study)))
+    mutate(segment = fct_relevel(segment_name, ref_segment)) |>
+    mutate(study = fct_relevel(study_name, ref_study))
 model_segment_change <- multinom(segment ~ study, data_segment_change, trace = FALSE)
 # First, an omnibus test of the model
 lr_test_segment_change <-
@@ -713,48 +711,21 @@ anova(
         & test == '1 vs 2'
     )
 
-# Regression model descriptives
-#tab_segment_change |> filter(y_level == 'acceptor' & term == '(Intercept)') |> pull(estimate)
-model_segment_change_descriptives <-
-    model_segment_change |>
-    tidy(
-        model_segment_change,
-        conf.int = TRUE,
-        conf.level = conf_level,
-        exponentiate = TRUE
-    ) |>
-    janitor::clean_names() |>
-    filter(term != 'study1') |>
-    group_by(y_level) |>
-    summarise(
-        estimate_1 = estimate[term == '(Intercept)'],
-        estimate_2 = estimate_1 * estimate[term == 'study3'],
-        .groups = 'drop'
-    ) |>
-    mutate(
-        across(
-            where(is.numeric),
-            specify_decimal
-        )
-    )  |>
-    mutate(
-        text = glue("from {estimate_1} times more likely, to {estimate_2} times more likely")
-    )
 ```
 
 We created a multinomial logistic regression model to predict segment membership as a function of study, using the *multinom* function from the *nnet* package [@venables_2002].
 Segment membership was entered as the dependent variable, with the Fencesitter segment as the reference category.
 Study was entered as a categorical predictor, with Study 2 as the reference category.
 Coefficients were exponentiated to estimate odds ratios, and are presented in @tbl-segment-change.
-Coefficient $p$ values were estimated using the Wald Z-test.
+A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
+To investigate specific study effects on segment membership, we followed up with pairwise comparisons between studies, using the *marginaleffects* package [@R-marginaleffects].
+We controlled for multiple comparisons by adjusting $p$ values with the Holm method [@holm1979].
+Pairwise comparisons are presented in @tbl-segment-change-contrasts.
 
 ```{r}
 #| label: tbl-segment-change
-#| tbl-cap: Estimated effects of study on segment membership using a multinomial logistic regression model.
+#| tbl-cap: Estimated effects of study on segment membership, estimated using a multinomial logistic regression model.
 
-conf_level <- .95
-ref_segment <- "fencesitter"
-ref_study <- 2
 
 tab_segment_change_names <- c(
     "Predictors",
@@ -772,7 +743,7 @@ tab_segment_change_footnotes <-
             "\\\\textsuperscript{***}",
             "\\\\textit{p} $<$ .001."
         ),
-        "\\\\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Model estimates of coefficients were exponentiated to odds ratios.}"
+        "\\\\parbox{36em}{Each study was entered as a categorical predictor, with Study 2. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}"
     )
 
 tab_segment_change <-
@@ -818,11 +789,11 @@ data |>
         )
     ) |>
     mutate(
-        term = case_when(
-            str_to_lower(variables) == "study"
-                ~ str_to_lower(str_replace_all(categories, " ", "")),
-            TRUE ~ str_to_lower(str_replace_all(categories, " ", ""))
-        )
+        term =
+          str_c(
+            str_to_lower(variables),
+            categories
+          )
     ) |>
     add_case(
         variables = "Intercept",
@@ -860,7 +831,7 @@ data |>
             ~ replace_na(.x, "-")
         )
     ) |>
-    relocate(ends_with("_acceptor"), .after = "categories") |>
+    relocate(ends_with("_Acceptors"), .after = "categories") |>
     mutate(
         variables = case_when(
             variables == lag(variables, 1)
@@ -878,8 +849,8 @@ data |>
     add_header_above(
         c(
             " " = 2,
-            r"{\\parbox{10em}{\\centering Ratio of Acceptor odds and Fencesitter odds}}" = 2,
-            r"{\\parbox{10em}{\\centering Ratio of Sceptics odds and Fencesitter odds}}" = 2
+            r"{\\parbox{10em}{\\centering Ratio of Acceptors odds and Fencesitters odds}}" = 2,
+            r"{\\parbox{10em}{\\centering Ratio of Sceptics odds and Fencesitters odds}}" = 2
         ),
         escape = FALSE
     ) |>
@@ -891,6 +862,72 @@ data |>
         escape = FALSE
     )
     
+```
+
+```{r}
+#| label: tbl-segment-change-contrasts
+#| tbl-cap: "Pairwise comparisons of study on segment membership, estimated using a multinomial logistic regression model."
+
+#tab_segment_change_contrasts <-
+  get_contrasts(
+    model = model_segment_change,
+    variables = list(study = 'pairwise'),
+    newdata = 'balanced',
+    p_adjust_method = 'holm',
+    comparison = 'lnor',
+    transform = exp
+  ) |>
+  mutate(
+    estimate = specify_decimal(estimate, 2),
+    p_value = specify_p_value_text(p_value, with_stars = T, with_equals = F, 3),
+    p_value_adjusted = specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = F, 3),
+    conf = str_c("[", specify_decimal(conf_low, 2), ", ", specify_decimal(conf_high, 2), "]")
+  ) |>
+  select(
+    group,
+    contrast,
+    estimate,
+    conf,
+    p_value,
+    p_value_adjusted
+  ) |>
+  kbl(
+    align = "l",
+    escape = FALSE,
+    booktabs = TRUE,
+    linesep = "",
+    col.names =
+      c(
+        "Segment",
+        "Contrasts",
+        "Estimate",
+        "95\\% Confidence interval",
+        "$p$ value",
+        "$p_{adjusted}$ value"
+      )
+  ) |>
+  column_spec(1, width = "6em") |>
+  column_spec(2, width = "10em") |>
+  column_spec(3, width = "4em") |>
+  column_spec(4, width = "6em") |>
+  column_spec(5:6, width = "5em") |>
+  kable_styling(
+    latex_options = c("repeat_header")
+  ) |>
+  footnote(
+    general =
+      c(
+        str_c(
+          "\\\\textsuperscript{*}",
+          "\\\\textit{p} $<$ .05; ",
+          "\\\\textsuperscript{**}",
+          "\\\\textit{p} $<$ .01; "
+        ),
+        "\\\\parbox{32em}{\\\\textit{p} values for contrasts were adjusted using the \\\\citet{holm1979} method. Estimates were exponentiated.}"
+      ),
+    escape = FALSE
+  )
+
 ```
 
 \clearpage
@@ -1441,6 +1478,17 @@ The correlations between the Fire Perception Scale subscale scores and auxiliary
 #| tbl-cap: "Pearson correlations between the Fire Perception Scale subscale scores and auxiliary psychological characteristics."
 
 # Some exploration of correlations
+data_fps_scores <-
+  data_fps_scales |>
+  group_by(
+    id,
+    factor_name
+  ) |>
+  summarise(
+    score = mean(value_scored),
+    .groups = 'drop'
+  )
+
 data_fps_correlations <- 
     data |>
     select(any_of(scales_info$abbrev), study, id) |>
@@ -1491,9 +1539,9 @@ data_fps_correlations <-
         p_value_markers =
             get_p_value_markers(
                 case_when(
-                    abs(r) > cor_critical(.001, n_distinct(data_fps_scores$id)) ~ .001 - 1e-3,
-                    abs(r) > cor_critical(.01, n_distinct(data_fps_scores$id)) ~ .01 - 1e-3,
-                    abs(r) > cor_critical(.05, n_distinct(data_fps_scores$id)) ~ .05 - 1e-3,
+                    abs(r) > cor_critical(.001, n_distinct(data_fps_scales$id)) ~ .001 - 1e-3,
+                    abs(r) > cor_critical(.01, n_distinct(data_fps_scales$id)) ~ .01 - 1e-3,
+                    abs(r) > cor_critical(.05, n_distinct(data_fps_scales$id)) ~ .05 - 1e-3,
                     TRUE ~ 1
                 )
             )
@@ -1501,8 +1549,8 @@ data_fps_correlations <-
     mutate(
         r_colour =
             case_when(
-                r > .6 ~ tail(carto_pal(201, magnitude_palette), 1),
-                r < -.6 ~ head(carto_pal(201, magnitude_palette), 1),
+                r > .1 ~ tail(carto_pal(201, magnitude_palette), 1),
+                r < -.1 ~ head(carto_pal(201, magnitude_palette), 1),
                 TRUE ~ carto_pal(201, magnitude_palette)[floor((r + 1) / 2 * 200 + 1)]
             )
     ) |>
@@ -1775,8 +1823,10 @@ The model estimated the log odds ratio of using an emotion, using the *glm* func
 Segment membership was entered as a categorical predictor, with Fencesitter as the reference category.
 Association between segment membership and the use of emotional words was assessed with a likelihood-ratio test that compared the regression model with and without segment membership as a predictor.
 To control for multiple comparisons, the $p$ values of likelihood-ratio tests were adjusted using the Holm [-@holm1979] method.
-A Wald Z-test was used to estimate the (unadjusted) $p$ values of model coefficients.
-We followed up significant results with pairwise comparisons between segments, using the *marginaleffects* package [@R-marginaleffects] @tbl-sentiment-models-contrasts with a Holm [-@holm1979] $p$ value adjustment for multiple comparisons.
+A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
+We followed up significant results with pairwise comparisons between segments, using the *marginaleffects* package [@R-marginaleffects].
+We controlled for multiple comparisons using the Holm method [-@holm1979] to adjust $p$ values.
+The multiple comparisons are shown in @tbl-sentiment-models-contrasts.
 
 ```{r}
 #| label: tbl-sentiment-counts
@@ -2147,7 +2197,7 @@ model_sentiment |>
     unnest(comparison_summary) |>
     mutate(
         estimate = specify_decimal(estimate, 2),
-        p_value = specify_p_value_text(p_value, with_stars = F, with_equals = F, 3),
+        p_value = specify_p_value_text(p_value, with_stars = T, with_equals = F, 3),
         p_value_adjusted = specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = F, 3),
         conf = str_c("[", specify_decimal(conf_low, 2), ", ", specify_decimal(conf_high, 2), "]")
     ) |>
@@ -2190,9 +2240,11 @@ model_sentiment |>
             c(
                 str_c(
                     "\\\\textsuperscript{**}",
-                    "\\\\textit{p} $<$ .01; "
+                    "\\\\textit{p} $<$ .01; ",
+                    "\\\\textsuperscript{***}",
+                    "\\\\textit{p} $<$ .001."
                 ),
-                "\\\\parbox{32em}{\\\\textit{p} values for the likelihood-ratio test were adjusted using the \\\\citet{holm1979} method. Model estimates of coefficients were exponentiated to odds ratios.}"
+                "\\\\parbox{32em}{\\\\textit{p} values for contrasts were adjusted using the \\\\citet{holm1979} method. Estimates were exponentiated.}"
             ),
         escape = FALSE
     )
