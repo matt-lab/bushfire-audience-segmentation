@@ -175,11 +175,11 @@
 \title{Manuscript methods and results}
 \author{Matthew Andreotta \and Fabio Boschetti \and Simon
 Farrell \and Cécile Paris \and Iain Walker \and Mark Hurlstone}
-\date{2024-09-27}
+\date{2024-11-07}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, frame hidden, enhanced, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden, sharp corners, enhanced, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{summary}{%
 \section{Summary}\label{summary}}
@@ -490,16 +490,18 @@ investigated the relative proportions of segments across studies
 (Figure~\ref{fig-segment-change}). Numerically, the proportion of
 Acceptors fell across time (from 64.60\% of Study 1 sample to 54.46\% of
 Study 3 sample), whereas the proportion of Fencesitters increased across
-time (from 27.13\% of Study 1 sample to 37.09\% of Study 3 sample). To
-investigate whether these changes were statistically significant, we
-created a multinomial logistic regression model to predict segment
-membership as a function of study (coefficients reported in
+time (from 27.13\% of Study 1 sample to 37.09\% of Study 3 sample). In
+comparison, the proportion of Sceptics was relatively stable across
+studies (from 8.28\% of Study 1 sample to 8.45\% of Study 3 sample). To
+investigate whether the relative proportion of segments differed across
+studies, we created a multinomial logistic regression model to predict
+segment membership as a function of study (coefficients reported in
 Supplementary Material), using the \emph{multinom} function from the
 \emph{nnet} package \citep{venables_2002}. A log likelihood ratio test
 did not indicate an improvement in model fit when study was included as
 a predictor, compared to a model with only an intercept term
-(\(\chi^{2}\) (4) = 8.85, \(p\) = 0.07). Thus, segment membership did
-not reliably differ across study samples.
+(\(\chi^{2}\) (4) = 8.85, \(p\) = 0.07, \(\omega =\) 0.09). Thus,
+segment membership did not reliably differ across study samples.
 
 \begin{figure}
 
@@ -697,7 +699,8 @@ scale variance. We created subscales corresponding to each factor by
 averaging item scores. Items that negatively loaded onto factors were
 reverse coded. The multi-item factors of Climate Processes and Fire
 Realities had an internal consistency of Cronbach's \(\alpha\) = 0.86
-and 0.42, respectively.
+(mean inter-item correlation = 0.60) and Cronbach's \(\alpha\) = 0.42
+(mean inter-item correlation = 0.29), respectively.
 
 To test segment differences in bushfire perceptions, we built linear
 regression models predicting Climate Processes, Fire Realities, and
@@ -737,28 +740,43 @@ had a higher mean endorsement than Acceptors (difference = 0.55,
 
 \hypertarget{tbl-fps-loadings}{}
 \begin{table}
-\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor, the
-mean score of each item, and the standard error of the mean. }\tabularnewline
+\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor,
+their mean score, and their standard deviation. }\tabularnewline
 
 \centering
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{18em}ccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-6}
-Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SE}\\
+Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SD}\\
 \midrule
-1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 0.10\\
-2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 0.09\\
-3. The 2019-20 Australian bushfires have accelerated climate change & \textbf{0.84} & 0.05 & -0.14 & 3.16 & 0.09\\
-4. The 2019-20 Australian bushfires are severe & 0.17 & \textbf{0.86} & 0.23 & 4.50 & 0.05\\
-5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires & \textbf{0.84} & -0.19 & 0.13 & 2.55 & 0.09\\
-6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires & \textbf{0.86} & -0.06 & 0.08 & 3.05 & 0.09\\
-7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires & -0.10 & 0.04 & \textbf{0.94} & 3.47 & 0.08\\
+1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 1.40\\
+2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 1.27\\
+3. The 2019-20 Australian bushfires have accelerated climate change & \textbf{0.84} & 0.05 & -0.14 & 3.16 & 1.30\\
+4. The 2019-20 Australian bushfires are severe & 0.17 & \textbf{0.86} & 0.23 & 4.50 & 0.79\\
+5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires & \textbf{0.84} & -0.19 & 0.13 & 2.55 & 1.32\\
+6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires & \textbf{0.86} & -0.06 & 0.08 & 3.05 & 1.39\\
+7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires & -0.10 & 0.04 & \textbf{0.94} & 3.47 & 1.20\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}Bolded loadings are greater than .40 in magnitude.}\\
 \end{tabular}
 \end{table}
+
+\begin{verbatim}
+Warning: Duplicated aesthetics after name standardisation: colour
+\end{verbatim}
+
+\begin{verbatim}
+Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+i Please use the `legend.position.inside` argument of `theme()` instead.
+\end{verbatim}
+
+\begin{verbatim}
+Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggplot2
+3.5.0.
+\end{verbatim}
 
 \begin{figure}
 
@@ -811,12 +829,12 @@ full in Supplementary Materials). Sceptics were excluded from analysis,
 as none desired more governmental climate change mitigation policies. A
 likelihood-ratio test indicated that segment membership significantly
 predicted policy direction preferences (\(\chi^{2}\) (1) = 35.45, \(p\)
-\textless{} .001). Specifically, we found that the odds of Acceptors
-(\(n\) = 104, 89.66\% of Acceptors, odds = 8.67) indicating a preference
-for more governmental climate change mitigation policies were
-approximately eight times greater (odds ratio = 8.03, 95\% \emph{CI} =
-{[}3.92, 17.49{]}, \(p\) \textless{} .001) than Fencesitters (\(n\) =
-41, 51.90\% of Fencesitters, odds = 1.08).
+\textless{} .001, Cohen's \(\omega\) = 0.43). Specifically, we found
+that the odds of Acceptors (\(n\) = 104, 89.66\% of Acceptors, odds =
+8.67) indicating a preference for more governmental climate change
+mitigation policies were approximately eight times greater (odds ratio =
+8.03, 95\% \emph{CI} = {[}3.92, 17.49{]}, \(p\) \textless{} .001) than
+Fencesitters (\(n\) = 41, 51.90\% of Fencesitters, odds = 1.08).
 
 We explored the text justification of policy direction preferences using
 an emotion analysis. We detected the emotional association of each word
@@ -841,7 +859,24 @@ across segments, except for fear, where the odds of Acceptors using a
 fear word (\(n\) = 47, 40.52\% of Acceptors, odds = 0.68) were
 approximately three times higher (odds ratio = 3.16, 95\% \emph{CI} =
 {[}1.59, 6.28{]}, \(p\) = .001) than Fencesitters (\(n\) = 14, 17.72\%
-of Fencesitters, odds = 0.22).
+of Fencesitters, odds = 0.22). Sceptics did not reliably differ in their
+use of fear words (\(n\) = 6, 33.33\% of Sceptics, odds = 0.50) from
+Acceptors or Fencesitters.
+
+\begin{verbatim}
+Warning: Duplicated aesthetics after name standardisation: colour
+\end{verbatim}
+
+\begin{verbatim}
+Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+i Please use the `legend.position.inside` argument of `theme()` instead.
+\end{verbatim}
+
+\begin{verbatim}
+Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggplot2
+3.5.0.
+\end{verbatim}
 
 \begin{figure}
 

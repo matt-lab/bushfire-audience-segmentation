@@ -98,6 +98,7 @@ library(parallel) # for parallel processing
 library(doParallel) # for parallel processing
 library(doRNG) # for parallel processing seeds
 library(marginaleffects) # for marginal effects
+library(ggpattern) # for pattern fills
 
 #### Helper functions ####
 
@@ -140,7 +141,7 @@ specify_p_value_text <- function(p, with_stars = TRUE, with_equals = FALSE, ...)
         TRUE ~ str_c(equals_str, specify_p_value(p, ...))
     )
 }
-get_chisq_text <- function(chisq, df, p_value, p_value_adjusted = NULL) {
+get_chisq_text <- function(chisq, df, p_value, p_value_adjusted = NULL, w = NULL) {
     # Takes chisquare test results and returns a string with the test statistics
     str_c(
         "$\\chi^{2}$ (",
@@ -152,7 +153,13 @@ get_chisq_text <- function(chisq, df, p_value, p_value_adjusted = NULL) {
         ifelse(
             is.null(p_value_adjusted),
             "",
-            str_c(", $p_{adjusted}$ ", specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = T, 3)))
+            str_c(", $p_{adjusted}$ ", specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = T, 3))
+        ),
+        ifelse(
+            is.null(w),
+            "",
+            str_c(", Cohen's $\\omega$ = ", specify_decimal(w))
+        )
     )
 }
 # For pairwise comparisons
@@ -203,6 +210,9 @@ colour_background <- "#FFFFFF"
 colour_text <- "#000000"
 colour_grid <- "#A0A0A0"
 colour_axis <- "#000000"
+colour_hatch_pattern <- "gray35"
+density_hatch_pattern <- 0.15
+
 
 theme_manuscript <- function() {
     # Colour
@@ -628,9 +638,9 @@ scales_info <- scales_info |>
 # From colourblind friendly palettes
 
 # From the 'safe' carto colour palette
-study_colours <- c("#6699CC", "#661100", "#882255")
+study_colours <- rep('white', length(unique(data$study_name_full))) #c("#6699CC", "#661100", "#882255")
 names(study_colours) <- sort(unique(data$study_name_full))
-segment_colours <- c("#117733", "#DDCC77", "#88CCEE")
+segment_colours <- rep('white', length(unique(data$segment_name))) #c("#117733", "#DDCC77", "#88CCEE")
 names(segment_colours) <- sort(unique(data$segment_name))
 
 # Other palettes
@@ -1162,7 +1172,13 @@ anova(
     filter(
         model == 'study'
         & test == '1 vs 2'
+    ) |>
+# Effect size, Cohen's w = sqrt(chi^2 / n)
+    mutate(
+        n = nrow(data_segment_change),
+        w = sqrt(lr_stat / n)
     )
+
 
 # Regression model descriptives
 #tab_segment_change |> filter(y_level == 'acceptor' & term == '(Intercept)') |> pull(estimate)
@@ -1195,8 +1211,9 @@ model_segment_change_descriptives <-
 
 To explore whether segment membership changed during Black Summer, we investigated the relative proportions of segments across studies (@fig-segment-change).
 Numerically, the proportion of Acceptors fell across time `r pull(filter(descriptives_segment_change, segment == 'acceptor'), text)`, whereas the proportion of Fencesitters increased across time `r pull(filter(descriptives_segment_change, segment == 'fencesitter'), text)`.
-To investigate whether these changes were statistically significant, we created a multinomial logistic regression model to predict segment membership as a function of study (coefficients reported in Supplementary Material), using the *multinom* function from the *nnet* package [@venables_2002].
-A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_segment_change$df`) = `r specify_decimal(lr_test_segment_change$lr_stat)`, $p$ = `r specify_decimal(lr_test_segment_change$pr_chi)`).
+In comparison, the proportion of Sceptics was relatively stable across studies `r pull(filter(descriptives_segment_change, segment == 'sceptic'), text)`.
+To investigate whether the relative proportion of segments differed across studies, we created a multinomial logistic regression model to predict segment membership as a function of study (coefficients reported in Supplementary Material), using the *multinom* function from the *nnet* package [@venables_2002].
+A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_segment_change$df`) = `r specify_decimal(lr_test_segment_change$lr_stat)`, $p$ = `r specify_decimal(lr_test_segment_change$pr_chi)`, $\omega =$ `r specify_decimal(lr_test_segment_change$w)`).
 Thus, segment membership did not reliably differ across study samples.
 
 ```{r}
@@ -1204,7 +1221,6 @@ Thus, segment membership did not reliably differ across study samples.
 #| fig-cap: The segment membership of each study's sample, as a proportion (percentage). Error bars indicate one standard error of the proportion.
 #| warning: false
 #| echo: false
-
 data |>
     group_by(study, study_name, time, study_name_full) |>
     count(segment, segment_name) |>
@@ -1212,8 +1228,19 @@ data |>
     mutate(percentage = proportion * 100) |>
     mutate(se = sqrt(proportion * (1 - proportion)/ n)) |>
     mutate(percentage_se = se * 100) |>    
-    ggplot(aes(x = segment_name, y = percentage, fill = study_name_full)) +
-    geom_bar(position = "dodge", stat = "identity", col = colour_error_bar) +
+    ggplot(aes(x = segment_name, y = percentage, fill = study_name_full, colour = study_name_full)) +
+    geom_bar_pattern(
+        aes(
+            pattern = study_name_full
+        ), 
+        colour = 'black',
+        pattern_fill = colour_hatch_pattern,
+        pattern_colour = colour_hatch_pattern,
+        pattern_density = density_hatch_pattern,
+        position = "dodge",
+        stat = "identity",
+        col = colour_error_bar
+    ) +
     geom_errorbar(
         aes(ymin = percentage - percentage_se, ymax = percentage + percentage_se),
         position = position_dodge(width = 0.9),
@@ -1227,11 +1254,17 @@ data |>
         expand = c(0, 0)
     ) +
     scale_x_discrete() +
+   # scale_pattern_fill_manual(
     scale_fill_manual(
         "Study",
         values = study_colours
     ) +
-    labs(x = "Segment", y = "Percentage of sample (%)") +
+    labs(
+        x = "Segment",
+        y = "Percentage of sample (%)",
+        pattern = "Study",
+        fill = "Study"
+    ) +
     theme_manuscript() +
     theme(
         legend.position = c(1, 1),
@@ -1242,7 +1275,7 @@ data |>
 ## Auxiliary psychological characteristics
 
 ```{r}
-#| label: psychological-characteristics-mean-diff
+##| label: psychological-characteristics-mean-diff
 #| echo: false
 
 means_diff_results <- data |>
@@ -1798,7 +1831,11 @@ fps_descriptives <- data |>
     select(matches("fps_[0-9]+")) |>
     pivot_longer(1:7, names_to = 'item', values_to = 'value') |>
     group_by(item) |>
-    summarise(m = mean(value), se = sd(value)/sqrt(length(value))) |>
+    summarise(
+        m = mean(value),
+        sd = sd(value),
+        se = sd(value)/sqrt(length(value))
+    ) |>
     mutate(across(m:se, ~ specify_decimal(.x, 2))) |>
     mutate(names = fps_item_names)
 
@@ -1826,6 +1863,31 @@ fps_alphas <- data_fps_scales |>
     map(~ ifelse(ncol(.x) > 1, alpha(.x)$total$raw_alpha, NA))
 fps_alphas_rounded <- fps_alphas |>
     map(~ ifelse(!is.na(.x), specify_decimal(.x), "No alpha reported"))
+
+fps_avg_item_correlations <-
+    data_fps_scales |>
+    select(id, item, value_scored, factor_name) |>
+    left_join(
+        data_fps_scales,
+        by = c("id", "factor_name"),
+        relationship = "many-to-many",
+        suffix = c('_1', '_2')
+    ) |>
+    group_by(
+        factor_name,
+        item_1,
+        item_2
+    ) |>
+    summarise(
+        r = cor(value_scored_1, value_scored_2),
+        .groups = 'drop'
+    ) |>
+    filter(item_1 != item_2) |>
+    group_by(factor_name) |>
+    summarise(
+        r_avg = mean(r),
+        r_avg_rounded = specify_decimal(r_avg)
+    )
 
 # Models
 get_lm_models <- function(data, equation, model_key = NULL) {
@@ -1959,7 +2021,7 @@ The first factor, labelled *Climate Processes*, was characterised by four items 
 The second factor, labelled *Fire Realities*, was characterised by two items (items 2 and 4) which participants generally responded with certainty and accounted for `r fps_pca_var[2]`% of scale variance.
 The third factor, labelled *Arson Causes*, was characterised by a single item (item 7) stating that Black Summer was caused by hundreds of arsonists and accounted for `r fps_pca_var[3]`% of scale variance.
 We created subscales corresponding to each factor by averaging item scores. Items that negatively loaded onto factors were reverse coded.
-The multi-item factors of Climate Processes and Fire Realities had an internal consistency of Cronbach's $\alpha$ = `r fps_alphas_rounded[[1]][1]` and `r fps_alphas_rounded[[2]][1]`, respectively.
+The multi-item factors of Climate Processes and Fire Realities had an internal consistency of Cronbach's $\alpha$ = `r fps_alphas_rounded[[1]][1]` (mean inter-item correlation = `r fps_avg_item_correlations$r_avg_rounded[1]`) and Cronbach's $\alpha$ = `r fps_alphas_rounded[[2]][1]` (mean inter-item correlation = `r fps_avg_item_correlations$r_avg_rounded[2]`), respectively.
 
 To test segment differences in bushfire perceptions, we built linear regression models predicting Climate Processes, Fire Realities, and Arson Causes as a function of segment membership (coefficients reported in Supplementary Materials).
 All linear regression models accounted for a significant amount of bushfire perception variance compared to intercept-only models, indicating that segment membership was a significant predictor of Climate Processes (`r fps_models_fits[1]`), Fire Realities (`r fps_models_fits[2]`), and Arson Causes (`r fps_models_fits[3]`).
@@ -1971,7 +2033,7 @@ The pattern of Climate Processes endorsement was reversed for Arson Causes, with
 
 ```{r}
 #| label: tbl-fps-loadings
-#| tbl-cap: "Items of the Fire Perception Scale, their loadings onto each factor, the mean score of each item, and the standard error of the mean."
+#| tbl-cap: "Items of the Fire Perception Scale, their loadings onto each factor, their mean score, and their standard deviation."
 #| echo: false
 
 tab_fps_loadings_footnote <- "Bolded loadings are greater than .40 in magnitude."
@@ -1981,13 +2043,12 @@ tab_fps_loadings_names <- c(
     sprintf(r"{\parbox{5em}{\centering %s}}", "Fire Realities"),
     sprintf(r"{\parbox{5em}{\centering %s}}", "Arson Causes"),
     r"{\textit{M}}",
-    r"{\textit{SE}}")
-
+    r"{\textit{SD}}")
 
 tab_fps_loadings <- loadings(fps_pca)[ , ] |>
     as_tibble(rownames = "item") |>
     left_join(fps_descriptives, by = "item") |>
-    select(names, RC1, RC2, RC3, m, se) |>
+    select(names, RC1, RC2, RC3, m, sd) |>
     rowwise() |>
     mutate(across(
         starts_with("RC"), 
@@ -2027,10 +2088,22 @@ data_fps_scales |>
         ci_upper = m + se) |>
     ungroup() |>
     ggplot(aes(x = factor_name, y = m, fill = segment_name)) +
-    geom_bar(
+    geom_bar_pattern(
+        aes(
+            pattern = segment_name
+        ), 
+        colour = 'black',
+        pattern_fill = colour_hatch_pattern,
+        pattern_colour = colour_hatch_pattern,
+        pattern_density = density_hatch_pattern,
         position = "dodge",
         stat = "identity",
-        col = colour_error_bar) +
+        col = colour_error_bar
+    ) +
+    # geom_bar(
+    #     position = "dodge",
+    #     stat = "identity",
+    #     col = colour_error_bar) +
     geom_errorbar(
         aes(ymin = ci_lower, ymax = ci_upper),
         position = position_dodge(0.9),
@@ -2052,12 +2125,16 @@ data_fps_scales |>
     coord_cartesian(ylim = c(1, 5)) +
     ylab('Mean subscale score') +
     xlab('Fire Perception subscale') +
+    labs(
+        fill = "Segment",
+        pattern = "Segment"
+    ) +
     theme_manuscript() +
     theme(axis.text.y           = element_text(hjust = 1, vjust = 0.5)) +
     # Add legend details
     scale_fill_manual(
         "Segment",
-        values = segment_colours
+        values = segment_colours #segment_colours
     ) +
     theme(
         legend.position = c(0, 1),
@@ -2221,7 +2298,8 @@ lr_test_segment_mitigation <-
             get_chisq_text(
                 statistic,
                 df,
-                p_value
+                p_value,
+                w = sqrt(statistic / nrow(data_segment_mitigation))
             )
     )
 text_segment_mitigation <-
@@ -2502,6 +2580,7 @@ For each response, we assigned a dichotomous code (present/not present) if the r
 The most common emotion evoked by participants was fear (`r sentiment_fp_mitigation_descriptives$n_text[sentiment_fp_mitigation_descriptives$sentiment == "fear"]`), found in both justification for more action ("the recent bushfire is a wakupe call. how much more *worse* do we want to experience?", fear words italicised) and for no changes or less action ("...100 arsonists were charged as a starter and the it was the fuel left on the ground for decades that made the fires so much *worse* and caused the *disaster*", fear words italicised).
 To test whether emotions varied across segments, we made a binomial logistic regression model for each emotion with segment membership as a predictor (reported in full in Supplementary Materials).
 Generally, we found no statistically significant differences in the use of emotions across segments, except for fear, where the odds of Acceptors using a fear word (`r filter(sentiment_fp_mitigation_segment_descriptives, segment == 'acceptor')$text`) were approximately three times higher (`r contrast_sentiment_text`) than Fencesitters (`r filter(sentiment_fp_mitigation_segment_descriptives, segment == 'fencesitter')$text`).
+Sceptics did not reliably differ in their use of fear words (`r filter(sentiment_fp_mitigation_segment_descriptives, segment == 'sceptic')$text`) from Acceptors or Fencesitters.
 
 
 ```{r}
@@ -2531,7 +2610,15 @@ data |>
     ) |>
     mutate(percentage_se = se * 100) |>
     ggplot(aes(x = fp_mitigation, y = percentage, fill = segment_name)) +
-    geom_bar(
+    # geom_bar(
+    geom_bar_pattern(
+        aes(
+            pattern = segment_name
+        ),
+        pattern_fill = colour_hatch_pattern,
+        pattern_colour = colour_hatch_pattern,
+        pattern_density = density_hatch_pattern,
+        colour = "black",
         position = "dodge",
         stat = "identity",
         col = colour_error_bar
@@ -2541,7 +2628,12 @@ data |>
         limits = c(0, 100),
         expand = c(0, 0)) +
     scale_x_discrete(labels = scales::label_wrap(6)) +
-    labs(x = "Policy direction preferences", y = "Percentage of segment (%)") +
+    labs(
+        x = "Policy direction preferences",
+        y = "Percentage of segment (%)",
+        fill = "Segment",
+        pattern = "Segment"
+    ) +
     theme_manuscript() +
     # Faceting
     facet_wrap(~ segment_name) +
@@ -2559,4 +2651,3 @@ data |>
         legend.justification = c(0.5, 1)
     )
 ```
-

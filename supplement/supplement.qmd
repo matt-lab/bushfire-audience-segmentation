@@ -899,6 +899,8 @@ data |>
 ## Auxiliary psychological characteristics
 
 See @tbl-mean_diff for the difference in means of auxiliary psychological characteristics between Study 1 and Study 3, for: cognitive style; ideology, worldviews, and values; and personality.
+To guard against Type I errors, we applied a [-@holm1979] $p$ value adjustment to four families of tests for changes in psychological characteristics: climate change cognition and affect; cognitive styles; ideology, worldviews, and values; and personality.
+The results for mean differences of climate change cognition and affect are not presented here, as these are reported in the main text.
 
 See @fig-scale-change for density estimates of auxiliary psychological characteristics in Study 1 and Study 3.
 

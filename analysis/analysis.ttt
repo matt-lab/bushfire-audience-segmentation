@@ -193,23 +193,23 @@ Predictors & Study 1 & Study 3 & Study 1 & Study 3 & Study 1 & Study 3\\
 \efloatseparator
  
 \begin{table}
-\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor, the
-mean score of each item, and the standard error of the mean. }\tabularnewline
+\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor,
+their mean score, and their standard deviation. }\tabularnewline
 
 \centering
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{18em}ccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-6}
-Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SE}\\
+Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SD}\\
 \midrule
-1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 0.10\\
-2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 0.09\\
-3. The 2019-20 Australian bushfires have accelerated climate change & \textbf{0.84} & 0.05 & -0.14 & 3.16 & 0.09\\
-4. The 2019-20 Australian bushfires are severe & 0.17 & \textbf{0.86} & 0.23 & 4.50 & 0.05\\
-5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires & \textbf{0.84} & -0.19 & 0.13 & 2.55 & 0.09\\
-6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires & \textbf{0.86} & -0.06 & 0.08 & 3.05 & 0.09\\
-7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires & -0.10 & 0.04 & \textbf{0.94} & 3.47 & 0.08\\
+1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 1.40\\
+2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 1.27\\
+3. The 2019-20 Australian bushfires have accelerated climate change & \textbf{0.84} & 0.05 & -0.14 & 3.16 & 1.30\\
+4. The 2019-20 Australian bushfires are severe & 0.17 & \textbf{0.86} & 0.23 & 4.50 & 0.79\\
+5. If the government increased taxes on all fossil fuels (e.g., gasoline, oil, coal, kerosene), Australia would be less likely to experience extreme bushfires & \textbf{0.84} & -0.19 & 0.13 & 2.55 & 1.32\\
+6. If we changed our lifestyles to reduce our consumption, Australia would be less likely to experience bushfires & \textbf{0.86} & -0.06 & 0.08 & 3.05 & 1.39\\
+7. Over one hundred arsonists have contributed to the 2019-20 Australian bushfires & -0.10 & 0.04 & \textbf{0.94} & 3.47 & 1.20\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}Bolded loadings are greater than .40 in magnitude.}\\
