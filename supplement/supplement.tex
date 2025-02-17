@@ -173,11 +173,11 @@ climate change influence climate-change beliefs? The case of the
 2019--2020 Australian bushfires''}
 \author{Matthew Andreotta \and Fabio Boschetti \and Simon
 Farrell \and Cécile Paris \and Iain Walker \and Mark Hurlstone}
-\date{2025-02-10}
+\date{2025-02-17}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, enhanced, interior hidden, sharp corners, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, enhanced, boxrule=0pt, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
@@ -291,13 +291,7 @@ the reference category. Study was entered as a categorical predictor,
 with Study 2 as the reference category. Coefficients were exponentiated
 to estimate odds ratios, and are presented in
 Table~\ref{tbl-segment-change}. A Wald \(Z\)-test was used to estimate
-the (unadjusted) \(p\) values of model coefficients. To investigate
-specific study effects on segment membership, we followed up with
-pairwise comparisons between studies, using the \emph{marginaleffects}
-package \citep{R-marginaleffects}. We controlled for multiple
-comparisons by adjusting \(p\) values with the Holm method
-\citep{holm1979}. Pairwise comparisons are presented in
-Table~\ref{tbl-segment-change-contrasts}.
+the (unadjusted) \(p\) values of model coefficients.
 
 \hypertarget{tbl-segment-change}{}
 \begin{table}
@@ -319,32 +313,6 @@ Study & Study 1 & 1.06 (.709) & {}[0.78, 1.44] & 0.81 (.417) & {}[0.48, 1.35]\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{***}\textit{p} $<$ .001.}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}}\\
-\end{tabular}
-\end{table}
-
-\hypertarget{tbl-segment-change-contrasts}{}
-\begin{table}
-\caption{\label{tbl-segment-change-contrasts}Pairwise comparisons of study on segment membership, estimated using a
-multinomial logistic regression model. }\tabularnewline
-
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{4em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}}
-\toprule
-Segment & Contrasts & Estimate & 95\% Confidence interval & $p$ value & $p_{adjusted}$ value\\
-\midrule
-Fencesitters & ln(odds(Study 1) / odds(Study 2)) & 0.98 & {}[0.72, 1.32] & .876 & 1.000\\
-Fencesitters & ln(odds(Study 3) / odds(Study 1)) & 1.58 & {}[1.12, 2.25] & .010** & .089\\
-Fencesitters & ln(odds(Study 3) / odds(Study 2)) & 1.55 & {}[1.09, 2.20] & .015* & .106\\
-Acceptors & ln(odds(Study 1) / odds(Study 2)) & 1.12 & {}[0.85, 1.48] & .430 & 1.000\\
-Acceptors & ln(odds(Study 3) / odds(Study 1)) & 0.66 & {}[0.47, 0.92] & .013* & .105\\
-Acceptors & ln(odds(Study 3) / odds(Study 2)) & 0.73 & {}[0.52, 1.03] & .070 & .418\\
-Sceptics & ln(odds(Study 1) / odds(Study 2)) & 0.78 & {}[0.49, 1.24] & .286 & 1.000\\
-Sceptics & ln(odds(Study 3) / odds(Study 1)) & 1.02 & {}[0.57, 1.85] & .940 & 1.000\\
-Sceptics & ln(odds(Study 3) / odds(Study 2)) & 0.79 & {}[0.45, 1.41] & .434 & 1.000\\
-\bottomrule
-\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
-\multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; }\\
-\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{32em}{\textit{p} values for contrasts were adjusted using the \citet{holm1979} method. Estimates were exponentiated.}}\\
 \end{tabular}
 \end{table}
 

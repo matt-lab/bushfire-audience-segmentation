@@ -718,9 +718,6 @@ Segment membership was entered as the dependent variable, with the Fencesitter s
 Study was entered as a categorical predictor, with Study 2 as the reference category.
 Coefficients were exponentiated to estimate odds ratios, and are presented in @tbl-segment-change.
 A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
-To investigate specific study effects on segment membership, we followed up with pairwise comparisons between studies, using the *marginaleffects* package [@R-marginaleffects].
-We controlled for multiple comparisons by adjusting $p$ values with the Holm method [@holm1979].
-Pairwise comparisons are presented in @tbl-segment-change-contrasts.
 
 ```{r}
 #| label: tbl-segment-change
@@ -864,71 +861,6 @@ data |>
     
 ```
 
-```{r}
-#| label: tbl-segment-change-contrasts
-#| tbl-cap: "Pairwise comparisons of study on segment membership, estimated using a multinomial logistic regression model."
-
-#tab_segment_change_contrasts <-
-  get_contrasts(
-    model = model_segment_change,
-    variables = list(study = 'pairwise'),
-    newdata = 'balanced',
-    p_adjust_method = 'holm',
-    comparison = 'lnor',
-    transform = exp
-  ) |>
-  mutate(
-    estimate = specify_decimal(estimate, 2),
-    p_value = specify_p_value_text(p_value, with_stars = T, with_equals = F, 3),
-    p_value_adjusted = specify_p_value_text(p_value_adjusted, with_stars = T, with_equals = F, 3),
-    conf = str_c("[", specify_decimal(conf_low, 2), ", ", specify_decimal(conf_high, 2), "]")
-  ) |>
-  select(
-    group,
-    contrast,
-    estimate,
-    conf,
-    p_value,
-    p_value_adjusted
-  ) |>
-  kbl(
-    align = "l",
-    escape = FALSE,
-    booktabs = TRUE,
-    linesep = "",
-    col.names =
-      c(
-        "Segment",
-        "Contrasts",
-        "Estimate",
-        "95\\% Confidence interval",
-        "$p$ value",
-        "$p_{adjusted}$ value"
-      )
-  ) |>
-  column_spec(1, width = "6em") |>
-  column_spec(2, width = "10em") |>
-  column_spec(3, width = "4em") |>
-  column_spec(4, width = "6em") |>
-  column_spec(5:6, width = "5em") |>
-  kable_styling(
-    latex_options = c("repeat_header")
-  ) |>
-  footnote(
-    general =
-      c(
-        str_c(
-          "\\\\textsuperscript{*}",
-          "\\\\textit{p} $<$ .05; ",
-          "\\\\textsuperscript{**}",
-          "\\\\textit{p} $<$ .01; "
-        ),
-        "\\\\parbox{32em}{\\\\textit{p} values for contrasts were adjusted using the \\\\citet{holm1979} method. Estimates were exponentiated.}"
-      ),
-    escape = FALSE
-  )
-
-```
 
 \clearpage
 
