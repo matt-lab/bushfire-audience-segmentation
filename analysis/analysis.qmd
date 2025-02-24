@@ -745,7 +745,7 @@ tab_waves <- data |>
         ~ str_c(
             ifelse(day(.x) < 10, str_c("0", day(.x)), as.character(day(.x))),
             '-',
-            str_to_upper(month(.x, label = TRUE)),
+            str_to_title(month(.x, label = TRUE)),
             '-',
             year(.x)))) |>
     arrange(study) |>
