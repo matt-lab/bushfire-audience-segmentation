@@ -173,11 +173,11 @@ climate change influence climate-change beliefs? The case of the
 2019--2020 Australian bushfires''}
 \author{Matthew Andreotta \and Fabio Boschetti \and Simon
 Farrell \and Cécile Paris \and Iain Walker \and Mark Hurlstone}
-\date{2025-02-17}
+\date{2025-02-25}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, enhanced, boxrule=0pt, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, sharp corners, breakable, frame hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
@@ -303,7 +303,7 @@ multinomial logistic regression model. }\tabularnewline
 \toprule
 \multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Acceptors odds and Fencesitters odds}} & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Sceptics odds and Fencesitters odds}} \\
 \cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-6}
-Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval & Estimate ($p$ value) & 95\% Confidence interval\\
+Predictors & Categories & Estimate ($p$ value) & 95\% CI & Estimate ($p$ value) & 95\% CI\\
 \midrule
 Intercept & - & 2.25 (.000)\textsuperscript{***} & {}[1.80, 2.80] & 0.38 (.000)\textsuperscript{***} & {}[0.27, 0.54]\\
 Study & Study 1 & 1.06 (.709) & {}[0.78, 1.44] & 0.81 (.417) & {}[0.48, 1.35]\\
@@ -337,37 +337,37 @@ psychological characteristics in Study 1 and Study 3.
 
 \hypertarget{tbl-mean_diff}{}
 \begin{table}
-\caption{\label{tbl-mean_diff}Difference in means of auxiliary psychological characteristics over
-time. }\tabularnewline
+\caption{\label{tbl-mean_diff}Difference in means of auxiliary psychological characteristics between
+Study 1 and Study 3. }\tabularnewline
 
 \centering
-\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
+\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{4em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
 \toprule
-\multicolumn{1}{c}{ } & \multicolumn{1}{c}{\parbox{4em}{Study 1}} & \multicolumn{1}{c}{\parbox{4em}{Study 3}} & \multicolumn{3}{c}{ } \\
-\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3}
-Psychological characteristics & \textit{M} (\textit{SD}) & \textit{M} (\textit{SD}) & \textit{t} & \textit{p} & $p_{adjusted}$\\
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{\textit{$M_{Study\ 3} - M_{Study\ 1}$}} & \multicolumn{3}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-3}
+Psychological characteristics & Estimate & 95\% \textit{CI} & \textit{t} & \textit{p} & $p_{adjusted}$\\
 \midrule
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Cognitive style}}\\
-\hspace{1em}Orientation to Immediate Goals & 2.57 (0.91) & 2.74 (0.87) & 2.36 & .019 & .08\\
-\hspace{1em}Conspiracist Ideation & 2.32 (1.02) & 2.45 (1.11) & 1.41 & .158 & .47\\
-\hspace{1em}Need for Cognition & 3.36 (0.78) & 3.37 (0.76) & 0.12 & .901 & 1.00\\
-\hspace{1em}Orientation to Future Goals & 3.74 (0.68) & 3.74 (0.73) & -0.07 & .943 & 1.00\\
+\hspace{1em}Orientation to Immediate Goals & 0.17 & {}[0.03, 0.32] & 2.36 & .019 & .08\\
+\hspace{1em}Conspiracist Ideation & 0.13 & {}[-0.05, 0.31] & 1.41 & .158 & .47\\
+\hspace{1em}Need for Cognition & 0.01 & {}[-0.12, 0.13] & 0.12 & .901 & 1.00\\
+\hspace{1em}Orientation to Future Goals & 0.00 & {}[-0.12, 0.11] & -0.07 & .943 & 1.00\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Ideology, worldviews, and values}}\\
-\hspace{1em}Environment-as-Elastic Worldview & 2.44 (0.92) & 2.62 (0.92) & 2.37 & .018 & .11\\
-\hspace{1em}Political Ideology & 3.62 (1.59) & 3.89 (1.39) & 2.21 & .028 & .14\\
-\hspace{1em}System Justification & 5.00 (1.58) & 5.20 (1.44) & 1.59 & .113 & .45\\
-\hspace{1em}Self-Transcendence Values & -0.34 (0.97) & -0.44 (0.95) & -1.27 & .204 & .61\\
-\hspace{1em}Conservation Values & 1.31 (0.91) & 1.36 (0.91) & 0.61 & .539 & 1.00\\
-\hspace{1em}Environment-as-Ductile Worldview & 3.76 (0.75) & 3.76 (0.71) & -0.01 & .994 & 1.00\\
+\hspace{1em}Environment-as-Elastic Worldview & 0.18 & {}[0.03, 0.34] & 2.37 & .018 & .11\\
+\hspace{1em}Political Ideology & 0.27 & {}[0.03, 0.51] & 2.21 & .028 & .14\\
+\hspace{1em}System Justification & 0.20 & {}[-0.05, 0.44] & 1.59 & .113 & .45\\
+\hspace{1em}Self-Transcendence Values & -0.10 & {}[-0.26, 0.06] & -1.27 & .204 & .61\\
+\hspace{1em}Conservation Values & 0.05 & {}[-0.10, 0.20] & 0.61 & .539 & 1.00\\
+\hspace{1em}Environment-as-Ductile Worldview & 0.00 & {}[-0.12, 0.12] & -0.01 & .994 & 1.00\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Personality}}\\
-\hspace{1em}Conscientiousness & 3.76 (0.89) & 3.71 (0.84) & -0.72 & .469 & 1.00\\
-\hspace{1em}Agreeableness & 3.62 (0.84) & 3.58 (0.87) & -0.57 & .571 & 1.00\\
-\hspace{1em}Extraversion & 2.85 (0.96) & 2.83 (0.97) & -0.28 & .776 & 1.00\\
-\hspace{1em}Openness & 3.32 (0.84) & 3.33 (0.80) & 0.13 & .893 & 1.00\\
-\hspace{1em}Neuroticism & 2.77 (1.06) & 2.77 (1.00) & -0.02 & .987 & 1.00\\
+\hspace{1em}Conscientiousness & -0.05 & {}[-0.19, 0.09] & -0.72 & .469 & 1.00\\
+\hspace{1em}Agreeableness & -0.04 & {}[-0.18, 0.10] & -0.57 & .571 & 1.00\\
+\hspace{1em}Extraversion & -0.02 & {}[-0.18, 0.14] & -0.28 & .776 & 1.00\\
+\hspace{1em}Openness & 0.01 & {}[-0.12, 0.14] & 0.13 & .893 & 1.00\\
+\hspace{1em}Neuroticism & 0.00 & {}[-0.17, 0.17] & -0.02 & .987 & 1.00\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\
@@ -700,7 +700,7 @@ binomial logistic regression model. }\tabularnewline
 \centering
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{7em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}}
 \toprule
-Contrasts & Estimate & 95\% Confidence interval & $p$ value & $p_{adjusted}$ value\\
+Contrasts & Estimate & 95\% CI & $p$ value & $p_{adjusted}$ value\\
 \midrule
 ln(odds(Acceptors) / odds(Fencesitters)) & 3.16 & {}[1.59, 6.28] & .001** & .003**\\
 ln(odds(Sceptics) / odds(Acceptors)) & 0.73 & {}[0.26, 2.09] & .563 & .563\\

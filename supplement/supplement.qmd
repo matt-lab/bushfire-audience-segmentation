@@ -728,9 +728,9 @@ tab_segment_change_names <- c(
     "Predictors",
     "Categories",
     "Estimate ($p$ value)",
-    "95\\% Confidence interval",
+    "95\\% CI",
     "Estimate ($p$ value)",
-    "95\\% Confidence interval"
+    "95\\% CI"
 )
 tab_segment_change_footnotes <-
     c(
@@ -876,7 +876,7 @@ See @fig-scale-change for density estimates of auxiliary psychological character
 
 ```{r}
 #| label: tbl-mean_diff
-#| tbl-cap: "Difference in means of auxiliary psychological characteristics over time."
+#| tbl-cap: "Difference in means of auxiliary psychological characteristics between Study 1 and Study 3."
 #| echo: false
 
 means_diff_results <- data |>
@@ -895,7 +895,7 @@ means_diff_results <- data |>
         names_prefix = "study_"
     ) |>
     mutate(
-        test = map2(study_1, study_3, t.test),
+        test = map2(study_3, study_1, t.test),
         result = map(test, broom::tidy)) |>
     unnest(result)
 
@@ -926,7 +926,6 @@ means_diff_results <- means_diff_results |>
 
 
 tab_mean_diff_results <- means_diff_results |>
-    mutate(statistic = -statistic) |>
     arrange(category, mean_diff_rank) |>
     mutate(p_adjusted = specify_p_value_text(p_adjusted, 3)) |>
     mutate(p_value = specify_p_value(p_value, 3)) |>
@@ -937,14 +936,13 @@ tab_mean_diff_results <- means_diff_results |>
         )
     ) |>    
     mutate(
-        study_1 = str_c(estimate1, " (", sd_1, ")"),
-        study_3 = str_c(estimate2, " (", sd_3, ")"),
+        conf = glue("[{conf_low}, {conf_high}]")
     ) |>
     select(
         category,
         measure,
-        study_1,
-        study_3,
+        estimate,
+        conf,
         statistic,
         p_value,
         p_adjusted
@@ -954,8 +952,8 @@ tab_mean_diff_results <- means_diff_results |>
 # Produce table
 tab_mean_diff_results_names <- c(
     "Psychological characteristics",
-    r"{\textit{M} (\textit{SD})}",
-    r"{\textit{M} (\textit{SD})}",
+    "Estimate",
+    r"{95\% \textit{CI}}",
     r"{\textit{t}}",
     r"{\textit{p}}",
     r"{$p_{adjusted}$}")
@@ -971,8 +969,7 @@ tab_mean_diff_results <- tab_mean_diff_results |>
     add_header_above(
         c(
             " " = 1,
-            r"{\\parbox{4em}{Study 1}}" = 1,
-            r"{\\parbox{4em}{Study 3}}" = 1,
+            r"{\\textit{$M_{Study\\ 3} - M_{Study\\ 1}$}}" = 2,
             " " = 3),
         escape = FALSE) |>
     footnote(
@@ -982,7 +979,8 @@ tab_mean_diff_results <- tab_mean_diff_results |>
             ),
         escape = FALSE
     ) |>
-    column_spec(c(2, 3), width = "5em") |>
+    column_spec(2, width = "4em") |>
+    column_spec(3, width = "6em") |>
     column_spec(4, width = "2.5em") |>
     column_spec(c(5), width = "3em") |>
     column_spec(6, width = "4em") |>
@@ -2155,7 +2153,7 @@ model_sentiment |>
             c(
                 "Contrasts",
                 "Estimate",
-                "95\\% Confidence interval",
+                "95\\% CI",
                 "$p$ value",
                 "$p_{adjusted}$ value"
             )

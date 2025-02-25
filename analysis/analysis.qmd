@@ -1294,7 +1294,7 @@ means_diff_results <- data |>
         names_prefix = "study_"
     ) |>
     mutate(
-        test = map2(study_1, study_3, t.test),
+        test = map2(study_3, study_1, t.test),
         result = map(test, broom::tidy)) |>
     unnest(result)
 
@@ -1324,7 +1324,7 @@ means_diff_results <- means_diff_results |>
     mutate(mean_diff_rank = -rank(abs(cohens_d))) 
 
 tab_mean_diff_results <- means_diff_results |>
-    mutate(statistic = -statistic) |>
+#    mutate(statistic = -statistic) |>
     arrange(category, mean_diff_rank) |>
     mutate(p_adjusted = specify_p_value_text(p_adjusted, 3)) |>
     mutate(p_value = specify_p_value(p_value, 3)) |>
@@ -1333,16 +1333,15 @@ tab_mean_diff_results <- means_diff_results |>
             where(is.double),
             specify_decimal
         )
-    ) |>    
+    ) |>
     mutate(
-        study_1 = str_c(estimate1, " (", sd_1, ")"),
-        study_3 = str_c(estimate2, " (", sd_3, ")"),
+        conf = glue("[{conf_low}, {conf_high}]")
     ) |>
     select(
         category,
         measure,
-        study_1,
-        study_3,
+        estimate,
+        conf,
         statistic,
         p_value,
         p_adjusted
@@ -1351,7 +1350,7 @@ tab_mean_diff_results <- means_diff_results |>
 
 We tested for mean differences in auxiliary psychological characteristics between Study 1 (September, 2019) and Study 3 (March, 2020) using *t* tests.
 To guard against Type I errors, we applied a Holm [-@holm1979] *p* value adjustment to four families of tests for changes in psychological characteristics: climate change cognition and affect; cognitive styles; ideology, worldviews, and values; and personality.
-We found evidence of a statistically significant mean difference in climate change cognition and affect (@tbl-mean_diff). Specifically, participants in Study 3 had a greater mean endorsement (Cohen's *d* = `r specify_decimal(filter(means_diff_results, scale == 'mms_cau_n')$cohens_d, 2)`) of natural cycles causes for climate change (e.g., volcanic eruptions, fluctuations in the sun) than participants of Study 1.
+We found evidence of a statistically significant mean difference in climate change cognition and affect (@tbl-mean_diff). Specifically, participants in Study 3 had a greater mean endorsement of natural cycles causes for climate change (e.g., volcanic eruptions, fluctuations in the sun) than participants of Study 1 (Cohen's *d* = `r specify_decimal(filter(means_diff_results, scale == 'mms_cau_n')$cohens_d, 2)`).
 No other climate change cognition and affect characteristics reliably differed between Study 1 and Study 3.
 Regarding dispositional attributes, there were no statistically significant mean differences in: cognitive styles; ideology, worldviews and values; or personality (all $p$ > .05; see Supplementary Material for *t* tests).
 
@@ -1363,8 +1362,8 @@ Regarding dispositional attributes, there were no statistically significant mean
 # Produce table
 tab_mean_diff_results_names <- c(
     "Psychological characteristics",
-    r"{\textit{M} (\textit{SD})}",
-    r"{\textit{M} (\textit{SD})}",
+    "Estimate",
+    r"{95\% \textit{CI}}",
     r"{\textit{t}}",
     r"{\textit{p}}",
     r"{$p_{adjusted}$}")
@@ -1381,8 +1380,8 @@ tab_mean_diff_results <- tab_mean_diff_results |>
     add_header_above(
         c(
             " " = 1,
-            r"{\\parbox{4em}{Study 1}}" = 1,
-            r"{\\parbox{4em}{Study 3}}" = 1,
+            r"{\\textit{$M_{Study\\ 3} - M_{Study\\ 1}$}}" = 2,
+           # r"{\\parbox{4em}{Study 1}}" = 2,
             " " = 3),
         escape = FALSE) |>
     footnote(
@@ -1396,7 +1395,8 @@ tab_mean_diff_results <- tab_mean_diff_results |>
             ),
         escape = FALSE
     ) |>
-    column_spec(c(2, 3), width = "5em") |>
+    column_spec(2, width = "4em") |>
+    column_spec(3, width = "6em") |>
     column_spec(4, width = "2.5em") |>
     column_spec(c(5), width = "3em") |>
     column_spec(6, width = "4em")

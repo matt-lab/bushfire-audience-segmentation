@@ -95,25 +95,25 @@ Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example ite
 characteristics between Study 1 and Study 3. }\tabularnewline
 
 \centering
-\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{5em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
+\begin{tabular}[t]{l>{\raggedright\arraybackslash}p{4em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
 \toprule
-\multicolumn{1}{c}{ } & \multicolumn{1}{c}{\parbox{4em}{Study 1}} & \multicolumn{1}{c}{\parbox{4em}{Study 3}} & \multicolumn{3}{c}{ } \\
-\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3}
-Psychological characteristics & \textit{M} (\textit{SD}) & \textit{M} (\textit{SD}) & \textit{t} & \textit{p} & $p_{adjusted}$\\
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{\textit{$M_{Study\ 3} - M_{Study\ 1}$}} & \multicolumn{3}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-3}
+Psychological characteristics & Estimate & 95\% \textit{CI} & \textit{t} & \textit{p} & $p_{adjusted}$\\
 \midrule
-Perceptions of Natural Causes & 4.23 (1.51) & 4.62 (1.62) & 2.95 & .003 & .04*\\
-Response Scepticism & 2.37 (1.01) & 2.56 (0.99) & 2.29 & .022 & .27\\
-Perceived Effectiveness of Green Policies & 4.69 (1.52) & 4.49 (1.50) & -1.60 & .110 & 1.00\\
-Worry about Climate Change & 2.72 (1.01) & 2.61 (1.01) & -1.35 & .178 & 1.00\\
-Perceptions of Carbon Emission Causes & 5.06 (1.33) & 4.91 (1.40) & -1.29 & .197 & 1.00\\
-Perceived Human Contribution & 5.59 (1.72) & 5.41 (1.71) & -1.22 & .222 & 1.00\\
-Epistemic Scepticism & 2.97 (1.00) & 3.05 (0.99) & 1.04 & .300 & 1.00\\
-Knowledge Volume & 2.69 (0.76) & 2.76 (0.78) & 0.99 & .325 & 1.00\\
-Perceived Personal Consequences & 4.59 (1.58) & 4.71 (1.40) & 0.97 & .331 & 1.00\\
-Perceptions of Environmental Harm Causes & 4.61 (1.49) & 4.51 (1.57) & -0.75 & .457 & 1.00\\
-Perceived Effectiveness of Engineering Policies & 4.04 (1.06) & 4.00 (1.08) & -0.43 & .670 & 1.00\\
-Perceived Effectiveness of Carbon Policies & 4.19 (1.26) & 4.15 (1.32) & -0.33 & .742 & 1.00\\
-Perceived Societal Consequences & 5.12 (1.51) & 5.10 (1.41) & -0.11 & .914 & 1.00\\
+Perceptions of Natural Causes & 0.39 & {}[0.13, 0.65] & 2.95 & .003 & .04*\\
+Response Scepticism & 0.19 & {}[0.03, 0.35] & 2.29 & .022 & .27\\
+Perceived Effectiveness of Green Policies & -0.20 & {}[-0.45, 0.05] & -1.60 & .110 & 1.00\\
+Worry about Climate Change & -0.11 & {}[-0.28, 0.05] & -1.35 & .178 & 1.00\\
+Perceptions of Carbon Emission Causes & -0.15 & {}[-0.38, 0.08] & -1.29 & .197 & 1.00\\
+Perceived Human Contribution & -0.18 & {}[-0.46, 0.11] & -1.22 & .222 & 1.00\\
+Epistemic Scepticism & 0.09 & {}[-0.08, 0.25] & 1.04 & .300 & 1.00\\
+Knowledge Volume & 0.06 & {}[-0.06, 0.19] & 0.99 & .325 & 1.00\\
+Perceived Personal Consequences & 0.12 & {}[-0.12, 0.36] & 0.97 & .331 & 1.00\\
+Perceptions of Environmental Harm Causes & -0.10 & {}[-0.35, 0.16] & -0.75 & .457 & 1.00\\
+Perceived Effectiveness of Engineering Policies & -0.04 & {}[-0.22, 0.14] & -0.43 & .670 & 1.00\\
+Perceived Effectiveness of Carbon Policies & -0.04 & {}[-0.25, 0.18] & -0.33 & .742 & 1.00\\
+Perceived Societal Consequences & -0.01 & {}[-0.25, 0.22] & -0.11 & .914 & 1.00\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}$p_{adjusted} <$ .05; }\\
