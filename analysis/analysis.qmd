@@ -1994,10 +1994,17 @@ fps_models_marginal_means <-
             TRUE ~ str_c("= ", specify_decimal(p_value, 3))
         )
     ) |>
+    rowwise() |>
+    mutate(
+        conf = str_flatten_comma(specify_decimal(sort(c(conf_low,conf_high)))),
+        conf_rev = str_flatten_comma(specify_decimal(sort(-c(conf_low,conf_high))))
+    ) |>
+    ungroup() |>
     mutate(
         text = str_c(
                 glue("difference = {specify_decimal(estimate)},"),
                 glue(" *SE* = {specify_decimal(std_error)},"),
+                glue("  *95% CI* = [{conf}],"),
                 glue(" *z* = {specify_decimal(statistic)},"),
                 " $p$ ", specify_p_value_text(p_value, with_star = F, with_equals = T, 3), ",",
                 " $p_{adjusted}$ ", specify_p_value_text(p_adjusted, with_star = F, with_equals = T, 3)
@@ -2007,6 +2014,7 @@ fps_models_marginal_means <-
         text_rev = str_c(
                 glue("difference = {specify_decimal(-estimate)},"),
                 glue(" *SE* = {specify_decimal(std_error)},"),
+                glue("  *95% CI* = [{conf_rev}],"),
                 glue(" *z* = {specify_decimal(-statistic)},"),
                 " $p$ ", specify_p_value_text(p_value, with_star = F, with_equals = T, 3), ",",
                 " $p_{adjusted}$ ", specify_p_value_text(p_adjusted, with_star = F, with_equals = T, 3)
