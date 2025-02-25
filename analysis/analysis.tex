@@ -179,7 +179,7 @@ Farrell \and Cécile Paris \and Iain Walker \and Mark Hurlstone}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, breakable, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, frame hidden, boxrule=0pt, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 
 \hypertarget{summary}{%
 \section{Summary}\label{summary}}
@@ -868,6 +868,17 @@ Acceptors or Fencesitters.
 Warning: Duplicated aesthetics after name standardisation: colour
 \end{verbatim}
 
+\begin{verbatim}
+Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+i Please use the `legend.position.inside` argument of `theme()` instead.
+\end{verbatim}
+
+\begin{verbatim}
+Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggplot2
+3.5.0.
+\end{verbatim}
+
 \begin{figure}
 
 {\centering \includegraphics{analysis_files/figure-pdf/fig-policy-support-1.pdf}
@@ -875,7 +886,8 @@ Warning: Duplicated aesthetics after name standardisation: colour
 }
 
 \caption{\label{fig-policy-support}Policy direction preferences as a
-function of segment.}
+proportion of each segment. Error bars indicate one standard error of
+the proportion.}
 
 \end{figure}
 

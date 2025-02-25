@@ -51,6 +51,7 @@ below the mean.}
 }
 
 \caption{\label{fig-policy-support}Policy direction preferences as a
-function of segment.}
+proportion of each segment. Error bars indicate one standard error of
+the proportion.}
 
 \end{figure}

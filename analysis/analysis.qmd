@@ -2585,7 +2585,7 @@ Sceptics did not reliably differ in their use of fear words (`r filter(sentiment
 
 ```{r}
 #| label: fig-policy-support
-#| fig-cap: "Policy direction preferences as a function of segment."
+#| fig-cap: "Policy direction preferences as a proportion of each segment. Error bars indicate one standard error of the proportion."
 #| fig-width: 6.5
 
 data |>
@@ -2604,7 +2604,7 @@ data |>
     mutate(
         se =
             case_when(
-                n == 0 ~ 0,
+                n == 0 ~ NA,
                 TRUE ~ sqrt(proportion * (1 - proportion)/ n)
             )
     ) |>
@@ -2623,10 +2623,18 @@ data |>
         stat = "identity",
         col = colour_error_bar
     ) +
+    geom_errorbar(
+        aes(ymin = percentage - percentage_se, ymax = percentage + percentage_se),
+        position = position_dodge(width = 0.9),
+        width = 0.25,
+        linewidth = 1.25,
+        colour = colour_error_bar
+    ) +
     scale_y_continuous(
         breaks = seq(0, 100, by = 10),
-        limits = c(0, 100),
-        expand = c(0, 0)) +
+        limits = c(-12, 100),
+        expand = c(0, 0)
+    ) +
     scale_x_discrete(labels = scales::label_wrap(6)) +
     labs(
         x = "Policy direction preferences",
