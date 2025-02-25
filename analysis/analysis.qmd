@@ -1658,7 +1658,7 @@ glm_results <-
 glm_results_study_3 <- glm_results
 ```
 
-We explored the psychological characteristics associated with segment membership, by replicating the regression analysis of Andreotta et al. [-@andreotta_2022].
+We explored the psychological characteristics associated with segment membership, by replicating the regression analysis of @andreotta_2022.
 This analysis is complicated by multicollinearity, which can lead to unstable estimates of coefficients.
 We sought to produce stable estimates with a ridge regression model.
 A ridge regression reduces the variance of estimates, caused by multicollinearity, by shrinking the coefficients towards zero [a bias-variance trade-off; @james_2021].

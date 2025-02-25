@@ -3,7 +3,7 @@
 This repository contains the data and analysis scripts for the manuscript "Does extreme climate event exposure influence climate-related opinions? The case of the 2019--2020 Australian Black Summer bushfires" by Matthew Andreotta, Fabio Boschetti, Simon Farrell, Cecile Paris, Iain Walker, Mark J. Hurlstone.
 Any questions can be sent to matthewandreotta@gmail.com.
 
-Studies were approved by the University of Western Australia Human Research Ethics Office (RA/4/20/5104), and reciprocated by the Commonwealth Scientific and Industrial Research Organisation Human Research Ethics Committee (026/19).
+Studies were approved by the University of Western Australia Human Research Ethics Office (2019/RA/4/20/5104), and reciprocated by the Commonwealth Scientific and Industrial Research Organisation Human Research Ethics Committee (026/19).
 
 Study 1 was pre-registered using the Open Science Framework (https://osf.io/e7zhx/).
 
