@@ -5,7 +5,7 @@ Any questions can be sent to matthewandreotta@gmail.com.
 
 Studies were approved by the University of Western Australia Human Research Ethics Office (2019/RA/4/20/5104), and reciprocated by the Commonwealth Scientific and Industrial Research Organisation Human Research Ethics Committee (026/19).
 
-Study 1 was pre-registered using the Open Science Framework (https://osf.io/e7zhx/).
+Study 1 was pre-registered using the Open Science Framework (https://osf.io/e7zhx/?view_only=4124233cc0374513b640b187e54f2e57/).
 
 ## Repository Structure
 
