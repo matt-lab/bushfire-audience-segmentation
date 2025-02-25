@@ -2233,6 +2233,7 @@ text_cor_fps_1_fps_7 <-
     mutate(
         text = str_c(
             glue("*r* = ", specify_decimal(estimate)),
+            glue(", 95% *CI* = [{specify_decimal(conf.low)}, {specify_decimal(conf.high)}]"),
             glue(", *p* = ", specify_p_value(p.value, 3))
         )
     ) |>
