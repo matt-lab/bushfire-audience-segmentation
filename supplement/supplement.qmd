@@ -1,46 +1,6 @@
 ---
 title: "Supplementary materials for: \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\""
 description: Supplementary materials for the manuscript \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\"
-author:
-    -   name: "Matthew Andreotta"
-        orcid: "0000-0001-7511-2910"
-        affiliation: "csiro-env"
-    -   name: "Fabio Boschetti"
-        orcid: "0000-0001-8999-6913"
-        affiliation: "csiro-env"
-    -   name: "Simon Farrell"
-        orcid: "0000-0001-7452-8789"
-        affiliation: "uwa"
-    -   name: "Cécile Paris"
-        orcid: "0000-0003-3816-0176"
-        affiliation: "csiro-data61"
-    -   name: "Iain Walker"
-        orcid: "0000-0002-1020-5873"
-        affiliation: "unimelb"
-    -   name: "Mark Hurlstone"
-        orcid: "0000-0001-9920-6284"
-        affiliation: "lancaster"
-affiliation:
-    -   id: "csiro-env"
-        institution: "Environment, CSIRO"
-        state: "Western Australia"
-        country: "Australia"
-    -   id: "csiro-data61"
-        institution: "Data61, CSIRO"
-        state: "Australian Capital Territory"
-        country: "Australia"
-    -   id: "uwa"
-        institution: "School of Psychological Science, University of Western Australia"
-        state: "Western Australia"
-        country: "Australia"
-    -   id: "unimelb"
-        institution: "School of Psychological Sciences, University of Melbourne"
-        state: "Victoria"
-        country: "Australia"
-    -   id: "lancaster"
-        institution: "Department of Psychology, Lancaster University"
-        state: "Lancashire"
-        country: "United Kingdom"
 date: today
 bibliography: references.bib
 format:
@@ -51,10 +11,10 @@ format:
     natbiboptions: authoryear,longnamesfirst
     include-in-header: 
       text: |
-        \setlength{\tabcolsep}{1pt}
         \usepackage{fontspec}
         \usepackage{fontawesome}
         \setlength{\tabcolsep}{2pt}
+        \setlength{\tabcolsep}{1pt}
 execute:
   cache: true
   echo: false
