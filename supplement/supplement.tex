@@ -171,14 +171,101 @@
 climate change influence climate-change beliefs? The case of the
 2019--2020 Australian bushfires''}
 \author{}
-\date{2025-02-27}
+\date{}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
+
+\hypertarget{gender-differences-across-studies}{%
+\subsection{Gender differences across
+studies}\label{gender-differences-across-studies}}
+
+\hypertarget{tbl-gender-diff}{}
+\begin{table}
+\caption{\label{tbl-gender-diff}Estimated effects of study on participant gender, estimated using a
+multinomial logistic regression model. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{8em}}
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{18em}{\centering Ratio of female odds and male odds}} \\
+\cmidrule(l{3pt}r{3pt}){3-4}
+Predictors & Categories & Estimate ($p$ value) & 95\% CI\\
+\midrule
+Intercept & - & 0.96 (.691) & {}[0.79, 1.17]\\
+Study & Study 1 & 1.07 (.626) & {}[0.82, 1.40]\\
+ & Study 2 & - & -\\
+ & Study 3 & 1.00 (.993) & {}[0.72, 1.40]\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{31em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Male was entered as the reference category of gender. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\end{tabular}
+\end{table}
+
+We created a multinomial logistic regression model to predict gender as
+a function of study, using the \emph{multinom} function from the
+\emph{nnet} package \citep{venables_2002}. Specifically, we modelled the
+log odds ratio of female to male participants (male was entered as the
+reference category) with study entered as a categorical predictor (Study
+2 was entered as the reference category). For the purposes of this
+model, we excluded participants who did not identify their gender as
+either female or male. Coefficients were exponentiated to estimate odds
+ratios, and are presented in Table~\ref{tbl-gender-diff}. A Wald
+\(Z\)-test was used to estimate the (unadjusted) \(p\) values of model
+coefficients.
+
+Numerically, the ratio of female to male participants was stable across
+studies. A log likelihood ratio test did not indicate an improvement in
+model fit when study was included as a predictor, compared to a model
+with only an intercept term (\(\chi^{2}\) (2) = 0.28, \(p\) = 0.87,
+\(\omega =\) 0.02). Furthermore, no model coeffecients were
+statistically significant (Table~\ref{tbl-gender-diff}), indicating a
+lack of evidence that gender differed across studies.
+
+\hypertarget{age-differences-across-studies}{%
+\subsection{Age differences across
+studies}\label{age-differences-across-studies}}
+
+\hypertarget{tbl-age-diff}{}
+\begin{table}
+\caption{\label{tbl-age-diff}Linear regression models predicting participant age (years) as a
+function of study. }\tabularnewline
+
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{6em}}
+\toprule
+Predictors & Categories & Estimate ($p$ value) & 95\% CI\\
+\midrule
+Intercept & - & 46.82 (.000)\textsuperscript{***} & {}[45.10, 48.54]\\
+Study & Study 1 & -0.11 (.927) & {}[-2.51, 2.28]\\
+ & Study 2 & - & -\\
+ & Study 3 & 0.31 (.835) & {}[-2.63, 3.26]\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{***}\textit{p} $<$ .001.}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{28em}{Each study was entered as a categorical predictor, with Study 2 as the reference category.}}\\
+\end{tabular}
+\end{table}
+
+To determine whether age differed across studies, we built a linear
+regression model. The model predicted age as a function of study, using
+the \emph{lm} function from the \emph{stats} package
+\citep{rcoreteam_2023}. Study was entered as a categorical predictor
+(Study 2 was entered as the reference category), and a Wald Z-test was
+used to estimate \(p\) values (Table~\ref{tbl-age-diff}).
+
+Numerically, participant age was stable across studies. The linear
+regression model did not accounted for a significant amount of variance
+in compared to intercept-only models (\(F\) (2, 1058) = 0.04, \(p\) =
+0.960, \(R^2\) = 0.00, \(R^2_{adjusted}\) = 0.00), indicating a lack of
+evidence that study was a significant predictor of age. Furthermore, no
+model coeffecients were statistically significant
+(Table~\ref{tbl-age-diff}), indicating a lack of evidence that gender
+differed across studies.
 
 \hypertarget{fast-responders}{%
 \subsection{Fast responders}\label{fast-responders}}
@@ -310,7 +397,7 @@ Study & Study 1 & 1.06 (.709) & {}[0.78, 1.44] & 0.81 (.417) & {}[0.48, 1.35]\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{***}\textit{p} $<$ .001.}\\
-\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}}\\
 \end{tabular}
 \end{table}
 

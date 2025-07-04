@@ -1,7 +1,6 @@
 ---
 title: "Supplementary materials for: \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\""
 description: Supplementary materials for the manuscript \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\"
-date: today
 bibliography: references.bib
 format:
   pdf:
@@ -534,7 +533,346 @@ data_fps_scales <- data |>
 ```
 
 # Methods
+
+## Gender differences across studies
+
+```{r}
+#| label: tbl-gender-diff
+#| tbl-cap: Estimated effects of study on participant gender, estimated using a multinomial logistic regression model.
+#| warning: false
+
+
+tab_gender_diff_names <- c(
+    "Predictors",
+    "Categories",
+    "Estimate ($p$ value)",
+    "95\\% CI"
+)
+tab_gender_diff_footnotes <-
+    c(
+        "\\\\parbox{31em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Male was entered as the reference category of gender. Model estimates of coefficients were exponentiated to odds ratios.}"
+    )
+
+ref_study <- "Study 2"
+data_gender <-
+    data |>
+    filter(gender < 3) |>
+    mutate(gender = as.factor(gender)) |>
+    mutate(gender = fct_relevel(gender, "1")) |>
+    mutate(study = fct_relevel(study_name, ref_study))
+model_gender_diff <- multinom(gender ~ study, data_gender, trace = FALSE)
+lr_test_gender_diff <-
+    anova(
+        multinom(gender ~ 1, data_gender, trace = FALSE),
+        multinom(gender ~ study, data_gender, trace = FALSE)
+    ) |>
+    janitor::clean_names() |>
+    filter(
+        model == 'study'
+        & test == '1 vs 2'
+    ) |>
+    # Effect size, Cohen's w = sqrt(chi^2 / n)
+    mutate(
+        n = nrow(data_gender),
+        w = sqrt(lr_stat / n)
+    )
+
+
+tab_gender_diff <-
+    tidy(
+        model_gender_diff,
+        conf.int = TRUE,
+        conf.level = 0.95,
+        exponentiate = TRUE
+    ) |>
+    janitor::clean_names() |>
+    mutate(
+        p_markers = get_p_value_markers(p_value),
+        p_value = specify_p_value(p_value, 3)
+    ) |>
+    mutate(
+        across(
+            where(is.numeric),
+            specify_decimal
+        )
+    )
+# Identify variables and categories
+data |>
+    select(study_name) |>
+    summarise(
+        across(
+            c(study_name),
+            ~ list(unique(.x))
+        )
+    ) |>
+    pivot_longer(
+        cols = everything(),
+        names_to = "variables",
+        values_to = "categories"
+    ) |>
+    unnest(
+        categories,
+        ptype = list(categories = "character")
+    ) |>
+    mutate(
+        variables = case_when(
+            variables == 'study_name' ~ 'Study',
+            TRUE ~ variables
+        )
+    ) |>
+    mutate(
+        term =
+          str_c(
+            str_to_lower(variables),
+            categories
+          )
+    ) |>
+    add_case(
+        variables = "Intercept",
+        term = "(Intercept)",
+        .before = 1
+    ) |>
+    # Add estimates
+    left_join(
+        tab_gender_diff,
+        by = 'term'
+    ) |>
+    mutate(
+        estimate =
+            case_when(
+                !is.na(estimate)
+                    ~ glue("{estimate} ({p_value}){p_markers}"),
+                TRUE ~ NA_character_
+            ),
+        conf =
+            case_when(
+                !is.na(conf_low)
+                    ~ glue("[{conf_low}, {conf_high}]"),
+                TRUE ~ NA_character_
+            )
+    ) |>
+    select(variables, categories, y_level, estimate, conf) |>
+    pivot_wider(
+        names_from = y_level,
+        values_from = c(estimate, conf)
+    ) |>
+    select(-ends_with("_NA")) |>
+    mutate(
+        across(
+            everything(),
+            ~ replace_na(.x, "-")
+        )
+    ) |>
+    mutate(
+        variables = case_when(
+            variables == lag(variables, 1)
+                ~ "",
+            TRUE ~ variables
+        )
+    ) |>
+    kbl(
+        align = "l",
+        escape = FALSE,
+        booktabs = TRUE,
+        col.names = tab_gender_diff_names
+     ) |>
+#    kable_styling(full_width = TRUE) |>
+    add_header_above(
+        c(
+            " " = 2,
+            r"{\\parbox{18em}{\\centering Ratio of female odds and male odds}}" = 2
+        ),
+        escape = FALSE
+    ) |>
+    column_spec(1:2, width = "6em") |>
+    column_spec(3, width = "10em") |>
+    column_spec(4, width = "8em") |>
+    footnote(
+        general = tab_gender_diff_footnotes,
+        escape = FALSE
+    )
+    
+```
+
+
+We created a multinomial logistic regression model to predict gender as a function of study, using the *multinom* function from the *nnet* package [@venables_2002].
+Specifically, we modelled the log odds ratio of female to male participants (male was entered as the reference category) with study entered as a categorical predictor (Study 2 was entered as the reference category).
+For the purposes of this model, we excluded participants who did not identify their gender as either female or male.
+Coefficients were exponentiated to estimate odds ratios, and are presented in @tbl-gender-diff.
+A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
+
+Numerically, the ratio of female to male participants was stable across studies.
+A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_gender_diff$df`) = `r specify_decimal(lr_test_gender_diff$lr_stat)`, $p$ = `r specify_decimal(lr_test_gender_diff$pr_chi)`, $\omega =$ `r specify_decimal(lr_test_gender_diff$w)`).
+Furthermore, no model coeffecients were statistically significant (@tbl-gender-diff), indicating a lack of evidence that gender differed across studies.
  
+## Age differences across studies
+
+```{r}
+#| label: tbl-age-diff
+#| tbl-cap: "Linear regression models predicting participant age (years) as a function of study."
+#| echo: false
+#| warning: false
+
+ref_study <- "Study 2"
+data_age <-
+    data |>
+    mutate(study = fct_relevel(study_name, ref_study))
+model_age_diff <- lm(age ~ study, data_age)
+# First, an omnibus test of the model
+model_age_fit_text <-
+    model_age_diff |>
+    broom::glance() |>
+    janitor::clean_names() |>
+    mutate(
+        across(
+            c(r_squared, adj_r_squared),
+            specify_decimal
+        )
+    ) |>
+    mutate(
+        p_value_text = case_when(
+            is.na(p_value) ~ NA_character_,
+            p_value < 0.001 ~ "< .001",
+            TRUE ~ str_c("= ", specify_decimal(p_value, 3))
+        )
+    ) |>
+    mutate(
+        text = str_c(
+            glue("$F$ ({df}, {df_residual}) = {specify_decimal(statistic)},"),
+            glue(" $p$ {p_value_text},"),
+            glue(" $R^2$ = {r_squared},"),
+            " $R^2_{adjusted}$", glue(" = {adj_r_squared}")
+        )
+    )
+
+# Prepare age table
+coefs_age_diff <-
+    tidy(
+        model_age_diff,
+        conf.int = TRUE,
+        conf.level = 0.95
+    ) |>
+    janitor::clean_names()
+
+data |>
+    select(study_name) |>
+    summarise(
+        across(
+            c(study_name),
+            ~ list(unique(.x))
+        )
+    ) |>
+    pivot_longer(
+        cols = everything(),
+        names_to = "variables",
+        values_to = "categories"
+    ) |>
+    unnest(
+        categories,
+        ptype = list(categories = "character")
+    ) |>
+    mutate(
+        variables = case_when(
+            variables == 'study_name' ~ 'Study',
+            TRUE ~ variables
+        )
+    ) |>
+    mutate(
+        term =
+          str_c(
+            str_to_lower(variables),
+            categories
+          )
+    ) |>
+    add_case(
+        variables = "Intercept",
+        term = "(Intercept)",
+        .before = 1
+    ) |>
+    # Add estimates
+    left_join(
+        coefs_age_diff,
+        by = c('term')
+    ) |>
+    # Clean numbers
+    mutate(
+        p_markers = get_p_value_markers(p_value),
+        p_value = specify_p_value(p_value, 3)
+    ) |>
+    mutate(
+        across(
+            where(is.numeric),
+            specify_decimal
+        )
+    ) |>
+        mutate(
+        estimate =
+            case_when(
+                estimate == "NA" ~ NA_character_,
+                !is.na(estimate)
+                    ~ glue("{estimate} ({p_value}){p_markers}"),
+                TRUE ~ NA_character_
+            ),
+        conf =
+            case_when(
+                conf_low == "NA" ~ NA_character_,
+                !is.na(conf_low)
+                    ~ glue("[{conf_low}, {conf_high}]"),
+                TRUE ~ NA_character_
+            )
+    ) |>
+    mutate(
+        across(
+            where(is.character),
+            ~ replace_na(.x, "-")
+        )
+    ) |>
+    select(variables, categories, estimate, conf) |>
+    mutate(
+        variables = case_when(
+            variables == lag(variables, 1)
+                ~ "",
+            TRUE ~ variables
+        )
+    ) |>
+    kbl(
+        escape = FALSE,
+        booktabs = TRUE,
+        linesep = "",
+        align = "l",
+        col.names =
+            c(
+                "Predictors",
+                "Categories",
+                "Estimate ($p$ value)",
+                "95\\% CI"
+            )
+    ) |>
+    column_spec(1, width = "6em") |>
+    column_spec(2, width = "6em") |>
+    column_spec(3, width = "10em") |>
+    column_spec(4, width = "6em") |>
+    footnote(
+        general =
+            c(
+            str_c(
+                "\\\\textsuperscript{***}",
+                "\\\\textit{p} $<$ .001."
+            ),
+            "\\\\parbox{28em}{Each study was entered as a categorical predictor, with Study 2 as the reference category.}"
+        ),
+        escape = FALSE
+    )
+```
+
+To determine whether age differed across studies, we built a linear regression model.
+The model predicted age as a function of study, using the *lm* function from the *stats* package [@rcoreteam_2023].
+Study was entered as a categorical predictor (Study 2 was entered as the reference category), and a Wald Z-test was used to estimate $p$ values (@tbl-age-diff).
+
+Numerically, participant age was stable across studies.
+The linear regression model did not accounted for a significant amount of variance in compared to intercept-only models (`r model_age_fit_text$text[1]`), indicating a lack of evidence that study was a significant predictor of age.
+Furthermore, no model coeffecients were statistically significant (@tbl-age-diff), indicating a lack of evidence that gender differed across studies.
+
 ## Fast responders
 
 For each study, a pilot study of approximately fifty people was conducted to identify fast responders.
@@ -682,6 +1020,7 @@ A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coeffi
 ```{r}
 #| label: tbl-segment-change
 #| tbl-cap: Estimated effects of study on segment membership, estimated using a multinomial logistic regression model.
+#| warning: false
 
 
 tab_segment_change_names <- c(
@@ -700,7 +1039,7 @@ tab_segment_change_footnotes <-
             "\\\\textsuperscript{***}",
             "\\\\textit{p} $<$ .001."
         ),
-        "\\\\parbox{36em}{Each study was entered as a categorical predictor, with Study 2. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}"
+        "\\\\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}"
     )
 
 tab_segment_change <-

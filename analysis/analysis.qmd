@@ -705,12 +705,14 @@ Study 2, conducted in February `r filter(descriptives_waves, study == 2 & month 
 In total, 1061 Australian adults participated in the study.
 Participants were recruited complete an online survey via Qualtrics---an Internet panel services platform.
 We used a targeted and stratified sampling process was used to match the age and gender of each studies' sample to the general population (as per the national 2016 census).
+Furthermore, regression models (reported in the Supplementary Materials) do not find differences between the mean age of participants across studies or the (log odds) ratio of female to male participants across studies.
 We discarded the data of extremely fast responders, who were categorised using a preregistered threshold (see Supplementary Materials).
 
 ```{r}
 #| label: tbl-waves
 #| tbl-cap: "Sample characteristics and materials of study."
 #| echo: false
+#| warning: false
 
 # Add materials
 tab_waves_materials <- tibble(
@@ -731,7 +733,7 @@ tab_waves <- data |>
         end_date = date(max(time_end)),
         m_age = mean(age),
         sd_age = sd(age),
-        n_women = length(which(gender == 1)),
+        n_women = length(which(gender == 2)),
         prop_women = n_women / n * 100,
         .groups = 'drop'
     ) |>
