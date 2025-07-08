@@ -879,14 +879,11 @@ For each study, a pilot study of approximately fifty people was conducted to ide
 Fast responders were identified as those who completed the survey in less than half of the median time taken by participants in the pilot study, which was 873 seconds for Study 1, 664 seconds for Study 2, and 509 seconds for Study 3.
 The data of fast responders was not collected, and therefore, not included in the analysis.
 
-## Counterbalancing of materials
+## Counterbalancing of auxiliary psychological scales
 
 For Study 1, auxiliary psychological scales were counterbalanced using a digram-balanced Latin square design.
 However, there is a slight discrepancy in the number of each Latin squares completed (range = 25 to 44) due to non-completions and the nature of randomisation.
-The Q-sort always preceded the auxiliary psychological scales.
 Study 3 maintained this approach to administering materials, to facilitate comparison between studies.
-The additional materials (Fire Perception Scale and Policy direction preferences) were always administered together, and randomly preceded or proceeded the block of Q-sort and auxiliary psychological scales.
-Policy direction preferences always immediately followed the Fire Perception Scale.
 
 \clearpage
 
