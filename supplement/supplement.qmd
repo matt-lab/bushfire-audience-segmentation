@@ -129,9 +129,9 @@ get_contrasts <- function(p_adjust_method = "none", ...) {
     janitor::clean_names() |>
     group_by(term) |>
     mutate(
-        p_value_adjusted = p.adjust(p_value, method = p_adjust_method)
-    ) |>
-    ungroup() #|>
+      p_value_adjusted = p.adjust(p_value, method = p_adjust_method)
+   ) |>
+   ungroup() #|>
     # mutate(
     #     text = str_c(
     #             glue("difference = {specify_decimal(estimate)},"),
@@ -1520,7 +1520,7 @@ fps_marginal_means <-
                 ~ avg_comparisons(
                     .x,
                     variables = list(segment = 'pairwise'),
-                    p_adjust = 'holm',
+                  #  p_adjust = 'holm',
                    # df = insight::get_df(.x),
                     newdata = 'balanced'
                 )
@@ -1528,6 +1528,9 @@ fps_marginal_means <-
     ) |>
     mutate(comparisons = map(comparisons, broom::tidy)) |>
     unnest(comparisons) |>
+    group_by(response) |>
+    mutate(p.value = p.adjust(p.value, method = "holm")) |>
+    ungroup() |>
     janitor::clean_names() |>
     mutate(
         p_value_text = case_when(
@@ -2255,16 +2258,16 @@ model_sentiment <-
     ) |>
     # Add pairwise comparisons
     mutate(
-        comparison_summary = pmap(
-            list(
-                model = model,
-                variables = list(list(segment = 'pairwise')),
-                newdata = 'balanced',
-                p_adjust_method = 'holm',
-                comparison = 'lnor',
-                transform = list(exp)
-            ),
-            get_contrasts
+        comparison_summary = map(
+          model,
+          ~ get_contrasts(
+            model = .x,
+            variables = list(segment = 'pairwise'),
+            newdata = 'balanced',
+            comparison = 'lnor',
+            transform = exp,
+            p_adjust_method = 'holm'
+          )
         )
     )
 
