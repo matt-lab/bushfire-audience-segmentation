@@ -43,14 +43,28 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
 
 
 \providecommand{\tightlist}{%
@@ -66,15 +80,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -101,10 +117,6 @@
 \DeclareDelayedFloatFlavour*{longtable}{table}
 \DeclareDelayedFloatFlavor{landscape}{table}
 \KOMAoption{captions}{tableheading}
-\makeatletter
-\makeatother
-\makeatletter
-\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -141,25 +153,16 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \makeatother
 \makeatletter
+\makeatother
+\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-\makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\makeatother
-\makeatletter
-\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
-\makeatother
-\makeatletter
-\makeatother
-\makeatletter
-\makeatother
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
+
 \usepackage[authoryear,longnamesfirst]{natbib}
 \bibliographystyle{plainnat}
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
@@ -172,22 +175,21 @@
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
+
 \title{Manuscript methods and results}
 \author{Matthew Andreotta \and Fabio Boschetti \and Simon
 Farrell \and Cécile Paris \and Iain Walker \and Mark Hurlstone}
-\date{2025-07-03}
+\date{2025-11-07}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, interior hidden, enhanced, boxrule=0pt]}{\end{tcolorbox}}\fi
 
-\hypertarget{summary}{%
-\section{Summary}\label{summary}}
+
+\section{Summary}\label{summary}
 
 This document contains the methods and results for the manuscript.
 
-\hypertarget{methods}{%
-\section{Methods}\label{methods}}
+\section{Methods}\label{methods}
 
 Data and analysis scripts for the study are available online at
 \url{https://github.com/matt-lab/bushfire-audience-segmentation}. This
@@ -196,8 +198,7 @@ University of Western Australia (reference: 2019/RA/4/20/5104) and the
 Commonwealth Scientific and Industrial Research Organisation (reference:
 026/19).
 
-\hypertarget{participants-and-design}{%
-\subsection{Participants and design}\label{participants-and-design}}
+\subsection{Participants and design}\label{participants-and-design}
 
 The study was a longitudinal design, where data was collected at three
 time periods, as presented in Table~\ref{tbl-waves}. Study 1 was
@@ -220,11 +221,13 @@ ratio of female to male participants across studies. We discarded the
 data of extremely fast responders, who were categorised using a
 preregistered threshold (see Supplementary Materials).
 
-\hypertarget{tbl-waves}{}
 \begin{table}
-\caption{\label{tbl-waves}Sample characteristics and materials of study. }\tabularnewline
 
-\centering
+\caption{\label{tbl-waves}Sample characteristics and materials of
+study.}
+
+\centering{
+
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{16em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Study} \\
@@ -249,17 +252,18 @@ Time & Before peak bushfire severity & After peak bushfire severity & After peak
 \hspace{1em}Change in policy items & \faClose & \faClose & \faCheck\\
 \bottomrule
 \end{tabular}
-\end{table}
 
-\hypertarget{materials}{%
-\subsection{Materials}\label{materials}}
+}
+
+\end{table}%
+
+\subsection{Materials}\label{materials}
 
 Psychological inventories and tasks were used to gauge climate change
 and bushfire perceptions, in addition to auxiliary psychological
 characteristics.
 
-\hypertarget{q-sort}{%
-\subsubsection{Q-sort}\label{q-sort}}
+\subsubsection{Q-sort}\label{q-sort}
 
 To measure climate change views, we used the Q-sort. The Q-sort is a
 card-sorting task, where participants ranked thirty cards with climate
@@ -283,7 +287,9 @@ placement of statements ranked most extreme.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{qsort.pdf}
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{qsort.pdf}
 
 }
 
@@ -298,11 +304,10 @@ participants could temporarily place statements in the yellow holding
 area (C). Figure reproduced without changes from \citep{andreotta_2022},
 under the Creative Commons license (CC BY 4.0).}
 
-\end{figure}
+\end{figure}%
 
-\hypertarget{auxiliary-psychological-scales}{%
 \subsubsection{Auxiliary psychological
-scales}\label{auxiliary-psychological-scales}}
+scales}\label{auxiliary-psychological-scales}
 
 In Study 1 and Study 3, we quantified twenty-eight auxiliary
 psychological characteristics (Table~\ref{tbl-scales}).
@@ -324,11 +329,13 @@ associated with climate change belief. This includes inventories
 concerning: cognitive styles; ideology, worldviews, and values; and
 personality.
 
-\hypertarget{tbl-scales}{}
 \begin{landscape}\begingroup\fontsize{7}{9}\selectfont
 
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{30em}>{\raggedright\arraybackslash}p{13em}}
-\caption{\label{tbl-scales}Summary of auxiliary psychological measures. }\tabularnewline
+
+\caption{\label{tbl-scales}Summary of auxiliary psychological measures.}
+
+\tabularnewline
 
 \toprule
 Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example item & Reference\\
@@ -381,12 +388,13 @@ Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example ite
 \hspace{1em}Extraversion & 2 & 0.53 & 1 to 5 & I see myself as someone who is outgoing, sociable & \citet{rammstedt2007}\\
 \hspace{1em}Neuroticism & 2 & 0.62 & 1 to 5 & I see myself as someone who gets nervous easily & \citet{rammstedt2007}\\
 \hspace{1em}Openness & 2 & 0.14 & 1 to 5 & I see myself as someone who has an active imagination & \citet{rammstedt2007}\\*
+
 \end{longtable}
+
 \endgroup{}
 \end{landscape}
 
-\hypertarget{fire-perception-scale}{%
-\subsubsection{Fire Perception Scale}\label{fire-perception-scale}}
+\subsubsection{Fire Perception Scale}\label{fire-perception-scale}
 
 To measure perceptions of the Black Summer bushfires, we created a Fire
 Perception Scale. The scale's seven items were constructed from
@@ -397,9 +405,8 @@ contributed to the 2019-20 Australian bushfires''. Participants respond
 on a five-point Likert scale: (1) disagree, (2) slightly disagree, (3)
 neither agree nor disagree, (4) slightly agree, and (5) agree.
 
-\hypertarget{policy-direction-preferences}{%
 \subsubsection{Policy direction
-preferences}\label{policy-direction-preferences}}
+preferences}\label{policy-direction-preferences}
 
 To measure participants views on the policy consequences of the Black
 Summer bushfires, we asked participants to respond to two items. First,
@@ -414,8 +421,7 @@ government should be taking no action at all to mitigate climate
 change''. Next, participants were asked to justify their response
 (``Why?'') through writing an open-ended response.
 
-\hypertarget{procedure}{%
-\subsection{Procedure}\label{procedure}}
+\subsection{Procedure}\label{procedure}
 
 All studies began with the same procedure. To begin, participants read
 an information sheet, provided informed consent, and provided
@@ -429,15 +435,13 @@ Perception Scale, and policy direction preferences. The presentation
 sequence of materials were counterbalanced across participants to
 control for order effects (see Supplementary Materials).
 
-\hypertarget{results}{%
-\section{Results}\label{results}}
+\section{Results}\label{results}
 
 All analyses were completed with the \emph{R} programming language
 \citep{rcoreteam_2023}.
 
-\hypertarget{replication-of-the-three-segment-solution}{%
 \subsection{Replication of the three-segment
-solution}\label{replication-of-the-three-segment-solution}}
+solution}\label{replication-of-the-three-segment-solution}
 
 As per our previous research, we used the Q-methodology to identify
 distinct views on climate change \citep{brown1980}. The Q-methodology
@@ -484,9 +488,8 @@ held divergent views (all Spearman's \(\rho\) correlations \(< -0.81\),
 all \(p\)'s \(< .001\)). In sum, the number and nature of segments were
 consistent across time.
 
-\hypertarget{change-in-segment-membership-over-time}{%
 \subsection{Change in segment membership over
-time}\label{change-in-segment-membership-over-time}}
+time}\label{change-in-segment-membership-over-time}
 
 To explore whether segment membership changed during Black Summer, we
 investigated the relative proportions of segments across studies
@@ -508,7 +511,9 @@ segment membership did not reliably differ across study samples.
 
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-segment-change-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-segment-change-1.pdf}}
 
 }
 
@@ -516,11 +521,10 @@ segment membership did not reliably differ across study samples.
 study's sample, as a proportion (percentage). Error bars indicate one
 standard error of the proportion.}
 
-\end{figure}
+\end{figure}%
 
-\hypertarget{auxiliary-psychological-characteristics}{%
 \subsection{Auxiliary psychological
-characteristics}\label{auxiliary-psychological-characteristics}}
+characteristics}\label{auxiliary-psychological-characteristics}
 
 We tested for mean differences in auxiliary psychological
 characteristics between Study 1 (September, 2019) and Study 3 (March,
@@ -540,12 +544,13 @@ significant mean differences in: cognitive styles; ideology, worldviews
 and values; or personality (all \(p\) \textgreater{} .05; see
 Supplementary Material for \emph{t} tests).
 
-\hypertarget{tbl-mean_diff}{}
 \begin{table}
-\caption{\label{tbl-mean_diff}Difference in means of climate change cognition and affect
-characteristics between Study 1 and Study 3. }\tabularnewline
 
-\centering
+\caption{\label{tbl-mean_diff}Difference in means of climate change
+cognition and affect characteristics between Study 1 and Study 3.}
+
+\centering{
+
 \begin{tabular}[t]{l>{\raggedright\arraybackslash}p{4em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{\textit{$M_{Study\ 3} - M_{Study\ 1}$}} & \multicolumn{3}{c}{ } \\
@@ -570,7 +575,10 @@ Perceived Societal Consequences & -0.01 & {}[-0.25, 0.22] & -0.11 & .914 & 1.00\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}$p_{adjusted} <$ .05; }\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\
 \end{tabular}
-\end{table}
+
+}
+
+\end{table}%
 
 We explored the psychological characteristics associated with segment
 membership, by replicating the regression analysis of
@@ -612,13 +620,15 @@ although evidence from Study 3 indicated that Fencesitters were
 characterised by greater extraversion and conscientiousness, whereas
 Sceptics were characterised by greater introversion.
 
-\hypertarget{tbl-ridge-regression-segments-within-studies}{}
 \begin{landscape}\begingroup\fontsize{7}{9}\selectfont
 
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}l}
-\caption{\label{tbl-ridge-regression-segments-within-studies}Effect of psychological characteristics on segment membership, as
-estimated by a multinomial logistic ridge regression for Study 1 and
-Study 3. }\tabularnewline
+
+\caption{\label{tbl-ridge-regression-segments-within-studies}Effect of
+psychological characteristics on segment membership, as estimated by a
+multinomial logistic ridge regression for Study 1 and Study 3.}
+
+\tabularnewline
 
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Acceptors} & \multicolumn{2}{c}{Fencesitters} & \multicolumn{2}{c}{Sceptics} \\
@@ -678,12 +688,13 @@ Predictors & Study 1 & Study 3 & Study 1 & Study 3 & Study 1 & Study 3\\
 \hspace{1em}Neuroticism & \parbox{7em}{+0.11\\{[-0.01, 0.30]}} & \parbox{7em}{+0.03\\{[-0.15, 0.22]}} & \parbox{7em}{-0.02\\{[-0.17, 0.14]}} & \parbox{7em}{-0.08\\{[-0.30, 0.10]}} & \parbox{7em}{-0.09\\{[-0.29, 0.01]}} & \parbox{7em}{+0.05\\{[-0.09, 0.23]}}\\
 \hspace{1em}Agreeableness & \parbox{7em}{+0.04\\{[-0.11, 0.20]}} & \parbox{7em}{+0.01\\{[-0.18, 0.24]}} & \parbox{7em}{+0.02\\{[-0.13, 0.17]}} & \parbox{7em}{-0.03\\{[-0.27, 0.16]}} & \parbox{7em}{-0.06\\{[-0.21, 0.10]}} & \parbox{7em}{+0.03\\{[-0.18, 0.23]}}\\
 \hspace{1em}Openness & \parbox{7em}{0.00\\{[-0.16, 0.14]}} & \parbox{7em}{+0.01\\{[-0.18, 0.23]}} & \parbox{7em}{-0.07\\{[-0.24, 0.06]}} & \parbox{7em}{0.00\\{[-0.22, 0.19]}} & \parbox{7em}{+0.07\\{[-0.05, 0.25]}} & \parbox{7em}{-0.01\\{[-0.22, 0.17]}}\\*
+
 \end{longtable}
+
 \endgroup{}
 \end{landscape}
 
-\hypertarget{bushfire-perceptions}{%
-\subsection{Bushfire perceptions}\label{bushfire-perceptions}}
+\subsection{Bushfire perceptions}\label{bushfire-perceptions}
 
 To explore perceptions of the Black Summer bushfires, we performed a
 principal components analysis with varimax rotation on the Fire
@@ -703,18 +714,24 @@ averaging item scores. Items that negatively loaded onto factors were
 reverse coded. The multi-item factors of Climate Processes and Fire
 Realities had an internal consistency of Cronbach's \(\alpha\) = 0.86
 (mean inter-item correlation = 0.60) and Cronbach's \(\alpha\) = 0.42
-(mean inter-item correlation = 0.29), respectively.
+(mean inter-item correlation = 0.29), respectively. Given the low
+internal consistency of Fire Realities, we separated the factor into its
+items---`Climate change made bushfires less likely' (item 2) and
+`Bushfires were severe' (item 4)---for our following analysis.
 
 To test segment differences in bushfire perceptions, we built linear
-regression models predicting Climate Processes, Fire Realities, and
-Arson Causes as a function of segment membership (coefficients reported
-in Supplementary Materials). All linear regression models accounted for
-a significant amount of bushfire perception variance compared to
-intercept-only models, indicating that segment membership was a
-significant predictor of Climate Processes (\(F\) (2, 210) = 47.44,
-\(p\) \textless{} .001, \(R^2\) = 0.31, \(R^2_{adjusted}\) = 0.30), Fire
-Realities (\(F\) (2, 210) = 30.31, \(p\) \textless{} .001, \(R^2\) =
-0.22, \(R^2_{adjusted}\) = 0.22), and Arson Causes (\(F\) (2, 210) =
+regression models predicting Climate Processes, the two Fire Realities
+items, and Arson Causes as a function of segment membership
+(coefficients reported in Supplementary Materials). All linear
+regression models accounted for a significant amount of bushfire
+perception variance compared to intercept-only models, indicating that
+segment membership was a significant predictor of Climate Processes
+(\(F\) (2, 210) = 47.44, \(p\) \textless{} .001, \(R^2\) = 0.31,
+\(R^2_{adjusted}\) = 0.30), the two Fire Realities items (`Climate
+change made bushfires less likely': \(F\) (2, 210) = 18.30, \(p\)
+\textless{} .001, \(R^2\) = 0.15, \(R^2_{adjusted}\) = 0.14; `Bushfires
+were severe': \(F\) (2, 210) = 19.71, \(p\) \textless{} .001, \(R^2\) =
+0.16, \(R^2_{adjusted}\) = 0.15), and Arson Causes (\(F\) (2, 210) =
 12.69, \(p\) \textless{} .001, \(R^2\) = 0.11, \(R^2_{adjusted}\) =
 0.10). To quantify specific segment differences, we conducted pairwise
 comparisons of marginal means using the \emph{marginaleffects} package
@@ -726,30 +743,42 @@ Climate Processes than Fencesitters (difference = 0.53, \emph{SE} =
 \textless{} .001, \(p_{adjusted}\) \textless{} .001), who in turn, had a
 higher mean endorsement than Sceptics (difference = 1.76, \emph{SE} =
 0.25, \emph{95\% CI} = {[}1.28, 2.24{]}, \emph{z} = 7.14, \(p\)
-\textless{} .001, \(p_{adjusted}\) \textless{} .001). For Fire
-Realities, Acceptors had a greater mean endorsement than Sceptics
-(difference = 0.48, \emph{SE} = 0.19, \emph{95\% CI} = {[}0.11, 0.85{]},
-\emph{z} = 2.54, \(p\) = .011, \(p_{adjusted}\) = .022) and Fencesitters
-(difference = 0.84, \emph{SE} = 0.11, \emph{95\% CI} = {[}0.63, 1.06{]},
-\emph{z} = 7.75, \(p\) \textless{} .001, \(p_{adjusted}\) \textless{}
-.001). However, Fencesitters did not reliably differ from Sceptics in
-their mean endorsement of Fire Realities (difference = -0.36, \emph{SE}
-= 0.20, \emph{95\% CI} = {[}-0.75, 0.02{]}, \emph{z} = -1.86, \(p\) =
-.063, \(p_{adjusted}\) = .063). The pattern of Climate Processes
-endorsement was reversed for Arson Causes, with Sceptics having a higher
-mean endorsement than Fencesitters (difference = 0.74, \emph{SE} = 0.30,
-\emph{95\% CI} = {[}0.15, 1.32{]}, \emph{z} = 2.47, \(p\) = .014,
-\(p_{adjusted}\) = .014), who in turn, had a higher mean endorsement
-than Acceptors (difference = 0.55, \emph{SE} = 0.17, \emph{95\% CI} =
-{[}0.23, 0.88{]}, \emph{z} = 3.32, \(p\) \textless{} .001,
-\(p_{adjusted}\) = .002).
+\textless{} .001, \(p_{adjusted}\) \textless{} .001). For the first Fire
+Realities item of `Climate change made bushfires less likely',
+Fencesitters had a higher mean endorsement than Acceptors (difference =
+1.04, \emph{SE} = 0.17, \emph{95\% CI} = {[}0.70, 1.38{]}, \emph{z} =
+6.05, \(p\) \textless{} .001, \(p_{adjusted}\) \textless{} .001) and
+Sceptics (difference = 0.64, \emph{SE} = 0.31, \emph{95\% CI} = {[}0.04,
+1.25{]}, \emph{z} = 2.08, \(p\) = .037, \(p_{adjusted}\) = .074).
+However, Acceptors did not reliably differ from Sceptics in their mean
+endorsement of the item (difference = -0.40, \emph{SE} = 0.30,
+\emph{95\% CI} = {[}-0.99, 0.19{]}, \emph{z} = -1.33, \(p\) = .182,
+\(p_{adjusted}\) = .182). For the second Fire Realities item of
+`Bushfires were severe', Acceptors had a greater mean endorsement than
+Sceptics (difference = 0.56, \emph{SE} = 0.19, \emph{95\% CI} = {[}0.20,
+0.93{]}, \emph{z} = 3.04, \(p\) = .002, \(p_{adjusted}\) = .005) and
+Fencesitters (difference = 0.65, \emph{SE} = 0.11, \emph{95\% CI} =
+{[}0.44, 0.85{]}, \emph{z} = 6.05, \(p\) \textless{} .001,
+\(p_{adjusted}\) \textless{} .001). However, Fencesitters did not
+reliably differ from Sceptics in their mean endorsement of the item
+(difference = -0.08, \emph{SE} = 0.19, \emph{95\% CI} = {[}-0.46,
+0.29{]}, \emph{z} = -0.43, \(p\) = .664, \(p_{adjusted}\) = .664). The
+pattern of Climate Processes endorsement was reversed for Arson Causes,
+with Sceptics having a higher mean endorsement than Fencesitters
+(difference = 0.74, \emph{SE} = 0.30, \emph{95\% CI} = {[}0.15, 1.32{]},
+\emph{z} = 2.47, \(p\) = .014, \(p_{adjusted}\) = .014), who in turn,
+had a higher mean endorsement than Acceptors (difference = 0.55,
+\emph{SE} = 0.17, \emph{95\% CI} = {[}0.23, 0.88{]}, \emph{z} = 3.32,
+\(p\) \textless{} .001, \(p_{adjusted}\) = .002).
 
-\hypertarget{tbl-fps-loadings}{}
 \begin{table}
-\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor,
-their mean score, and their standard deviation. }\tabularnewline
 
-\centering
+\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale,
+their loadings onto each factor, their mean score, and their standard
+deviation.}
+
+\centering{
+
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{18em}ccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
@@ -767,26 +796,20 @@ Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}Bolded loadings are greater than .40 in magnitude.}\\
 \end{tabular}
-\end{table}
+
+}
+
+\end{table}%
 
 \begin{verbatim}
 Warning: Duplicated aesthetics after name standardisation: colour
 \end{verbatim}
 
-\begin{verbatim}
-Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
-3.5.0.
-i Please use the `legend.position.inside` argument of `theme()` instead.
-\end{verbatim}
-
-\begin{verbatim}
-Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggplot2
-3.5.0.
-\end{verbatim}
-
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-fps-segment-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-fps-segment-1.pdf}}
 
 }
 
@@ -794,7 +817,7 @@ Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggp
 a function of segment. Error bars indicate one standard error above and
 below the mean.}
 
-\end{figure}
+\end{figure}%
 
 We investigated causal perceptions by examining responses to claims that
 the mass arson (item seven of the Bushfire Perception scale) and climate
@@ -814,9 +837,8 @@ negatively associated with endorsement of climate change causal account
 .002), which suggests that the two causal accounts for the Black Summer
 bushfires were somewhat incompatible.
 
-\hypertarget{policy-direction-preferences-1}{%
 \subsection{Policy direction
-preferences}\label{policy-direction-preferences-1}}
+preferences}\label{policy-direction-preferences-1}
 
 Participants differed in their policy direction preferences in response
 to the Black Summer bushfires. Most participants desired more
@@ -875,20 +897,11 @@ Acceptors or Fencesitters.
 Warning: Duplicated aesthetics after name standardisation: colour
 \end{verbatim}
 
-\begin{verbatim}
-Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
-3.5.0.
-i Please use the `legend.position.inside` argument of `theme()` instead.
-\end{verbatim}
-
-\begin{verbatim}
-Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggplot2
-3.5.0.
-\end{verbatim}
-
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-policy-support-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-policy-support-1.pdf}}
 
 }
 
@@ -896,10 +909,11 @@ Warning: The `scale_name` argument of `discrete_scale()` is deprecated as of ggp
 proportion of each segment. Error bars indicate one standard error of
 the proportion.}
 
-\end{figure}
+\end{figure}%
 
 
   \bibliography{references.bib}
+
 
 
 \end{document}

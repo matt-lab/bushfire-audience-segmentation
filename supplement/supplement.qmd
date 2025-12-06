@@ -52,6 +52,7 @@ library(ggthemes)   # for ggplot themes
 library(glue)    # for string interpolation
 library(marginaleffects) # for marginal effects
 library(emmeans) # for marginal effects
+library(ggpattern) # for pattern fills
 
 #### Helper functions ####
 
@@ -158,6 +159,8 @@ colour_background <- "#FFFFFF"
 colour_text <- "#000000"
 colour_grid <- "#A0A0A0"
 colour_axis <- "#000000"
+colour_hatch_pattern <- "gray35"
+density_hatch_pattern <- 0.15
 
 theme_manuscript <- function() {
     # Colour
@@ -442,9 +445,9 @@ data <- data |>
 # From colourblind friendly palettes
 
 # From the 'safe' carto colour palette
-study_colours <- c("#6699CC", "#661100", "#882255")
+study_colours <- rep('white', length(unique(data$study_name_full))) #c("#6699CC", "#661100", "#882255")
 names(study_colours) <- sort(unique(data$study_name_full))
-segment_colours <- c("#117733", "#DDCC77", "#88CCEE")
+segment_colours <- rep('white', length(unique(data$segment_name))) #c("#117733", "#DDCC77", "#88CCEE")
 names(segment_colours) <- sort(unique(data$segment_name))
 
 # Other palettes
@@ -1491,9 +1494,35 @@ get_lm_fit_text <- function(lm_object) {
 }
 
 
+# Given low internal reliability of Fire Realities, we split Fire Realities up
+# into its original items
+# We also retain the original values for item 2, rather than reverse code
+data_fps_scales_revised <-
+  data_fps_scales |>
+  mutate(value_scored = value) |>
+  mutate(
+    factor =
+      case_when(
+        factor == 1 ~ 1,
+        factor == 3 ~ 4,
+        factor == 2 & item == 'fps_2' ~ 2,
+        factor == 2 & item == 'fps_4' ~ 3
+      )
+  ) |>
+  mutate(
+    factor_name =
+      case_when(
+        item == 'fps_2' ~ str_c(factor_name, ": Climate change made bushfires less likely"),
+        item == 'fps_4' ~ str_c(factor_name, ": Bushfires were severe"),
+        TRUE ~ factor_name
+      )
+  ) |>
+  mutate(factor_name = fct_reorder(factor_name, factor))
+
+
 # Prepare models
 fps_models <-
-    data_fps_scales |>
+    data_fps_scales_revised |>
     group_by(factor_name, factor, segment, id) |>
     summarise(score = mean(value_scored)) |>
     ungroup() |>
@@ -1680,6 +1709,11 @@ data |>
         9,
         9 + 3
     ) |>
+    pack_rows(
+        unique(coefs_fps_models$response)[4],
+        13,
+        13 + 3
+    ) |>
     footnote(
         general =
             c(
@@ -1700,6 +1734,7 @@ data |>
 ### Correlations
 
 The correlations between the Fire Perception Scale subscale scores and auxiliary psychological characteristics are shown in @tbl-fps-correlations.
+In @tbl-fps-correlations-causal_items, we present the correlations of auxiliary psychological characteristics with two Fire Perception Scale items concerning perceived causes for the bushfires---climate change (item 1) and arson (item 7).
 
 ```{r}
 #| echo: false
@@ -1708,7 +1743,7 @@ The correlations between the Fire Perception Scale subscale scores and auxiliary
 
 # Some exploration of correlations
 data_fps_scores <-
-  data_fps_scales |>
+  data_fps_scales_revised |>
   group_by(
     id,
     factor_name
@@ -1743,14 +1778,24 @@ data_fps_correlations <-
         use = "pairwise.complete.obs",
         quiet = TRUE
     ) |>
-    focus(`Climate Processes`, `Arson Causes`, `Fire Realities`) |>
+    focus(
+      `Climate Processes`,
+      `Arson Causes`,
+      `Fire Realities: Climate change made bushfires less likely`,
+      `Fire Realities: Bushfires were severe`
+    ) |>
     pivot_longer(-term, names_to = "fps", values_to = "r") |>
     # Prepare table data
     mutate(
         fps = factor(
             fps,
-            levels = c("Climate Processes", "Fire Realities", "Arson Causes"),
-            labels = unique(data_fps_scores$factor_name)
+            levels = c(
+              "Climate Processes",
+              "Fire Realities: Climate change made bushfires less likely",
+              "Fire Realities: Bushfires were severe",
+              "Arson Causes"
+            ),
+            labels = levels(data_fps_scales_revised$factor_name)
         )
     ) |>
     left_join(
@@ -1778,9 +1823,10 @@ data_fps_correlations <-
     mutate(
         r_colour =
             case_when(
-                r > .1 ~ tail(carto_pal(201, magnitude_palette), 1),
-                r < -.1 ~ head(carto_pal(201, magnitude_palette), 1),
-                TRUE ~ carto_pal(201, magnitude_palette)[floor((r + 1) / 2 * 200 + 1)]
+                r > cor_critical(.05, n_distinct(data_fps_scales$id)) ~ tail(carto_pal(201, magnitude_palette), 1),
+                r < -cor_critical(.05, n_distinct(data_fps_scales$id)) ~ head(carto_pal(201, magnitude_palette), 1),
+                TRUE ~ "#808080"
+               # TRUE ~ carto_pal(201, magnitude_palette)[floor((r + 1) / 2 * 200 + 1)]
             )
     ) |>
     mutate(
@@ -1817,17 +1863,18 @@ data_fps_correlations |>
         align = "l",
         escape = FALSE,
         booktabs = TRUE,
+        longtable = TRUE,
         linesep = ""
     ) |>
     pack_groups(data_fps_correlations, category) |>
-    column_spec(c(2, 3, 4), width = "6em") |>
+    column_spec(c(2, 3, 4, 5), width = "4.5em") |>
     kable_styling(
         latex_options = c("repeat_header")
     ) |>
     add_header_above(
         c(
             " " = 1,
-            "Fire Perception Scale" = 3
+            "Fire Perception Scale" = 4
         )
     ) |>
     footnote(
@@ -1846,6 +1893,151 @@ data_fps_correlations |>
         escape = FALSE
     )
 ```
+
+```{r}
+#| echo: false
+#| label: tbl-fps-correlations-causal_items
+#| tbl-cap: "Pearson correlations between the Fire Perception Scale causal items and auxiliary psychological characteristics."
+
+# Some exploration of correlations
+data_fps_causal_items <-
+  data_fps_scales |>
+  filter(item %in% c('fps_1', 'fps_7'))
+
+data_fps_correlations_causal_items <- 
+    data |>
+    select(any_of(scales_info$abbrev), study, id) |>
+    pivot_longer(-c(study, id), names_to = 'scale', values_to = 'score') |>
+    left_join(scales_info, by = c('scale' = 'abbrev')) |>
+    select(study:measure) |>
+    add_case(
+        study = 3,
+        id = data_fps_causal_items$id,
+        scale = data_fps_causal_items$item,
+        score = data_fps_causal_items$value_scored
+    ) |>
+    mutate(
+      measure = case_when(
+        scale == "fps_1" ~ "1. Climate change causes",
+        scale == "fps_7" ~ "7. Arson causes",
+        TRUE ~ measure
+      )
+    ) |>
+    filter(study == 3) |>
+    select(-study, -scale) |>
+    pivot_wider(
+        names_from = "measure",
+        values_from = "score"
+    ) |>
+    select(-id) |>
+    correlate(
+        method = "pearson",
+        use = "pairwise.complete.obs",
+        quiet = TRUE
+    ) |>
+    focus(`1. Climate change causes`, `7. Arson causes`) |>
+    pivot_longer(-term, names_to = "fps", values_to = "r") |>
+    # Prepare table data
+    mutate(
+        fps = factor(
+            fps,
+            levels = c("1. Climate change causes", "7. Arson causes")
+        )
+    ) |>
+    left_join(
+        scales_info,
+        by = c("term" = "measure")
+    ) |>
+    select(
+        category,
+        term,
+        fps,
+        r
+    ) |>
+    mutate(term = fct_reorder(term, -abs(r))) |>
+    mutate(
+        p_value_markers =
+            get_p_value_markers(
+                case_when(
+                    abs(r) > cor_critical(.001, n_distinct(data_fps_scales$id)) ~ .001 - 1e-3,
+                    abs(r) > cor_critical(.01, n_distinct(data_fps_scales$id)) ~ .01 - 1e-3,
+                    abs(r) > cor_critical(.05, n_distinct(data_fps_scales$id)) ~ .05 - 1e-3,
+                    TRUE ~ 1
+                )
+            )
+    ) |>
+    mutate(
+        r_colour =
+            case_when(
+                r > cor_critical(.05, n_distinct(data_fps_scales$id)) ~ tail(carto_pal(201, magnitude_palette), 1),
+                r < -cor_critical(.05, n_distinct(data_fps_scales$id)) ~ head(carto_pal(201, magnitude_palette), 1),
+                TRUE ~ "#808080"
+            )
+    ) |>
+    mutate(
+        r = cell_spec(
+            str_c(
+                specify_decimal(r, 2),
+                p_value_markers
+            ),
+            color = r_colour,
+            format = "latex",
+            escape = FALSE
+        )
+    ) |>    
+    select(
+        category,
+        term,
+        fps,
+        r
+    ) |>
+    arrange(fps) |>
+    pivot_wider(
+        names_from = "fps",
+        values_from = "r"
+    ) |>
+    arrange(
+        category,
+        term
+    )
+
+data_fps_correlations_causal_items |>
+    select(-category) |>
+    rename(`Psychological characteristics` = term) |>
+    kbl(
+        align = "l",
+        escape = FALSE,
+        booktabs = TRUE,
+        linesep = ""
+    ) |>
+    pack_groups(data_fps_correlations_causal_items, category) |>
+    column_spec(c(2, 3), width = "9em") |>
+    kable_styling(
+        latex_options = c("repeat_header")
+    ) |>
+    add_header_above(
+        c(
+            " " = 1,
+            "Fire Perception casual items" = 2
+        )
+    ) |>
+    footnote(
+        general =
+            c(
+                str_c(
+                    "\\\\textsuperscript{*}",
+                    "\\\\textit{p} $<$ .05; ",
+                    "\\\\textsuperscript{**}",
+                    "\\\\textit{p} $<$ .01; ",
+                    "\\\\textsuperscript{***}",
+                    "\\\\textit{p} $<$ .001."
+                ),
+                "\\\\parbox{30em}{Colour indicates the magnitude and direction of the correlation.}"
+            ),
+        escape = FALSE
+    )
+```
+
 
 \clearpage
 

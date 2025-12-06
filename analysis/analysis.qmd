@@ -1891,6 +1891,30 @@ fps_avg_item_correlations <-
         r_avg_rounded = specify_decimal(r_avg)
     )
 
+# Given low internal reliability of Fire Realities, we split Fire Realities up
+# into its original items
+# We also retain the original values for item 2, rather than reverse code
+data_fps_scales_revised <-
+  data_fps_scales |>
+  mutate(value_scored = value) |>
+  mutate(
+    factor =
+      case_when(
+        factor == 1 ~ 1,
+        factor == 3 ~ 4,
+        factor == 2 & item == 'fps_2' ~ 2,
+        factor == 2 & item == 'fps_4' ~ 3
+      )
+  ) |>
+  mutate(
+    factor_name =
+      case_when(
+        item == 'fps_2' ~ str_c(factor_name, ": Climate change made bushfires less likely"),
+        item == 'fps_4' ~ str_c(factor_name, ": Bushfires were severe"),
+        TRUE ~ factor_name
+      )
+  )
+
 # Models
 get_lm_models <- function(data, equation, model_key = NULL) {
     # Build linear models
@@ -1949,7 +1973,8 @@ get_lm_fit_text <- function(lm_object) {
 
 # Prepare models
 fps_models <-
-    data_fps_scales |>
+    data_fps_scales_revised |>
+    mutate(factor_name = fct_reorder(factor_name, factor)) |>
     group_by(factor_name, factor, segment, id) |>
     summarise(score = mean(value_scored)) |>
     ungroup() |>
@@ -2032,14 +2057,16 @@ The second factor, labelled *Fire Realities*, was characterised by two items (it
 The third factor, labelled *Arson Causes*, was characterised by a single item (item 7) stating that Black Summer was caused by hundreds of arsonists and accounted for `r fps_pca_var[3]`% of scale variance.
 We created subscales corresponding to each factor by averaging item scores. Items that negatively loaded onto factors were reverse coded.
 The multi-item factors of Climate Processes and Fire Realities had an internal consistency of Cronbach's $\alpha$ = `r fps_alphas_rounded[[1]][1]` (mean inter-item correlation = `r fps_avg_item_correlations$r_avg_rounded[1]`) and Cronbach's $\alpha$ = `r fps_alphas_rounded[[2]][1]` (mean inter-item correlation = `r fps_avg_item_correlations$r_avg_rounded[2]`), respectively.
+Given the low internal consistency of Fire Realities, we separated the factor into its items---'Climate change made bushfires less likely' (item 2) and 'Bushfires were severe' (item 4)---for our following analysis.
 
-To test segment differences in bushfire perceptions, we built linear regression models predicting Climate Processes, Fire Realities, and Arson Causes as a function of segment membership (coefficients reported in Supplementary Materials).
-All linear regression models accounted for a significant amount of bushfire perception variance compared to intercept-only models, indicating that segment membership was a significant predictor of Climate Processes (`r fps_models_fits[1]`), Fire Realities (`r fps_models_fits[2]`), and Arson Causes (`r fps_models_fits[3]`).
+To test segment differences in bushfire perceptions, we built linear regression models predicting Climate Processes, the two Fire Realities items, and Arson Causes as a function of segment membership (coefficients reported in Supplementary Materials).
+All linear regression models accounted for a significant amount of bushfire perception variance compared to intercept-only models, indicating that segment membership was a significant predictor of Climate Processes (`r fps_models_fits[1]`), the two Fire Realities items ('Climate change made bushfires less likely': `r fps_models_fits[2]`; 'Bushfires were severe': `r fps_models_fits[3]`), and Arson Causes (`r fps_models_fits[4]`).
 To quantify specific segment differences, we conducted pairwise comparisons of marginal means using the *marginaleffects* package [@R-marginaleffects], with a Holm [-@holm1979] *p* value adjustment for multiple comparisons.
-As seen in @fig-fps-segment, Acceptors had a higher mean endorsement of Climate Processes than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text`), who in turn, had a higher mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text_rev`).
-For Fire Realities, Acceptors had a greater mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Acceptors) - mean(Sceptics)")$text`) and Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text`).
-However, Fencesitters did not reliably differ from Sceptics in their mean endorsement of Fire Realities (`r filter(fps_models_marginal_means, str_detect(response, "Fire Realities") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text_rev`).
-The pattern of Climate Processes endorsement was reversed for Arson Causes, with Sceptics having a higher mean endorsement than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "mean(Sceptics) - mean(Fencesitters)")$text`), who in turn, had a higher mean endorsement than Acceptors (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "mean(Acceptors) - mean(Fencesitters)")$text_rev`).
+As seen in @fig-fps-segment, Acceptors had a higher mean endorsement of Climate Processes than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "Acceptors - Fencesitters")$text`), who in turn, had a higher mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Climate Processes") & contrast == "Sceptics - Fencesitters")$text_rev`).
+For the first Fire Realities item of 'Climate change made bushfires less likely', Fencesitters had a higher mean endorsement than Acceptors (`r filter(fps_models_marginal_means, str_detect(response, "Climate change made bushfires less likely") & contrast == "Acceptors - Fencesitters")$text_rev`) and Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Climate change made bushfires less likely") & contrast == "Sceptics - Fencesitters")$text_rev`). However, Acceptors did not reliably differ from Sceptics in their mean endorsement of the item (`r filter(fps_models_marginal_means, str_detect(response, "Climate change made bushfires less likely") & contrast == "Acceptors - Sceptics")$text`).
+For the second Fire Realities item of 'Bushfires were severe', Acceptors had a greater mean endorsement than Sceptics (`r filter(fps_models_marginal_means, str_detect(response, "Bushfires were severe") & contrast == "Acceptors - Sceptics")$text`) and Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Bushfires were severe") & contrast == "Acceptors - Fencesitters")$text`).
+However, Fencesitters did not reliably differ from Sceptics in their mean endorsement of the item (`r filter(fps_models_marginal_means, str_detect(response, "Bushfires were severe") & contrast == "Sceptics - Fencesitters")$text_rev`).
+The pattern of Climate Processes endorsement was reversed for Arson Causes, with Sceptics having a higher mean endorsement than Fencesitters (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "Sceptics - Fencesitters")$text`), who in turn, had a higher mean endorsement than Acceptors (`r filter(fps_models_marginal_means, str_detect(response, "Arson Causes") & contrast == "Acceptors - Fencesitters")$text_rev`).
 
 ```{r}
 #| label: tbl-fps-loadings
@@ -2083,8 +2110,10 @@ tab_fps_loadings |>
 #| label: fig-fps-segment
 #| fig-cap: "Mean Fire Perception subscale scores as a function of segment. Error bars indicate one standard error above and below the mean."
 
-data_fps_scales |>
+data_fps_scales_revised |>
     mutate(factor_name = fct_relabel(factor_name, ~ str_remove(.x, "\\([A-Z]\\) "))) |>
+    mutate(factor_name = fct_reorder(factor_name, factor)) |>
+    arrange(factor_name) |>
     mutate(segment = str_to_lower(segment)) |>
     left_join(
         distinct(select(data, segment, segment_name)),
@@ -2132,6 +2161,10 @@ data_fps_scales |>
         #     "5\n(Strongly agree)"
         # )
     ) +
+    scale_x_discrete(
+        labels = function(x) {
+        stringr::str_wrap(x, width = 15) }
+    ) +
     coord_cartesian(ylim = c(1, 5)) +
     ylab('Mean subscale score') +
     xlab('Fire Perception subscale') +
@@ -2147,7 +2180,7 @@ data_fps_scales |>
         values = segment_colours #segment_colours
     ) +
     theme(
-        legend.position = c(0, 1),
+        legend.position = c(0.1, 1),
         legend.justification = c(0, 1)
     )
 ```
@@ -2536,16 +2569,16 @@ model_sentiment <-
     ) |>
     # Add pairwise comparisons
     mutate(
-        comparison_summary = pmap(
-            list(
-                model = model,
-                variables = list(list(segment = 'pairwise')),
-                newdata = 'balanced',
-                p_adjust_method = 'holm',
-                comparison = 'lnor',
-                transform = list(exp)
-            ),
-            get_contrasts
+        comparison_summary = map(
+          model,
+          ~ get_contrasts(
+            model = .x,
+            variables = list(segment = 'pairwise'),
+            newdata = 'balanced',
+            comparison = 'lnor',
+            transform = exp,
+            p_adjust_method = 'holm'
+          )
         )
     )
 

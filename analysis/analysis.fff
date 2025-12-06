@@ -1,6 +1,8 @@
 \begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{qsort.pdf}
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{qsort.pdf}
 
 }
 
@@ -20,7 +22,9 @@ under the Creative Commons license (CC BY 4.0).}
  
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-segment-change-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-segment-change-1.pdf}}
 
 }
 
@@ -33,7 +37,9 @@ standard error of the proportion.}
  
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-fps-segment-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-fps-segment-1.pdf}}
 
 }
 
@@ -46,7 +52,9 @@ below the mean.}
  
 \begin{figure}
 
-{\centering \includegraphics{analysis_files/figure-pdf/fig-policy-support-1.pdf}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{analysis_files/figure-pdf/fig-policy-support-1.pdf}}
 
 }
 

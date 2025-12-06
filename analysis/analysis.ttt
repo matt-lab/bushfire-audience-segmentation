@@ -1,7 +1,10 @@
 \begin{table}
-\caption{\label{tbl-waves}Sample characteristics and materials of study. }\tabularnewline
 
-\centering
+\caption{\label{tbl-waves}Sample characteristics and materials of
+study.}
+
+\centering{
+
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{16em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}>{\centering\arraybackslash}p{7em}}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Study} \\
@@ -26,13 +29,19 @@ Time & Before peak bushfire severity & After peak bushfire severity & After peak
 \hspace{1em}Change in policy items & \faClose & \faClose & \faCheck\\
 \bottomrule
 \end{tabular}
+
+}
+
 \end{table}
 \efloatseparator
  
 \begin{landscape}\begingroup\fontsize{7}{9}\selectfont
 
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{3.5em}>{\raggedright\arraybackslash}p{30em}>{\raggedright\arraybackslash}p{13em}}
-\caption{\label{tbl-scales}Summary of auxiliary psychological measures. }\tabularnewline
+
+\caption{\label{tbl-scales}Summary of auxiliary psychological measures.}
+
+\tabularnewline
 
 \toprule
 Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example item & Reference\\
@@ -85,16 +94,20 @@ Psychological characteristic & Items & Cronbach's $\alpha$ & Range & Example ite
 \hspace{1em}Extraversion & 2 & 0.53 & 1 to 5 & I see myself as someone who is outgoing, sociable & \citet{rammstedt2007}\\
 \hspace{1em}Neuroticism & 2 & 0.62 & 1 to 5 & I see myself as someone who gets nervous easily & \citet{rammstedt2007}\\
 \hspace{1em}Openness & 2 & 0.14 & 1 to 5 & I see myself as someone who has an active imagination & \citet{rammstedt2007}\\*
+
 \end{longtable}
+
 \endgroup{}
 \end{landscape}
 \efloatseparator
  
 \begin{table}
-\caption{\label{tbl-mean_diff}Difference in means of climate change cognition and affect
-characteristics between Study 1 and Study 3. }\tabularnewline
 
-\centering
+\caption{\label{tbl-mean_diff}Difference in means of climate change
+cognition and affect characteristics between Study 1 and Study 3.}
+
+\centering{
+
 \begin{tabular}[t]{l>{\raggedright\arraybackslash}p{4em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{2.5em}>{\raggedright\arraybackslash}p{3em}>{\raggedright\arraybackslash}p{4em}}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{\textit{$M_{Study\ 3} - M_{Study\ 1}$}} & \multicolumn{3}{c}{ } \\
@@ -119,15 +132,21 @@ Perceived Societal Consequences & -0.01 & {}[-0.25, 0.22] & -0.11 & .914 & 1.00\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}$p_{adjusted} <$ .05; }\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\
 \end{tabular}
+
+}
+
 \end{table}
 \efloatseparator
  
 \begin{landscape}\begingroup\fontsize{7}{9}\selectfont
 
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{20em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}>{\raggedright\arraybackslash}p{8em}l}
-\caption{\label{tbl-ridge-regression-segments-within-studies}Effect of psychological characteristics on segment membership, as
-estimated by a multinomial logistic ridge regression for Study 1 and
-Study 3. }\tabularnewline
+
+\caption{\label{tbl-ridge-regression-segments-within-studies}Effect of
+psychological characteristics on segment membership, as estimated by a
+multinomial logistic ridge regression for Study 1 and Study 3.}
+
+\tabularnewline
 
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Acceptors} & \multicolumn{2}{c}{Fencesitters} & \multicolumn{2}{c}{Sceptics} \\
@@ -187,16 +206,21 @@ Predictors & Study 1 & Study 3 & Study 1 & Study 3 & Study 1 & Study 3\\
 \hspace{1em}Neuroticism & \parbox{7em}{+0.11\\{[-0.01, 0.30]}} & \parbox{7em}{+0.03\\{[-0.15, 0.22]}} & \parbox{7em}{-0.02\\{[-0.17, 0.14]}} & \parbox{7em}{-0.08\\{[-0.30, 0.10]}} & \parbox{7em}{-0.09\\{[-0.29, 0.01]}} & \parbox{7em}{+0.05\\{[-0.09, 0.23]}}\\
 \hspace{1em}Agreeableness & \parbox{7em}{+0.04\\{[-0.11, 0.20]}} & \parbox{7em}{+0.01\\{[-0.18, 0.24]}} & \parbox{7em}{+0.02\\{[-0.13, 0.17]}} & \parbox{7em}{-0.03\\{[-0.27, 0.16]}} & \parbox{7em}{-0.06\\{[-0.21, 0.10]}} & \parbox{7em}{+0.03\\{[-0.18, 0.23]}}\\
 \hspace{1em}Openness & \parbox{7em}{0.00\\{[-0.16, 0.14]}} & \parbox{7em}{+0.01\\{[-0.18, 0.23]}} & \parbox{7em}{-0.07\\{[-0.24, 0.06]}} & \parbox{7em}{0.00\\{[-0.22, 0.19]}} & \parbox{7em}{+0.07\\{[-0.05, 0.25]}} & \parbox{7em}{-0.01\\{[-0.22, 0.17]}}\\*
+
 \end{longtable}
+
 \endgroup{}
 \end{landscape}
 \efloatseparator
  
 \begin{table}
-\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale, their loadings onto each factor,
-their mean score, and their standard deviation. }\tabularnewline
 
-\centering
+\caption{\label{tbl-fps-loadings}Items of the Fire Perception Scale,
+their loadings onto each factor, their mean score, and their standard
+deviation.}
+
+\centering{
+
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{18em}ccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
@@ -214,4 +238,7 @@ Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}Bolded loadings are greater than .40 in magnitude.}\\
 \end{tabular}
+
+}
+
 \end{table}
