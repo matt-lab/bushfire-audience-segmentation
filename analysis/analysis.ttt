@@ -225,7 +225,7 @@ deviation.}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Factors} & \multicolumn{2}{c}{Descriptives} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-6}
-Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Realities} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SD}\\
+Item & \parbox{5em}{\centering Climate Processes} & \parbox{5em}{\centering Fire Appraisal} & \parbox{5em}{\centering Arson Causes} & \textit{M} & \textit{SD}\\
 \midrule
 1. Climate change made the 2019-20 Australian bushfires more severe & \textbf{0.78} & 0.34 & -0.22 & 3.62 & 1.40\\
 2. Climate change made the 2019-20 Australian bushfires less likely to occur & 0.27 & \textbf{-0.70} & \textbf{0.42} & 2.19 & 1.27\\

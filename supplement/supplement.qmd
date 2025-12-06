@@ -529,7 +529,7 @@ data_fps_scales <- data |>
     mutate(num = as.integer(str_replace_all(item, "fps_", ""))) |>
     mutate(value_scored = ifelse(num == 2, rev_score(value, 5, 1), value)) |>
     mutate(factor = ifelse(num %in% c(2, 4), 2, ifelse(num == 7, 3, 1))) |>
-    mutate(factor_name = c("(A) Climate Processes", "(B) Fire Realities", "(C) Arson Causes")[factor]) |>
+    mutate(factor_name = c("(A) Climate Processes", "(B) Fire Appraisal", "(C) Arson Causes")[factor]) |>
     mutate(segment = str_to_title(segment)) |>
     mutate(segment = as.factor(segment)) |>
     mutate(segment = fct_relevel(segment, "Sceptic", "Fencesitter", "Acceptor"))
@@ -1430,7 +1430,7 @@ data_fps |>
 
 ### Segment differences
 
-For each Fire Perception Scale subscale (climate processes, fire realities, and arson causes), we built a linear regression model to predict subscale score as a function of segment, using the *lm* function from the *stats* package [@rcoreteam_2023].
+For each Fire Perception Scale subscale (Climate Processes, Fire Appraisal, and Arson Causes), we built a linear regression model to predict subscale score as a function of segment, using the *lm* function from the *stats* package [@rcoreteam_2023].
 Segment was entered as a categorical predictor, and a Wald Z-test was used to estimate $p$ values (@tbl-fps-models).
 
 
@@ -1494,7 +1494,7 @@ get_lm_fit_text <- function(lm_object) {
 }
 
 
-# Given low internal reliability of Fire Realities, we split Fire Realities up
+# Given low internal reliability of Fire Appraisal, we split Fire Appraisal up
 # into its original items
 # We also retain the original values for item 2, rather than reverse code
 data_fps_scales_revised <-
@@ -1781,8 +1781,8 @@ data_fps_correlations <-
     focus(
       `Climate Processes`,
       `Arson Causes`,
-      `Fire Realities: Climate change made bushfires less likely`,
-      `Fire Realities: Bushfires were severe`
+      `Fire Appraisal: Climate change made bushfires less likely`,
+      `Fire Appraisal: Bushfires were severe`
     ) |>
     pivot_longer(-term, names_to = "fps", values_to = "r") |>
     # Prepare table data
@@ -1791,8 +1791,8 @@ data_fps_correlations <-
             fps,
             levels = c(
               "Climate Processes",
-              "Fire Realities: Climate change made bushfires less likely",
-              "Fire Realities: Bushfires were severe",
+              "Fire Appraisal: Climate change made bushfires less likely",
+              "Fire Appraisal: Bushfires were severe",
               "Arson Causes"
             ),
             labels = levels(data_fps_scales_revised$factor_name)
