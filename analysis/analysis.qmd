@@ -1881,13 +1881,21 @@ fps_avg_item_correlations <-
         item_2
     ) |>
     summarise(
-        r = cor(value_scored_1, value_scored_2),
+        r = list(
+          cor.test(
+            value_scored_1,
+            value_scored_2,
+            method = "pearson"
+          )
+        ),
         .groups = 'drop'
     ) |>
     filter(item_1 != item_2) |>
+    mutate(r = map(r, tidy)) |>
+    unnest_wider(r) |>
     group_by(factor_name) |>
     summarise(
-        r_avg = mean(r),
+        r_avg = mean(estimate),
         r_avg_rounded = specify_decimal(r_avg)
     )
 
@@ -2269,7 +2277,7 @@ text_cor_fps_1_fps_7 <-
         text = str_c(
             glue("*r* = ", specify_decimal(estimate)),
             glue(", 95% *CI* = [{specify_decimal(conf.low)}, {specify_decimal(conf.high)}]"),
-            glue(", *p* = ", specify_p_value(p.value, 3))
+            glue(", *p* ", specify_p_value_text(p.value, with_star = F, with_equals = T, 3))
         )
     ) |>
     pull(text)
@@ -2282,6 +2290,58 @@ Despite segment differences, participants seldom rejected the claim that over on
 Many Acceptors (`r text_n_acceptor_accept_fps_7`), and a majority of Fencesitters (`r text_n_fencesitter_accept_fps_7`) and Sceptics (`r text_n_sceptic_accept_fps_7`), agreed (responded with 'agree' or 'strongly agree') with mass arson causal claims.
 In contrast, a majority of Acceptors (`r text_n_acceptor_accept_fps_1`), some Fencesitters (`r text_n_fencesitter_accept_fps_1`), and no Sceptics agreed that climate change worsened the Black Summer bushfires.
 Endorsement of the mass arson causal account was negatively associated with endorsement of climate change causal account (`r text_cor_fps_1_fps_7`), which suggests that the two causal accounts for the Black Summer bushfires were somewhat incompatible.
+
+```{r}
+#| label: fps-pi
+
+data_fps_causal_items <-
+  data_fps_scales |>
+  filter(item %in% c('fps_1', 'fps_7')) |>
+  select(id, item, value_scored) |>
+  rename(fps_item = item) |>
+  rename(fps_score = value_scored) |>
+  mutate(study = 3)
+
+text_cor_causal_items_pi <-
+  data |>
+    select(any_of(scales_info$abbrev), study, id) |>
+    pivot_longer(-c(study, id), names_to = 'scale', values_to = 'score') |>
+    left_join(scales_info, by = c('scale' = 'abbrev')) |>
+    select(study:measure) |>
+    left_join(
+      data_fps_causal_items,
+      by = c('id', 'study'),
+      relationship = 'many-to-many'
+    ) |>
+    filter(study == 3) |>
+    filter(scale == 'pi') |>
+    group_by(fps_item, scale) |>
+    summarise(
+      r =
+        list(
+          cor.test(
+            score,
+            fps_score,
+            method = "pearson"
+          )
+        ),
+      .groups = "drop"
+    ) |>
+    mutate(r = map(r, tidy)) |>
+    unnest_wider(r) |>
+    rowwise() |>
+    mutate(
+        text = str_c(
+            glue("*r* = ", specify_decimal(estimate)),
+            glue(", 95% *CI* = [{specify_decimal(conf.low)}, {specify_decimal(conf.high)}]"),
+            glue(", *p* ", specify_p_value_text(p.value, with_star = F, with_equals = F, 3))
+        )
+    ) |>
+    ungroup()
+
+```
+
+To test a motivated-reasoning account of perceptions of the bushfires, we examined the association between political liberalism-conservatism (as indexed by the single-item measure of political ideology)---a proxy for pre-existing climate change beliefs---and endorsement of the climate-change and mass-arson causal claims. Political liberalism was associated with stronger endorsement of the climate-change causal claim (`r pull(filter(text_cor_causal_items_pi, fps_item == 'fps_1'), text)`), whereas political conservatism was associated with stronger endorsement of the mass-arson causal claim (`r pull(filter(text_cor_causal_items_pi, fps_item == 'fps_7'), text)`). However, both correlations were relatively weak, indicating that acceptance of anthropogenic climate change was not tied solely to pre-existing political beliefs, and that the mass-arson causal claim meshed with a broad range of respondents---including some who accept anthropogenic climate change---providing only limited support for a motivated-reasoning explanation (see Supplementary Materials for correlations between the other auxiliary psychological characteristic measures and the Fire Perception Scale causal items).
 
 ## Policy direction preferences
 
