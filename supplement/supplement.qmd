@@ -1,6 +1,6 @@
 ---
-title: "Supplementary materials for: \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\""
-description: Supplementary materials for the manuscript \"Does personal experience of climate change influence climate-change beliefs? The case of the 2019–2020 Australian bushfires\"
+title: "Supplementary materials for: \"Does extreme climate event exposure influence climate-related opinions? The case of the 2019–2020 Australian Black Summer bushfires?\""
+description: Supplementary materials for the manuscript \"Does extreme climate event exposure influence climate-related opinions? The case of the 2019–2020 Australian Black Summer bushfires?\"
 bibliography: references.bib
 format:
   pdf:
