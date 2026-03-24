@@ -228,7 +228,7 @@ coefficients.
 Numerically, the ratio of female to male participants was stable across
 studies. A log likelihood ratio test did not indicate an improvement in
 model fit when study was included as a predictor, compared to a model
-with only an intercept term (\(\chi^{2}\) (2) = 0.28, \(p\) = 0.87,
+with only an intercept term (\(\chi^{2}\) (2) = 0.28, \(p\) = 0.868,
 \(\omega =\) 0.02). Furthermore, no model coeffecients were
 statistically significant (Table~\ref{tbl-gender-diff}), indicating a
 lack of evidence that gender differed across studies.
@@ -426,6 +426,20 @@ here, as these are reported in the main text.
 See Figure~\ref{fig-scale-change} for density estimates of auxiliary
 psychological characteristics in Study 1 and Study 3.
 
+\begin{verbatim}
+Warning: There was 1 warning in `mutate()`.
+i In argument: `across(where(is.double), specify_decimal, )`.
+Caused by warning:
+! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
+Supply arguments directly to `.fns` through an anonymous function instead.
+
+  # Previously
+  across(a:b, mean, na.rm = TRUE)
+
+  # Now
+  across(a:b, \(x) mean(x, na.rm = TRUE))
+\end{verbatim}
+
 \begin{table}
 
 \caption{\label{tbl-mean_diff}Difference in means of auxiliary
@@ -441,25 +455,25 @@ Psychological characteristics & Estimate & 95\% \textit{CI} & \textit{t} & \text
 \midrule
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Cognitive style}}\\
-\hspace{1em}Orientation to Immediate Goals & 0.17 & {}[0.03, 0.32] & 2.36 & .019 & .08\\
-\hspace{1em}Conspiracist Ideation & 0.13 & {}[-0.05, 0.31] & 1.41 & .158 & .47\\
-\hspace{1em}Need for Cognition & 0.01 & {}[-0.12, 0.13] & 0.12 & .901 & 1.00\\
-\hspace{1em}Orientation to Future Goals & 0.00 & {}[-0.12, 0.11] & -0.07 & .943 & 1.00\\
+\hspace{1em}Orientation to Immediate Goals & 0.17 & {}[0.03, 0.32] & 2.36 & .019 & .076\\
+\hspace{1em}Conspiracist Ideation & 0.13 & {}[-0.05, 0.31] & 1.41 & .158 & .475\\
+\hspace{1em}Need for Cognition & 0.01 & {}[-0.12, 0.13] & 0.12 & .901 & 1.000\\
+\hspace{1em}Orientation to Future Goals & 0.00 & {}[-0.12, 0.11] & -0.07 & .943 & 1.000\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Ideology, worldviews, and values}}\\
-\hspace{1em}Environment-as-Elastic Worldview & 0.18 & {}[0.03, 0.34] & 2.37 & .018 & .11\\
-\hspace{1em}Political Ideology & 0.27 & {}[0.03, 0.51] & 2.21 & .028 & .14\\
-\hspace{1em}System Justification & 0.20 & {}[-0.05, 0.44] & 1.59 & .113 & .45\\
-\hspace{1em}Self-Transcendence Values & -0.10 & {}[-0.26, 0.06] & -1.27 & .204 & .61\\
-\hspace{1em}Conservation Values & 0.05 & {}[-0.10, 0.20] & 0.61 & .539 & 1.00\\
-\hspace{1em}Environment-as-Ductile Worldview & 0.00 & {}[-0.12, 0.12] & -0.01 & .994 & 1.00\\
+\hspace{1em}Environment-as-Elastic Worldview & 0.18 & {}[0.03, 0.34] & 2.37 & .018 & .108\\
+\hspace{1em}Political Ideology & 0.27 & {}[0.03, 0.51] & 2.21 & .028 & .139\\
+\hspace{1em}System Justification & 0.20 & {}[-0.05, 0.44] & 1.59 & .113 & .452\\
+\hspace{1em}Self-Transcendence Values & -0.10 & {}[-0.26, 0.06] & -1.27 & .204 & .611\\
+\hspace{1em}Conservation Values & 0.05 & {}[-0.10, 0.20] & 0.61 & .539 & 1.000\\
+\hspace{1em}Environment-as-Ductile Worldview & 0.00 & {}[-0.12, 0.12] & -0.01 & .994 & 1.000\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Personality}}\\
-\hspace{1em}Conscientiousness & -0.05 & {}[-0.19, 0.09] & -0.72 & .469 & 1.00\\
-\hspace{1em}Agreeableness & -0.04 & {}[-0.18, 0.10] & -0.57 & .571 & 1.00\\
-\hspace{1em}Extraversion & -0.02 & {}[-0.18, 0.14] & -0.28 & .776 & 1.00\\
-\hspace{1em}Openness & 0.01 & {}[-0.12, 0.14] & 0.13 & .893 & 1.00\\
-\hspace{1em}Neuroticism & 0.00 & {}[-0.17, 0.17] & -0.02 & .987 & 1.00\\
+\hspace{1em}Conscientiousness & -0.05 & {}[-0.19, 0.09] & -0.72 & .469 & 1.000\\
+\hspace{1em}Agreeableness & -0.04 & {}[-0.18, 0.10] & -0.57 & .571 & 1.000\\
+\hspace{1em}Extraversion & -0.02 & {}[-0.18, 0.14] & -0.28 & .776 & 1.000\\
+\hspace{1em}Openness & 0.01 & {}[-0.12, 0.14] & 0.13 & .893 & 1.000\\
+\hspace{1em}Neuroticism & 0.00 & {}[-0.17, 0.17] & -0.02 & .987 & 1.000\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{\textit{p} values were adjusted using the \citet{holm1979} method.}}\\

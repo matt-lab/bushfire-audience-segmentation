@@ -705,7 +705,7 @@ Coefficients were exponentiated to estimate odds ratios, and are presented in @t
 A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
 
 Numerically, the ratio of female to male participants was stable across studies.
-A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_gender_diff$df`) = `r specify_decimal(lr_test_gender_diff$lr_stat)`, $p$ = `r specify_decimal(lr_test_gender_diff$pr_chi)`, $\omega =$ `r specify_decimal(lr_test_gender_diff$w)`).
+A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_gender_diff$df`) = `r specify_decimal(lr_test_gender_diff$lr_stat)`, $p$ = `r specify_decimal(lr_test_gender_diff$pr_chi, 3)`, $\omega =$ `r specify_decimal(lr_test_gender_diff$w)`).
 Furthermore, no model coeffecients were statistically significant (@tbl-gender-diff), indicating a lack of evidence that gender differed across studies.
  
 ## Age differences across studies
@@ -1226,12 +1226,12 @@ means_diff_results <- means_diff_results |>
 
 tab_mean_diff_results <- means_diff_results |>
     arrange(category, mean_diff_rank) |>
-    mutate(p_adjusted = specify_p_value_text(p_adjusted, 3)) |>
+    mutate(p_adjusted = specify_p_value(p_adjusted, 3)) |>
     mutate(p_value = specify_p_value(p_value, 3)) |>
     mutate(
         across(
             where(is.double),
-            specify_decimal
+            specify_decimal,
         )
     ) |>    
     mutate(

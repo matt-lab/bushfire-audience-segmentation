@@ -1215,7 +1215,7 @@ To explore whether segment membership changed during Black Summer, we investigat
 Numerically, the proportion of Acceptors fell across time `r pull(filter(descriptives_segment_change, segment == 'acceptor'), text)`, whereas the proportion of Fencesitters increased across time `r pull(filter(descriptives_segment_change, segment == 'fencesitter'), text)`.
 In comparison, the proportion of Sceptics was relatively stable across studies `r pull(filter(descriptives_segment_change, segment == 'sceptic'), text)`.
 To investigate whether the relative proportion of segments differed across studies, we created a multinomial logistic regression model to predict segment membership as a function of study (coefficients reported in Supplementary Material), using the *multinom* function from the *nnet* package [@venables_2002].
-A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_segment_change$df`) = `r specify_decimal(lr_test_segment_change$lr_stat)`, $p$ = `r specify_decimal(lr_test_segment_change$pr_chi)`, $\omega =$ `r specify_decimal(lr_test_segment_change$w)`).
+A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_segment_change$df`) = `r specify_decimal(lr_test_segment_change$lr_stat)`, $p$ = `r specify_decimal(lr_test_segment_change$pr_chi, 3)`, $\omega =$ `r specify_decimal(lr_test_segment_change$w)`).
 Thus, segment membership did not reliably differ across study samples.
 
 ```{r}
