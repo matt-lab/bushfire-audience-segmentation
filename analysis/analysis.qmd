@@ -1255,7 +1255,7 @@ data |>
         limits = c(0, 75),
         expand = c(0, 0)
     ) +
-    scale_x_discrete() +
+    scale_x_discrete(labels = c("Acceptors", "Fence-sitters", "Sceptics")) +
    # scale_pattern_fill_manual(
     scale_fill_manual(
         "Study",
@@ -2118,15 +2118,34 @@ tab_fps_loadings |>
 #| label: fig-fps-segment
 #| fig-cap: "Mean Fire Perception subscale scores as a function of segment. Error bars indicate one standard error above and below the mean."
 
+# For journal style
+names(segment_colours) <- sort(unique(fct_recode(
+          data$segment_name,
+          `Fence-sitters` = "Fencesitters"
+        )))
+str_to_sentence_with_colon = function(str) {
+  str |>
+  str_split(":") |>
+  map(str_to_sentence) |>
+  map_chr(str_c, collapse = ":")
+}
 
 data_fps_scales_revised |>
     mutate(factor_name = fct_relabel(factor_name, ~ str_remove(.x, "\\([A-Z]\\) "))) |>
+    mutate(factor_name = fct_relabel(factor_name, str_to_sentence_with_colon)) |>
     mutate(factor_name = fct_reorder(factor_name, factor)) |>
     arrange(factor_name) |>
     mutate(segment = str_to_lower(segment)) |>
     left_join(
         distinct(select(data, segment, segment_name)),
         by = "segment"
+    ) |>
+    mutate(
+      segment_name =
+        fct_recode(
+          segment_name,
+          `Fence-sitters` = "Fencesitters"
+        )
     ) |>
     group_by(segment, segment_name, factor, factor_name) |>
     summarise(
@@ -2176,7 +2195,7 @@ data_fps_scales_revised |>
     ) +
     coord_cartesian(ylim = c(1, 5)) +
     ylab('Mean subscale score') +
-    xlab('Fire Perception subscale') +
+    xlab('Fire perception subscale') +
     labs(
         fill = "Segment",
         pattern = "Segment"
@@ -2712,6 +2731,13 @@ data |>
                 n == 0 ~ NA,
                 TRUE ~ sqrt(proportion * (1 - proportion)/ n)
             )
+    ) |>
+    mutate(
+      segment_name =
+        fct_recode(
+          segment_name,
+          `Fence-sitters` = "Fencesitters"
+        )
     ) |>
     mutate(percentage_se = se * 100) |>
     ggplot(aes(x = fp_mitigation, y = percentage, fill = segment_name)) +

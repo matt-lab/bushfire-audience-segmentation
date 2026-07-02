@@ -1,26 +1,26 @@
----
-title: "Supplementary materials for: \"Do extreme climate events influence climate-related opinions? The case of the 2019-2020 Australian Black Summer bushfires\""
-description: Supplementary materials for the manuscript \"Do extreme climate events influence climate-related opinions? The case of the 2019-2020 Australian Black Summer bushfires\"
-bibliography: references.bib
-format:
-  pdf:
-    number-sections: true
-    keep-tex: true
-    cite-method: natbib
-    natbiboptions: authoryear,longnamesfirst
-    include-in-header: 
-      text: |
-        \usepackage{fontspec}
-        \usepackage{fontawesome}
-        \setlength{\tabcolsep}{2pt}
-        \setlength{\tabcolsep}{1pt}
-execute:
-  cache: true
-  echo: false
----
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: load-utilities
 #| cache: false
 #| warning: false
@@ -230,9 +230,9 @@ pack_groups <- function(kable_input, data_in_kable_input, group_var, ...) {
 
 # Suppress summarise info
 options(dplyr.summarise.inform = FALSE)
-```
-
-```{r}
+#
+#
+#
 #| label: load-analysis
 #| include: false
 #| warning: false
@@ -533,13 +533,13 @@ data_fps_scales <- data |>
     mutate(segment = str_to_title(segment)) |>
     mutate(segment = as.factor(segment)) |>
     mutate(segment = fct_relevel(segment, "Sceptic", "Fencesitter", "Acceptor"))
-```
-
-# Methods
-
-## Gender differences across studies
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-gender-diff
 #| tbl-cap: Estimated effects of study on participant gender, estimated using a multinomial logistic regression model.
 #| warning: false
@@ -695,22 +695,22 @@ data |>
         escape = FALSE
     )
     
-```
-
-
-We created a multinomial logistic regression model to predict gender as a function of study, using the *multinom* function from the *nnet* package [@venables_2002].
-Specifically, we modelled the log odds ratio of female to male participants (male was entered as the reference category) with study entered as a categorical predictor (Study 2 was entered as the reference category).
-For the purposes of this model, we excluded participants who did not identify their gender as either female or male.
-Coefficients were exponentiated to estimate odds ratios, and are presented in @tbl-gender-diff.
-A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
-
-Numerically, the ratio of female to male participants was stable across studies.
-A log likelihood ratio test did not indicate an improvement in model fit when study was included as a predictor, compared to a model with only an intercept term ($\chi^{2}$ (`r lr_test_gender_diff$df`) = `r specify_decimal(lr_test_gender_diff$lr_stat)`, $p$ = `r specify_decimal(lr_test_gender_diff$pr_chi, 3)`, $\omega =$ `r specify_decimal(lr_test_gender_diff$w)`).
-Furthermore, no model coeffecients were statistically significant (@tbl-gender-diff), indicating a lack of evidence that gender differed across studies.
- 
-## Age differences across studies
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-age-diff
 #| tbl-cap: "Linear regression models predicting participant age (years) as a function of study."
 #| echo: false
@@ -866,38 +866,38 @@ data |>
         ),
         escape = FALSE
     )
-```
-
-To determine whether age differed across studies, we built a linear regression model.
-The model predicted age as a function of study, using the *lm* function from the *stats* package [@rcoreteam_2023].
-Study was entered as a categorical predictor (Study 2 was entered as the reference category), and a Wald Z-test was used to estimate $p$ values (@tbl-age-diff).
-
-Numerically, participant age was stable across studies.
-The linear regression model did not accounted for a significant amount of variance in compared to intercept-only models (`r model_age_fit_text$text[1]`), indicating a lack of evidence that study was a significant predictor of age.
-Furthermore, no model coeffecients were statistically significant (@tbl-age-diff), indicating a lack of evidence that gender differed across studies.
-
-## Fast responders
-
-For each study, a pilot study of approximately fifty people was conducted to identify fast responders.
-Fast responders were identified as those who completed the survey in less than half of the median time taken by participants in the pilot study, which was 873 seconds for Study 1, 664 seconds for Study 2, and 509 seconds for Study 3.
-The data of fast responders was not collected, and therefore, not included in the analysis.
-
-## Counterbalancing of auxiliary psychological scales
-
-For Study 1, auxiliary psychological scales were counterbalanced using a digram-balanced Latin square design.
-However, there is a slight discrepancy in the number of each Latin squares completed (range = 25 to 44) due to non-completions and the nature of randomisation.
-Study 3 maintained this approach to administering materials, to facilitate comparison between studies.
-
-\clearpage
-
-# Results
-
-## Segment membership replication
-
-See @tbl-statements.
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-statements
 #| tbl-cap: "Segment membership factor scores for each study and Q-sort statement"
 #| echo: false
@@ -947,15 +947,15 @@ tab_statements <- q_sort_results_statements_compar |>
     ) |>
     column_spec(1, width = "12em")
 tab_statements
-```
-
-\clearpage
-
-## Change in segment membership over time
-
-### Multinomial regression model
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: descriptives-segment-change
 
 # Get descriptives
@@ -1009,15 +1009,15 @@ anova(
         & test == '1 vs 2'
     )
 
-```
-
-We created a multinomial logistic regression model to predict segment membership as a function of study, using the *multinom* function from the *nnet* package [@venables_2002].
-Segment membership was entered as the dependent variable, with the Fence-sitter segment as the reference category.
-Study was entered as a categorical predictor, with Study 2 as the reference category.
-Coefficients were exponentiated to estimate odds ratios, and are presented in @tbl-segment-change.
-A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-segment-change
 #| tbl-cap: Estimated effects of study on segment membership, estimated using a multinomial logistic regression model.
 #| warning: false
@@ -1158,22 +1158,22 @@ data |>
         escape = FALSE
     )
     
-```
-
-
-\clearpage
-
-
-## Auxiliary psychological characteristics
-
-See @tbl-mean_diff for the difference in means of auxiliary psychological characteristics between Study 1 and Study 3, for: cognitive style; ideology, worldviews, and values; and personality.
-To guard against Type I errors, we applied a [-@holm1979] $p$ value adjustment to four families of tests for changes in psychological characteristics: climate change cognition and affect; cognitive styles; ideology, worldviews, and values; and personality.
-The results for mean differences of climate change cognition and affect are not presented here, as these are reported in the main text.
-
-See @fig-scale-change for density estimates of auxiliary psychological characteristics in Study 1 and Study 3.
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-mean_diff
 #| tbl-cap: "Difference in means of auxiliary psychological characteristics between Study 1 and Study 3."
 #| echo: false
@@ -1289,9 +1289,9 @@ tab_mean_diff_results <- tab_mean_diff_results |>
     )
 
 tab_mean_diff_results
-```
-
-```{r}
+#
+#
+#
 #| echo: false
 #| label: fig-scale-change
 #| fig-cap: "Density estimates for auxiliary psychological variables in Study 1 (blue) and Study 3 (purple)."
@@ -1355,17 +1355,17 @@ data |>
     #     panel.spacing = unit(c(-0.5,0-0.5,0), "lines")
     # ) +
     labs(x = "Score", y = "Psychological characteristics")
-```
-
-\clearpage
-
-## Fire Perception Scale
-
-### Scree plot
-
-The scree plot for the Fire Perception Scale is shown in @fig-fps-scree.
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| echo: false
 #| include: false
 #| label: prepare-fps-scale
@@ -1395,9 +1395,9 @@ fps_descriptives <- data |>
     mutate(across(m:se, ~ specify_decimal(.x, 2))) |>
     mutate(names = fps_item_names)
 
-```
-
-```{r}
+#
+#
+#
 #| label: fig-fps-scree
 #| fig-cap: "Scree plot for the Fire Perception Scale. Vertical dashed line indicates a break in the scree."
 #| echo: false
@@ -1426,15 +1426,15 @@ data_fps |>
     ylab("Eiegenvalue") +
     theme_manuscript() +
     theme(axis.line = element_line())
-```
-
-### Segment differences
-
-For each Fire Perception Scale subscale (Climate Processes, Fire Appraisal, and Arson Causes), we built a linear regression model to predict subscale score as a function of segment, using the *lm* function from the *stats* package [@rcoreteam_2023].
-Segment was entered as a categorical predictor, and a Wald Z-test was used to estimate $p$ values (@tbl-fps-models).
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-fps-models
 #| tbl-cap: "Linear regression models predicting Fire Perception Scale subscale scores (bolded) as a function of segment."
 #| echo: false
@@ -1732,14 +1732,14 @@ data |>
         ),
         escape = FALSE
     )
-```
-
-### Correlations
-
-The correlations between the Fire Perception Scale subscale scores and auxiliary psychological characteristics are shown in @tbl-fps-correlations.
-In @tbl-fps-correlations-causal_items, we present the correlations of auxiliary psychological characteristics with two Fire Perception Scale items concerning perceived causes for the bushfires---climate change (item 1) and arson (item 7).
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
 #| echo: false
 #| label: tbl-fps-correlations
 #| tbl-cap: "Pearson correlations between the Fire Perception Scale subscale scores and auxiliary psychological characteristics."
@@ -1895,9 +1895,9 @@ data_fps_correlations |>
             ),
         escape = FALSE
     )
-```
-
-```{r}
+#
+#
+#
 #| echo: false
 #| label: tbl-fps-correlations-causal_items
 #| tbl-cap: "Pearson correlations between the Fire Perception Scale causal items and auxiliary psychological characteristics."
@@ -2039,16 +2039,16 @@ data_fps_correlations_causal_items |>
             ),
         escape = FALSE
     )
-```
-
-
-\clearpage
-
-## Policy direction preferences
-
-### Policy direction preferences as a function of segment membership
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: model-policy-preferences
 #| echo: false
 
@@ -2088,17 +2088,17 @@ lr_test_segment_mitigation <-
                 p_value
             )
     )
-```
-
-
-To assess the association between segment membership and policy direction preferences, we used a binomial logistic regression model (see @tbl-policy-preferences).
-Policy direction preferences were coded as a binary variable, with 1 indicating a preference for more action and 0 indicating an alternative preference (e.g., a preference for no change, less action, or no action).
-The model estimated the log odds ratio of a preference for more action as a function of segment membership, using the *glm* function with a logit link function.
-Association between segment membership and the use of emotional words was assessed with a likelihood-ratio test that compared the regression model with and without segment membership as a predictor (`r lr_test_segment_mitigation$text[1]`).
-A Wald Z-test was used to estimate $p$ values of model coefficients.
-As no Sceptic indicated a preference for more action, we could not estimate the effect of segment membership on policy direction preferences for Sceptic and therefore excluded Sceptic from the model.
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-policy-preferences
 #| tbl-cap: Estimated effects of segment membership on policy direction preferences using a binomial logistic regression model.
 
@@ -2231,29 +2231,29 @@ data |>
         general = tab_segment_mitigation_footnotes,
         escape = FALSE
     )
-```
-
-### Emotion analysis
-
-To explore the relationship between segment membership and policy direction preferences, we conducted an emotion analysis of participants' justifications for their policy direction preferences.
-First, we prepared the data by segmenting each participant's text response into individual words (known as tokenisation), via the *unnest_tokens* function of the *tidytext* package [@silge_2016].
-Then, we removed words that were not relevant to the analysis, such as numbers, hyperlinks, and hashtags.
-Additionally, we removed words with a unique meaning in the context of the study, including "climate", "change", "global", "warming", "bushfire", "bushfires", "fires", "fire", "barrier" and "bark".
-Next, we identified the words present in the NRC Word-Emotion Association Lexicon [@mohammad_2013].
-Due to the infrequent use of emotional language by participants, we examine whether a participant used one or more words associated with a particular emotion.
-The resulting prevalence of emotions in participants' justifications is shown in @tbl-sentiment-counts.
-
-To explore segment differences in the use of emotional language, we created a binomial logistic regression model (@tbl-sentiment-models).
-The model estimated the log odds ratio of using an emotion, using the *glm* function with a logit link function.
-Segment membership was entered as a categorical predictor, with Fence-sitter as the reference category.
-Association between segment membership and the use of emotional words was assessed with a likelihood-ratio test that compared the regression model with and without segment membership as a predictor.
-To control for multiple comparisons, the $p$ values of likelihood-ratio tests were adjusted using the Holm [-@holm1979] method.
-A Wald $Z$-test was used to estimate the (unadjusted) $p$ values of model coefficients.
-We followed up significant results with pairwise comparisons between segments, using the *marginaleffects* package [@R-marginaleffects].
-We controlled for multiple comparisons using the Holm method [-@holm1979] to adjust $p$ values.
-The multiple comparisons are shown in @tbl-sentiment-models-contrasts.
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| label: tbl-sentiment-counts
 #| tbl-cap: "Frequency and proportion of participants' emotions in justification of policy direction preferences."
 #| echo: false
@@ -2400,10 +2400,10 @@ tab_sentiment <- tab_sentiment |>
     column_spec(4, width = "23em") |>
     footnote(general = tab_sentiment_footnote)
 tab_sentiment
-```
-
-
-```{r}
+#
+#
+#
+#
 #| label: tbl-sentiment-models
 #| tbl-cap: "Effects of segment membership on emotion content in justification of policy direction preferences, estimated using a binomial logistic regression model."
 #| echo: false
@@ -2612,10 +2612,10 @@ tab_sentiment |>
             ),
         escape = FALSE
     )
-```
-
-
-```{r}
+#
+#
+#
+#
 #| label: tbl-sentiment-models-contrasts
 #| tbl-cap: "Pairwise comparisons of segment membership on fear content in justification of policy direction preferences, estimated using a binomial logistic regression model."
 
@@ -2680,6 +2680,8 @@ model_sentiment |>
 
 
 
-```
-
-\clearpage
+#
+#
+#
+#
+#

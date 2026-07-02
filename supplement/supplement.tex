@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -7,21 +8,22 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-
+\usepackage{xcolor}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -39,9 +41,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -67,8 +66,8 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -93,6 +92,22 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+\usepackage[authoryear,longnamesfirst]{natbib}
+\bibliographystyle{plainnat}
+
 
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -154,15 +169,11 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
-\usepackage[authoryear,longnamesfirst]{natbib}
-\bibliographystyle{plainnat}
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
-  pdftitle={Supplementary materials for: ``Does extreme climate event exposure influence climate-related opinions? The case of the 2019--2020 Australian Black Summer bushfires?''},
+  pdftitle={Supplementary materials for: ``Do extreme climate events influence climate-related opinions? The case of the 2019-2020 Australian Black Summer bushfires''},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -171,12 +182,11 @@
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{Supplementary materials for: ``Does extreme climate event
-exposure influence climate-related opinions? The case of the 2019--2020
-Australian Black Summer bushfires?''}
+\title{Supplementary materials for: ``Do extreme climate events
+influence climate-related opinions? The case of the 2019-2020 Australian
+Black Summer bushfires''}
 \author{}
 \date{}
-
 \begin{document}
 \maketitle
 
@@ -374,7 +384,7 @@ model}\label{multinomial-regression-model}
 We created a multinomial logistic regression model to predict segment
 membership as a function of study, using the \emph{multinom} function
 from the \emph{nnet} package \citep{venables_2002}. Segment membership
-was entered as the dependent variable, with the Fencesitter segment as
+was entered as the dependent variable, with the Fence-sitter segment as
 the reference category. Study was entered as a categorical predictor,
 with Study 2 as the reference category. Coefficients were exponentiated
 to estimate odds ratios, and are presented in
@@ -390,7 +400,7 @@ membership, estimated using a multinomial logistic regression model.}
 
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{6em}}
 \toprule
-\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Acceptors odds and Fencesitters odds}} & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Sceptics odds and Fencesitters odds}} \\
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Acceptors odds and Fence-sitters odds}} & \multicolumn{2}{c}{\parbox{10em}{\centering Ratio of Sceptics odds and Fence-sitters odds}} \\
 \cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-6}
 Predictors & Categories & Estimate ($p$ value) & 95\% CI & Estimate ($p$ value) & 95\% CI\\
 \midrule
@@ -401,7 +411,7 @@ Study & Study 1 & 1.06 (.709) & {}[0.78, 1.44] & 0.81 (.417) & {}[0.48, 1.35]\\
 \bottomrule
 \multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{6}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{***}\textit{p} $<$ .001.}\\
-\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Fencesitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\multicolumn{6}{l}{\rule{0pt}{1em}\parbox{36em}{Each study was entered as a categorical predictor, with Study 2 as the reference category. Fence-sitter was entered as the reference category of segment. Model estimates of coefficients were exponentiated to odds ratios.}}\\
 \end{tabular}
 
 }
@@ -425,20 +435,6 @@ here, as these are reported in the main text.
 
 See Figure~\ref{fig-scale-change} for density estimates of auxiliary
 psychological characteristics in Study 1 and Study 3.
-
-\begin{verbatim}
-Warning: There was 1 warning in `mutate()`.
-i In argument: `across(where(is.double), specify_decimal, )`.
-Caused by warning:
-! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
-Supply arguments directly to `.fns` through an anonymous function instead.
-
-  # Previously
-  across(a:b, mean, na.rm = TRUE)
-
-  # Now
-  across(a:b, \(x) mean(x, na.rm = TRUE))
-\end{verbatim}
 
 \begin{table}
 
@@ -542,30 +538,30 @@ Models and predictors & Categories & Estimate ($p$ value) & 95\% Confidence inte
 \multicolumn{4}{l}{\textbf{(A) Climate Processes}}\\
 \hspace{1em}Intercept & - & 2.95 (.000)\textsuperscript{***} & {}[2.74, 3.16]\\
 \hspace{1em}Segment & Acceptors & 0.53 (.000)\textsuperscript{***} & {}[0.26, 0.80]\\
-\hspace{1em} & Fencesitters & - & \vphantom{3} -\\
+\hspace{1em} & Fence-sitters & - & \vphantom{3} -\\
 \hspace{1em} & Sceptics & -1.76 (.000)\textsuperscript{***} & {}[-2.24, -1.27]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{(B) Fire Appraisal: Climate change made bushfires less likely}}\\
 \hspace{1em}Intercept & - & 2.81 (.000)\textsuperscript{***} & {}[2.55, 3.07]\\
 \hspace{1em}Segment & Acceptors & -1.04 (.000)\textsuperscript{***} & {}[-1.38, -0.70]\\
-\hspace{1em} & Fencesitters & - & \vphantom{2} -\\
+\hspace{1em} & Fence-sitters & - & \vphantom{2} -\\
 \hspace{1em} & Sceptics & -0.64 (.038)\textsuperscript{*} & {}[-1.25, -0.03]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{(B) Fire Appraisal: Bushfires were severe}}\\
 \hspace{1em}Intercept & - & 4.14 (.000)\textsuperscript{***} & {}[3.98, 4.30]\\
 \hspace{1em}Segment & Acceptors & 0.65 (.000)\textsuperscript{***} & {}[0.44, 0.86]\\
-\hspace{1em} & Fencesitters & - & \vphantom{1} -\\
+\hspace{1em} & Fence-sitters & - & \vphantom{1} -\\
 \hspace{1em} & Sceptics & 0.08 (.664) & {}[-0.29, 0.46]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{(C) Arson Causes}}\\
 \hspace{1em}Intercept & - & 3.71 (.000)\textsuperscript{***} & {}[3.46, 3.96]\\
 \hspace{1em}Segment & Acceptors & -0.55 (.001)\textsuperscript{**} & {}[-0.88, -0.23]\\
-\hspace{1em} & Fencesitters & - & -\\
+\hspace{1em} & Fence-sitters & - & -\\
 \hspace{1em} & Sceptics & 0.74 (.014)\textsuperscript{*} & {}[0.15, 1.32]\\
 \bottomrule
 \multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
-\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{30em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category.}}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{30em}{Each segment was entered as a categorical predictor, with Fence-sitter as the reference category.}}\\
 \end{tabular}
 
 }
@@ -749,11 +745,11 @@ Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
 \midrule
 Intercept & - & 1.08 (.736) & {}[0.69, 1.68]\\
 Segment & Acceptors & 8.03 (.000)\textsuperscript{***} & {}[3.92, 17.49]\\
- & Fencesitters & - & -\\
+ & Fence-sitters & - & -\\
 \bottomrule
 \multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{***}\textit{p} $<$ .001.}\\
-\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{34em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category. Sceptics were excluded from the model, as none indicated a preference for more action. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{34em}{Each segment was entered as a categorical predictor, with Fence-sitter as the reference category. Sceptics were excluded from the model, as none indicated a preference for more action. Model estimates of coefficients were exponentiated to odds ratios.}}\\
 \end{tabular}
 
 }
@@ -785,7 +781,7 @@ created a binomial logistic regression model
 (Table~\ref{tbl-sentiment-models}). The model estimated the log odds
 ratio of using an emotion, using the \emph{glm} function with a logit
 link function. Segment membership was entered as a categorical
-predictor, with Fencesitter as the reference category. Association
+predictor, with Fence-sitter as the reference category. Association
 between segment membership and the use of emotional words was assessed
 with a likelihood-ratio test that compared the regression model with and
 without segment membership as a predictor. To control for multiple
@@ -854,43 +850,43 @@ Predictors & Categories & Estimate ($p$ value) & 95\% Confidence interval\\
 \bottomrule
 \multicolumn{4}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{4}{l}{\rule{0pt}{1em}\textsuperscript{*}\textit{p} $<$ .05; \textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
-\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{32em}{Each segment was entered as a categorical predictor, with Fencesitter as the reference category. The $\chi^{2}$ statistic is the likelihood-ratio test comparing the model with segment as a predictor to the null model without the predictor. The likelihood-ratio test \textit{p} values were adjusted using the \citet{holm1979} method. Model estimates of coefficients were exponentiated to odds ratios.}}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}\parbox{32em}{Each segment was entered as a categorical predictor, with Fence-sitter as the reference category. The $\chi^{2}$ statistic is the likelihood-ratio test comparing the model with segment as a predictor to the null model without the predictor. The likelihood-ratio test \textit{p} values were adjusted using the \citet{holm1979} method. Model estimates of coefficients were exponentiated to odds ratios.}}\\
 \endlastfoot
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Anger ($\chi^{2}$ (2) = 8.73, $p$ = .013, $p_{adjusted}$ = .056)}}\\
 \hspace{1em}Intercept & - & 0.10 (.000)\textsuperscript{***} & {}[0.04, 0.20]\\
 \hspace{1em}Segment & Acceptors & 1.77 (.231) & {}[0.72, 4.77]\\
-\hspace{1em}Segment & Fencesitters & - & \vphantom{5} -\\
+\hspace{1em}Segment & Fence-sitters & - & \vphantom{5} -\\
 \hspace{1em}Segment & Sceptics & 6.55 (.003)\textsuperscript{**} & {}[1.91, 22.94]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Fear ($\chi^{2}$ (2) = 11.93, $p$ = .003, $p_{adjusted}$ = .015*)}}\\
 \hspace{1em}Intercept & - & 0.22 (.000)\textsuperscript{***} & {}[0.12, 0.37]\\
 \hspace{1em}Segment & Acceptors & 3.16 (.001)\textsuperscript{**} & {}[1.63, 6.46]\\
-\hspace{1em}Segment & Fencesitters & - & \vphantom{4} -\\
+\hspace{1em}Segment & Fence-sitters & - & \vphantom{4} -\\
 \hspace{1em}Segment & Sceptics & 2.32 (.147) & {}[0.71, 7.13]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Anticipation ($\chi^{2}$ (2) = 1.18, $p$ = .554, $p_{adjusted}$ = 1.000)}}\\
 \hspace{1em}Intercept & - & 0.20 (.000)\textsuperscript{***} & {}[0.10, 0.34]\\
 \hspace{1em}Segment & Acceptors & 1.47 (.309) & {}[0.71, 3.14]\\
-\hspace{1em}Segment & Fencesitters & - & \vphantom{3} -\\
+\hspace{1em}Segment & Fence-sitters & - & \vphantom{3} -\\
 \hspace{1em}Segment & Sceptics & 1.02 (.983) & {}[0.21, 3.65]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Joy ($\chi^{2}$ (2) = 1.65, $p$ = .437, $p_{adjusted}$ = 1.000)}}\\
 \hspace{1em}Intercept & - & 0.08 (.000)\textsuperscript{***} & {}[0.03, 0.17]\\
 \hspace{1em}Segment & Acceptors & 0.90 (.853) & {}[0.30, 2.84]\\
-\hspace{1em}Segment & Fencesitters & - & \vphantom{2} -\\
+\hspace{1em}Segment & Fence-sitters & - & \vphantom{2} -\\
 \hspace{1em}Segment & Sceptics & 2.43 (.243) & {}[0.47, 10.37]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Surprise ($\chi^{2}$ (2) = 8.99, $p$ = .011, $p_{adjusted}$ = .056)}}\\
 \hspace{1em}Intercept & - & 0.04 (.000)\textsuperscript{***} & {}[0.01, 0.11]\\
 \hspace{1em}Segment & Acceptors & 3.20 (.077) & {}[0.99, 14.30]\\
-\hspace{1em}Segment & Fencesitters & - & \vphantom{1} -\\
+\hspace{1em}Segment & Fence-sitters & - & \vphantom{1} -\\
 \hspace{1em}Segment & Sceptics & 9.74 (.004)\textsuperscript{**} & {}[2.14, 52.42]\\
 \addlinespace[0.3em]
 \multicolumn{4}{l}{\textbf{Trust ($\chi^{2}$ (2) = 2.01, $p$ = .366, $p_{adjusted}$ = 1.000)}}\\
 \hspace{1em}Intercept & - & 0.25 (.000)\textsuperscript{***} & {}[0.14, 0.43]\\
 \hspace{1em}Segment & Acceptors & 1.50 (.245) & {}[0.77, 3.03]\\
-\hspace{1em}Segment & Fencesitters & - & -\\
+\hspace{1em}Segment & Fence-sitters & - & -\\
 \hspace{1em}Segment & Sceptics & 1.97 (.237) & {}[0.61, 5.94]\\*
 
 \end{longtable}
@@ -908,9 +904,9 @@ preferences, estimated using a binomial logistic regression model.}
 \toprule
 Contrasts & Estimate & 95\% CI & $p$ value & $p_{adjusted}$ value\\
 \midrule
-ln(odds(Acceptors) / odds(Fencesitters)) & 3.16 & {}[1.59, 6.28] & .001** & .003**\\
+ln(odds(Acceptors) / odds(Fence-sitters)) & 3.16 & {}[1.59, 6.28] & .001** & .003**\\
 ln(odds(Sceptics) / odds(Acceptors)) & 0.73 & {}[0.26, 2.09] & .563 & .563\\
-ln(odds(Sceptics) / odds(Fencesitters)) & 2.32 & {}[0.74, 7.24] & .147 & .293\\
+ln(odds(Sceptics) / odds(Fence-sitters)) & 2.32 & {}[0.74, 7.24] & .147 & .293\\
 \bottomrule
 \multicolumn{5}{l}{\rule{0pt}{1em}\textit{Note: }}\\
 \multicolumn{5}{l}{\rule{0pt}{1em}\textsuperscript{**}\textit{p} $<$ .01; \textsuperscript{***}\textit{p} $<$ .001.}\\
@@ -924,7 +920,7 @@ ln(odds(Sceptics) / odds(Fencesitters)) & 2.32 & {}[0.74, 7.24] & .147 & .293\\
 \clearpage
 
 
-  \bibliography{references.bib}
+\bibliography{references.bib}
 
 
 
